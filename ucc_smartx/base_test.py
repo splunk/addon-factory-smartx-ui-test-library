@@ -1,123 +1,32 @@
+from __future__ import absolute_import
+from builtins import str
+from builtins import range
+from builtins import object
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from pages.login import LoginPage
-from utils import get_orca_deployment_urls, backend_retry
+from .pages.login import LoginPage
+from .utils import backend_retry
 import pytest
 import requests
 import time
 import traceback
 import logging
 import os
-requests.urllib3.disable_warnings()
+# requests.urllib3.disable_warnings()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-def customize_fixture(
-        browser="firefox", urls=None,
-        debug=False, cred=("admin", "Chang3d!"), scope="function" ):
-    """
-    Customize the fixture. Call the function from the test case file to customize the testcase.
-    The parameter provided to the function will only be effective if no pytest args were provided while execution
-        :param browsers: list of browser for which all the testcases should be executed
-        :param urls: urls of the Splunk instance. {"web": ..., "mgmt": ... } 
-        :param debug: True -> the browser should be found from local machine. False -> RemoteDrivers.
-        :param cred: Splunk credentials as tuple (username, password)
-        :param scope: scope of the fixture. possible_values: [function, class, module]. Handles when the browser should be started and exited
-    """
-    global splunk_urls, local_run, username, password, driver
-    # Parameter closure
-
-    driver = browser
-    splunk_urls = urls or dict()
-    local_run = debug
-    username, password = cred
-    logger.debug("custom_fixture args:: browser={browser}, urls={urls}, debug={debug}, cred={cred}, scope={scope}".format(
-        browser=browser, urls=urls, debug=debug, cred=cred, scope=scope
-    ))
-
-    # Fixture
-    @pytest.fixture(
-        scope=scope
-    )
-    def test_helper(request):
-
-        global splunk_urls, local_run, username, password, driver
-        # Configure pytest parameters, if provided
-
-        if request.config.getoption("--browser"):
-            driver = request.config.getoption("--browser")
-            logger.debug("--browser={}".format(driver))
-
-        if request.config.getoption("--web_url") and request.config.getoption("--mgmt_url"):
-            splunk_urls["web"] = request.config.getoption("--web_url")
-            logger.debug("--web_url={}".format(splunk_urls["web"]))
-
-            splunk_urls["mgmt"] = request.config.getoption("--mgmt_url")
-            logger.debug("--mgmt_url={}".format(splunk_urls["mgmt"]))
-        elif not splunk_urls:
-            logger.debug("--web_url & --mgmt_url not provided. Reading orca deployment")
-            splunk_urls = get_orca_deployment_urls()
-            
-        if request.config.getoption("--local"):
-            local_run = True
-            logger.debug("--debug")
-
-        if request.config.getoption("--user") and request.config.getoption("--password"):
-            username = request.config.getoption("--user")
-            password = request.config.getoption("--password")
-            logger.debug("--user={}".format(username))
-            logger.debug("--password={}".format(password))
-
-        test_case = driver + "_" + request.node.nodeid.split("::")[-1]
-
-        logger.info("Calling SeleniumHelper for test_case={test_case} with:: browser={driver}, urls={splunk_urls}, debug={local_run}, cred=({username},{password})".format(
-            driver=driver, splunk_urls=splunk_urls, local_run=local_run, username=username, password=password, test_case=test_case
-        ))
-
-        # 3 Try to configure selenium & Login to splunk instance
-        for try_number in range(3):
-            last_exc = Exception()
-            try:
-                helper = SeleniumHelper(driver, urls=splunk_urls, debug=local_run, cred=(username, password), test_case=test_case)
-                request.node.selenium_helper = helper
-                break
-            except Exception as e:
-                last_exc = e
-                logger.warn("Failed to configure the browser or login to Splunk instance for - Try={} \nTRACEBACK::{}".format(try_number, traceback.format_exc()))
-        else:
-            logger.error("Could not connect to Browser or login to Splunk instance. Please check the logs for detailed error of each retry")
-            raise(last_exc)
-
-        def fin():
-            logger.info("Quiting browser..")
-            helper.browser.quit()
-
-            if not local_run:
-                logger.debug("Notifying the status of the testcase to SauceLabs...")
-                try:
-                    if hasattr(request.node, 'report'):
-                        helper.update_saucelab_job(request.node.report.failed)
-                    else:
-                        logger.info("Could not notify to sauce labs because scope of fixture is not set to function")
-                except:
-                    logger.warn("Could not notify to Saucelabs \nTRACEBACK::{}".format(traceback.format_exc()))
- 
-        request.addfinalizer(fin)
-        return helper
-    
-    return test_helper
 
 class SeleniumHelper(object):
     """
     The helper class provides the Remote Browser
     """
 
-    def __init__(self, browser, urls=None, debug=False, cred=("admin", "Chang3d!"), test_case=None):
-        self.urls = urls
-        self.web_url = urls["web"]
-        self.mgmt_url = urls["mgmt"]
+    def __init__(self, browser, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), test_case=None):
+        self.splunk_web_url = splunk_web_url
+        self.splunk_mgmt_url = splunk_mgmt_url
         self.cred = cred
         self.test_case = test_case
         if not debug:
@@ -156,7 +65,7 @@ class SeleniumHelper(object):
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
                     desired_capabilities = self.get_sauce_safari_opts())
             else:
-                raise Exception("No valid browser found.! expected=[firefox, chrome, IE], got={}".format(browser))
+                raise Exception("No valid browser found.! expected=[firefox, chrome, safari], got={}".format(browser))
         except Exception as e:
             raise e
 
@@ -166,7 +75,8 @@ class SeleniumHelper(object):
             self.session_key = self.start_session(*self.cred)
         except:
             self.browser.quit()
-            self.update_saucelab_job(False)
+            if not debug:
+                self.update_saucelab_job(False)
             raise
 
     def init_sauce_env_variables(self):
@@ -189,7 +99,7 @@ class SeleniumHelper(object):
             'seleniumVersion': '3.141.0',
             # best practices involve setting a build number for version control
             'build': self.jenkins_build,
-            'name': self.test_case or 'SCOM UI Automation',
+            'name': self.test_case,
             'username': self.sauce_username,
             'accessKey': self.sauce_access_key,
             # setting sauce-runner specific parameters such as timeouts helps
@@ -205,7 +115,7 @@ class SeleniumHelper(object):
     def get_sauce_ie_opts(self):
         sauce_options = {
             'build': self.jenkins_build,
-            'name': self.test_case or 'SCOM UI Automation',
+            'name': self.test_case,
             'username': self.sauce_username,
             'accessKey': self.sauce_access_key,
             'tunnelIdentifier': 'sauce-ha-tunnel',
@@ -259,16 +169,17 @@ class SeleniumHelper(object):
         sauce_opts = self.get_sauce_opts()
         sauce_opts["screenResolution"] = "1024x768"
         safari_opts = {
-            'platformName': 'macOS 10.12',
+            'platformName': 'macOS 10.14',
             'browserName': 'safari',
-            'browserVersion': 'latest',
+            'browserVersion': '12',
             'sauce:options': sauce_opts
         }
         return safari_opts
 
     def login_to_splunk(self, *cred):
         try:
-            login_page = LoginPage(self.browser, self.urls)
+            print(" login_to_splunk : {}".format(self))
+            login_page = LoginPage(self)
             login_page.login.login(*cred)
         except:
             self.browser.save_screenshot("login_error.png")
@@ -276,7 +187,8 @@ class SeleniumHelper(object):
 
     @backend_retry(3)
     def start_session(self, username, password):
-        res = requests.post(self.mgmt_url + '/services/auth/login?output_mode=json',
+        print("JAY: management url: " + self.splunk_mgmt_url)
+        res = requests.post(self.splunk_mgmt_url + '/services/auth/login?output_mode=json',
                             data={'username': username, 'password': password }, verify=False)
         try:
             res = res.json()
