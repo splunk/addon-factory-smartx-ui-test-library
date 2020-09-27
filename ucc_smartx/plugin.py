@@ -31,7 +31,9 @@ def pytest_addoption(parser):
     group.addoption(
         "--browser", 
         action="store", 
-        help="browser on which the test should run. supported_values: (firefox, chrome, safari)"
+        help=( "The browser on which the test should run. supported_values: (firefox, chrome, safari)." 
+        " You can also provide browser version if the tests are running on Saucelabs. "
+        "ex, <browser>:<version>. default version is latest. For safari, the default is version 12.")
     )
 
     group.addoption(
@@ -58,6 +60,13 @@ def ucc_smartx_configs(request, splunk, splunk_web_uri, splunk_rest_uri):
     if request.config.getoption("--browser"):
         driver = request.config.getoption("--browser")
         LOGGER.debug("--browser={}".format(driver))
+        if len(driver.split(':')) == 2:
+            driver, driver_version = driver.split(':')
+        else:
+            if driver == 'safari':
+                 driver_version = '12'
+            else:
+                driver_version = "latest"
         
     if request.config.getoption("--local"):
         local_run = True
@@ -80,7 +89,7 @@ def ucc_smartx_configs(request, splunk, splunk_web_uri, splunk_rest_uri):
     for try_number in range(retry_count):
         last_exc = Exception()
         try:
-            helper = SeleniumHelper(driver, splunk_web_uri, splunk_rest_uri, debug=local_run, cred=(splunk["username"], splunk["password"]), test_case=test_case)
+            helper = SeleniumHelper(driver, driver_version, splunk_web_uri, splunk_rest_uri, debug=local_run, cred=(splunk["username"], splunk["password"]), test_case=test_case)
             request.node.selenium_helper = helper
             break
         except Exception as e:

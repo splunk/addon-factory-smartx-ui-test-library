@@ -24,7 +24,7 @@ class SeleniumHelper(object):
     The helper class provides the Remote Browser
     """
 
-    def __init__(self, browser, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), test_case=None):
+    def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), test_case=None):
         self.splunk_web_url = splunk_web_url
         self.splunk_mgmt_url = splunk_mgmt_url
         self.cred = cred
@@ -40,7 +40,7 @@ class SeleniumHelper(object):
                 else:
                     self.browser = webdriver.Remote(
                     command_executor='https://ondemand.saucelabs.com:443/wd/hub',
-                    desired_capabilities=self.get_sauce_firefox_opts()) 
+                    desired_capabilities=self.get_sauce_firefox_opts(browser_version)) 
 
             elif browser == "chrome":
                 if debug:
@@ -48,7 +48,7 @@ class SeleniumHelper(object):
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
-                    desired_capabilities = self.get_sauce_chrome_opts())
+                    desired_capabilities = self.get_sauce_chrome_opts(browser_version))
 
             elif browser == "IE":
                 if debug:
@@ -56,14 +56,14 @@ class SeleniumHelper(object):
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
-                    desired_capabilities = self.get_sauce_ie_opts())
+                    desired_capabilities = self.get_sauce_ie_opts(browser_version))
             elif browser == "safari":
                 if debug:
                     self.browser = webdriver.Safari()
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
-                    desired_capabilities = self.get_sauce_safari_opts())
+                    desired_capabilities = self.get_sauce_safari_opts(browser_version))
             else:
                 raise Exception("No valid browser found.! expected=[firefox, chrome, safari], got={}".format(browser))
         except Exception as e:
@@ -146,32 +146,32 @@ class SeleniumHelper(object):
         capabilities['nativeEvent'] = False
         return capabilities
 
-    def get_sauce_firefox_opts(self):
+    def get_sauce_firefox_opts(self, browser_version):
         firefox_opts = {
             'platformName': 'Windows 10',
             'browserName': 'firefox',
-            'browserVersion': 'latest',
+            'browserVersion': browser_version,
             'sauce:options': self.get_sauce_opts()
         }
         return firefox_opts
 
-    def get_sauce_chrome_opts(self):
+    def get_sauce_chrome_opts(self, browser_version):
         chrome_opts = {
             'platformName': 'Windows 10',
             'browserName': 'chrome',
-            'browserVersion': 'latest',
+            'browserVersion': browser_version,
             'goog:chromeOptions': {'w3c': True},
             'sauce:options': self.get_sauce_opts()
         }
         return chrome_opts
 
-    def get_sauce_safari_opts(self):
+    def get_sauce_safari_opts(self, browser_version):
         sauce_opts = self.get_sauce_opts()
         sauce_opts["screenResolution"] = "1024x768"
         safari_opts = {
             'platformName': 'macOS 10.14',
             'browserName': 'safari',
-            'browserVersion': '12',
+            'browserVersion': browser_version,
             'sauce:options': sauce_opts
         }
         return safari_opts
