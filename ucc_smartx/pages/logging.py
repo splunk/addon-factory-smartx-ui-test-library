@@ -22,7 +22,7 @@ class Logging(Entity):
 
         # Components
         self.log_level = SingleSelect(
-            ucc_smartx_configs.browser, {"by": By.CSS_SELECTOR, "select": ".agent"})
+            ucc_smartx_configs.browser, {"by": By.CSS_SELECTOR, "select": ".loglevel"})
         self.backend_conf = SingleBackendConf(
             self._get_logging_url(), ucc_smartx_configs.session_key)
 

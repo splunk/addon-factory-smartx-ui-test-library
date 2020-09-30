@@ -13,7 +13,8 @@ setup(
         "pytest-html",
         "selenium",
         "future~=0.17.1",
-        "configparser"
+        "configparser",
+        "urllib3~=1.21.1"
     ],
     extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},
     setup_requires=["pytest-runner"],

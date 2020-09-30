@@ -43,6 +43,15 @@ class BackendConf(object):
         assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
         return res.json()
 
+    def rest_call_delete(self, url):
+        """
+        rest call to the splunk rest-endpoint
+            :param url: url to call
+            :returns : json result of the request
+        """
+        res = requests.delete(url, headers=self.header, verify=False)
+        assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
+
     def parse_conf(self, json_res, single_stanza=False):
         """
         Parse the json result in to the configuration dictionary
@@ -69,12 +78,15 @@ class ListBackendConf(BackendConf):
     The list will be fetched from endpoint/ and a specific stanza will be fetched from endpoint/{stanza_name}
     """
 
-    def get_all_stanzas(self):
+    def get_all_stanzas(self, query=None):
         """
         Get list of all stanzas of the configuration
+            :query: query params for filter the stanza
             :returns : dictionary {stanza: {param: value, ... }, ... }
         """
         url = self.url + "?count=0&output_mode=json"
+        if query:
+            url = url + "&" + query
         res = self.rest_call(url)
         return self.parse_conf(res)
 
@@ -98,7 +110,27 @@ class ListBackendConf(BackendConf):
             :param kwargs: body of request method
             :returns : json result of the request
         """
+        kwargs['output_mode'] = 'json'
         return self.rest_call_post(url, kwargs)
+
+    def delete_all_stanzas(self, query=None):
+        """
+        Delete all stanza from the configuration.
+            :query: query params for filter the stanza
+            :returns : json result of the request
+        """
+        all_stanzas = list(self.get_all_stanzas(query).keys())
+        for stanza in all_stanzas:
+            self.delete_stanza(stanza)
+
+    def delete_stanza(self, stanza):
+         """
+        Delete a specific stanza of the configuration.
+            :param stanza: stanza to delete
+            :returns : json result of the request
+        """
+        url = "{}/{}".format(self.url, urllib.parse.quote_plus(stanza))
+        self.rest_call_delete(url)
 
     def get_stanza_value(self, stanza, param):
         """
@@ -125,3 +157,4 @@ class SingleBackendConf(BackendConf):
         """
         stanza_map = self.get_stanza()
         return stanza_map[param]
+        
