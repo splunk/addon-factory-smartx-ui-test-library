@@ -66,10 +66,6 @@ class Table(BaseComponent):
                 "by": By.CSS_SELECTOR,
                 "select": ".modal-dialog div.delete-prompt"
             },
-            "edit_clone_prompt": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog .modal-body"
-            },
             "delete_btn": {
                 "by": By.CSS_SELECTOR,
                 "select": ".modal-dialog .submit-btn"
@@ -79,22 +75,6 @@ class Table(BaseComponent):
                 "select": ".modal-dialog .cancel-btn"
             },
             "delete_close": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog button.close"
-            },
-            "edit_cancel": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog .cancel-btn"
-            },
-            "edit_close": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog button.close"
-            },
-            "clone_cancel": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog .cancel-btn"
-            },
-            "clone_close": {
                 "by": By.CSS_SELECTOR,
                 "select": ".modal-dialog button.close"
             },
@@ -277,7 +257,7 @@ class Table(BaseComponent):
         _row.find_element(*list(self.elements["action_values"].values()))
         return [self.get_clear_text(each_element) for each_element in self.get_elements("action_values")]
 
-    def edit_row(self, name, cancel=False, close=False, prompt_msg=False):
+    def edit_row(self, name):
         """
         Edit the specified row. It will open the edit form(entity). The opened entity should be interacted with instance of entity-class only.
             :param name: row_name of the table
@@ -285,37 +265,16 @@ class Table(BaseComponent):
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["edit"].values())).click()
         
-        self.wait_for("edit_clone_prompt")
-        if cancel:
-            self.edit_cancel.click()
-            self.wait_until("edit_cancel")
-            return True
-        elif close:
-            self.edit_close.click()
-            self.wait_until("edit_close")
-            return True   
-        else:
-            self.wait_for("app_listings")
+        time.sleep(self.wait_for_seconds)    
 
-    def clone_row(self, name, cancel=False, close=False, prompt_msg=False):
+    def clone_row(self, name):
         """
         Clone the specified row. It will open the edit form(entity). The opened entity should be interacted with instance of entity-class only.
             :param name: row_name of the table
         """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["clone"].values())).click()
-        
-        self.wait_for("edit_clone_prompt")
-        if cancel:
-            self.edit_cancel.click()
-            self.wait_until("edit_cancel")
-            return True
-        elif close:
-            self.edit_close.click()
-            self.wait_until("edit_close")
-            return True   
-        else:
-            self.wait_for("app_listings")   
+        time.sleep(self.wait_for_seconds)  
 
     def delete_row(self, name, cancel=False, close=False, prompt_msg=False):
         """
