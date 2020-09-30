@@ -273,7 +273,7 @@ class Table(BaseComponent):
         """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["clone"].values())).click()
-        time.sleep(self.wait_for_seconds)    
+        time.sleep(self.wait_for_seconds)     
 
     def delete_row(self, name, cancel=False, close=False, prompt_msg=False):
         """
