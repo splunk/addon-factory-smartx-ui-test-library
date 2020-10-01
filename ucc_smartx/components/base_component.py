@@ -1,5 +1,7 @@
 from builtins import object
+from collections import namedtuple
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import re
 
@@ -36,7 +38,7 @@ class BaseComponent(object):
             :param key: The key of the element mentioned in self.elements
         """
         element = self.elements[key]
-        return self._get_element(element['by'], element['select'])
+        return self._get_element(element.by, element.select)
 
     def get_elements(self, key):
         """
@@ -47,7 +49,7 @@ class BaseComponent(object):
         try:
             self.wait_for(key)
             element = self.elements[key]
-            return self._get_elements(element['by'], element['select'])
+            return self._get_elements(element.by, element.select)
         except:
             return list()
 
@@ -60,7 +62,7 @@ class BaseComponent(object):
             :param key: The key of the element mentioned in self.elements
         """   
         element = self.elements[key]
-        return self._get_child_element(element['by'], element['select'])
+        return self._get_child_element(element.by, element.select)
 
     def get_child_elements(self, key):
         """
@@ -73,7 +75,7 @@ class BaseComponent(object):
         try:
             self.wait_for(key)
             element = self.elements[key]
-            return self._get_child_elements(element['by'], element['select'])
+            return self._get_child_elements(element.by, element.select)
         except:
             return list()
 
@@ -82,7 +84,7 @@ class BaseComponent(object):
         get the locator of the element in a tuple form.
             :param key: The key of the element mentioned in self.elements
         """
-        return self.elements[key]["by"], self.elements[key]["select"]
+        return self.elements[key].by, self.elements[key].select
 
     def wait_for(self, key, msg=None):
         """
@@ -113,7 +115,7 @@ class BaseComponent(object):
     def __getattr__(self, key):
         """
         Makes the web-elements to be accessible directly.
-        - For example self.elements = {"textbox": {"by": ..., "select": ...}},
+        - For example self.elements = {"textbox": Selector(by=..., select=...),
             Access the element by doing self.textbox directly. 
         - It also has implicit wait while finding the element.  
           :param key: The key of the element mentioned in self.elements
@@ -157,3 +159,7 @@ class BaseComponent(object):
             :param select: The selector text of type mentioned in by.
         """
         return self.container.find_elements(by, select)
+
+Selector = namedtuple("Selector", ["by", "select"], defaults=[By.CSS_SELECTOR, None])
+# s = Selector()
+# s._asdict()

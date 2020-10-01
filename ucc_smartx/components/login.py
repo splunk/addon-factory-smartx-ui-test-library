@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 import time
-from .base_component import BaseComponent
+from .base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 
 class Login(BaseComponent):
@@ -8,7 +8,7 @@ class Login(BaseComponent):
     Component: Login
     To login into the Splunk instance
     """
-    def __init__(self, browser, container={"by": By.CSS_SELECTOR,"select":"form.loginForm"}):
+    def __init__(self, browser, container=Selector(select="form.loginForm")):
         """
             :param browser: The selenium webdriver
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
@@ -16,14 +16,8 @@ class Login(BaseComponent):
         super(Login, self).__init__(browser, container)
 
         self.elements = {
-            "username": {
-                "by": By.ID,
-                "select": "username"
-            },
-            "password": {
-                "by": By.ID,
-                "select": "password"
-            }
+            "username": Selector(by=By.ID, select="username"),
+            "password": Selector(by=By.ID, select="password")
         }
 
     def login(self, username, password):
