@@ -1,5 +1,5 @@
 import time
-from ..base_component import BaseComponent
+from ..base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -9,22 +9,10 @@ class Checkbox(BaseComponent):
     def __init__(self, browser, container, searchable=True):
         super(Checkbox, self).__init__(browser, container)
         self.elements.update({
-            "internal_container": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " div.select2-container"
-            },
-            "checkbox": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + ' .checkbox'
-            },
-            "checkbox_btn": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .checkbox a.btn"
-            },
-            "checkbox_enabled": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + ' .checkbox a.btn .icon-check'
-            }
+            "internal_container": Selector(select=container.select + " div.select2-container"),
+            "checkbox": Selector(select=container.select + ' .checkbox'),
+            "checkbox_btn": Selector(select=container.select + " .checkbox a.btn"),
+            "checkbox_enabled": Selector(select=container.select + ' .checkbox a.btn .icon-check')
         })
 
     

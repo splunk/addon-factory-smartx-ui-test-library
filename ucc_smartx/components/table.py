@@ -2,12 +2,13 @@ from __future__ import print_function
 from __future__ import absolute_import
 from builtins import str
 from builtins import zip
-from .base_component import BaseComponent
+from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import re
 import time
+import copy
 from selenium.common import exceptions
 
 class Table(BaseComponent):
@@ -26,98 +27,29 @@ class Table(BaseComponent):
         self.header_mapping = mapping
         
         self.elements.update({
-            "rows": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " tr.apps-table-tablerow"
-            },
-            "header": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " th"
-            },
-            "app_listings": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " tbody.app-listings"
-            },
-            "action_values": {
-                "by": By.CSS_SELECTOR,
-                "select":container["select"] + " td.col-actions a"
-            },
-            "col": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " td.col-{column}"
-            },
-            "col-number": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " td:nth-child({col_number})"
-            },
-            "edit": {
-                "by": By.CSS_SELECTOR,
-                "select": "a.edit"
-            },
-            "clone": {
-                "by": By.CSS_SELECTOR,
-                "select": "a.clone"
-            },
-            "delete": {
-                "by": By.CSS_SELECTOR,
-                "select": "a.delete"
-            },
-            "delete_prompt": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog div.delete-prompt"
-            },
-            "delete_btn": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog .submit-btn"
-            },
-            "delete_cancel": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog .cancel-btn"
-            },
-            "delete_close": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog button.close"
-            },
-            "delete_loading": {
-                "by": By.CSS_SELECTOR,
-                "select": ".modal-dialog .msg-loading"
-            },
-            "waitspinner": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " div.shared-waitspinner"
-            },
-            "count": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] +" .shared-collectioncount"
-            },
-            "filter": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " input.search-query"
-            },
-            "filter_clear": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " a.control-clear"
-            },
-            "more_info": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " td.expands"
-            },
-            "more_info_row": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " tr.expanded + tr"
-            },
-            "more_info_key": {
-                "by": By.CSS_SELECTOR,
-                "select":  "dt"
-            },
-            "more_info_value": {
-                "by": By.CSS_SELECTOR,
-                "select":  "dd"
-            },
-            "switch_to_page": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .pull-right li a"
-            }
+            "rows": Selector(select=container.select + " tr.apps-table-tablerow"),
+            "header": Selector(select=container.select + " th"),
+            "app_listings": Selector(select=container.select + " tbody.app-listings"),
+            "action_values": Selector(select=container.select + " td.col-actions a"),
+            "col": Selector(select=container.select + " td.col-{column}"),
+            "col-number": Selector(select=container.select + " td:nth-child({col_number})"),
+            "edit": Selector(select="a.edit"),
+            "clone": Selector(select="a.clone"),
+            "delete": Selector(select="a.delete"),
+            "delete_prompt": Selector(select=".modal-dialog div.delete-prompt"),
+            "delete_btn": Selector(select=".modal-dialog .submit-btn"),
+            "delete_cancel": Selector(select=".modal-dialog .cancel-btn"),
+            "delete_close": Selector(select=".modal-dialog button.close"),
+            "delete_loading": Selector(select=".modal-dialog .msg-loading"),
+            "waitspinner": Selector(select=container.select + " div.shared-waitspinner"),
+            "count": Selector(select=container.select +" .shared-collectioncount"),
+            "filter": Selector(select=container.select + " input.search-query"),
+            "filter_clear": Selector(select=container.select + " a.control-clear"),
+            "more_info": Selector(select=container.select + " td.expands"),
+            "more_info_row": Selector(select=container.select + " tr.expanded + tr"),
+            "more_info_key": Selector(select="dt"),
+            "more_info_value":Selector(select="dd"),
+            "switch_to_page": Selector(select=container.select + " .pull-right li a")
         })
         self.wait_for_seconds = wait_for_seconds
 
@@ -254,7 +186,7 @@ class Table(BaseComponent):
         :param name: The name of the row
         """
         _row = self._get_row(name)
-        _row.find_element(*list(self.elements["action_values"].values()))
+        _row.find_element(*list(self.elements["action_values"]._asdict().values()))
         return [self.get_clear_text(each_element) for each_element in self.get_elements("action_values")]
 
     def edit_row(self, name):
@@ -263,7 +195,7 @@ class Table(BaseComponent):
             :param name: row_name of the table
         """
         _row = self._get_row(name)
-        _row.find_element(*list(self.elements["edit"].values())).click()
+        _row.find_element(*list(self.elements["edit"]._asdict().values())).click()
         time.sleep(self.wait_for_seconds)    
 
     def clone_row(self, name):
@@ -272,7 +204,7 @@ class Table(BaseComponent):
             :param name: row_name of the table
         """
         _row = self._get_row(name)
-        _row.find_element(*list(self.elements["clone"].values())).click()
+        _row.find_element(*list(self.elements["clone"]._asdict().values())).click()
         time.sleep(self.wait_for_seconds)     
 
     def delete_row(self, name, cancel=False, close=False, prompt_msg=False):
@@ -285,7 +217,7 @@ class Table(BaseComponent):
 
         # Click on action
         _row = self._get_row(name)
-        _row.find_element(*list(self.elements["delete"].values())).click()        
+        _row.find_element(*list(self.elements["delete"]._asdict().values())).click()        
 
         self.wait_for("delete_prompt")
 
@@ -336,16 +268,19 @@ class Table(BaseComponent):
             find_by_col_number = isinstance(column, int)
 
         if not find_by_col_number:
-            col = self.elements["col"].copy()
-            col["select"] = col["select"].format(column=column.lower().replace(" ","_"))
+            col = copy.deepcopy(self.elements["col"])
+            print(type(col.select))
+            print(col.select)
+            col = col._replace(select=col.select.format(column=column.lower().replace(" ","_")))
+            print(col.select)
             self.wait_for("app_listings")
-            return self.get_clear_text(row.find_element(*list(col.values())))
+            return self.get_clear_text(row.find_element(*list(col._asdict().values())))
         else:
             # Int value 
-            col = self.elements["col-number"].copy()
-            col["select"] = col["select"].format(col_number=column)
+            col = copy.deepcopy(self.elements["col-number"])
+            col = col._replace(select=col.select.format(col_number=column))
             self.wait_for("app_listings")
-            return self.get_clear_text(row.find_element(*list(col.values())))
+            return self.get_clear_text(row.find_element(*list(col._asdict().values())))
             
     def _get_rows(self):
         """
@@ -375,14 +310,14 @@ class Table(BaseComponent):
 
     def get_more_info(self, name, cancel=True):
         _row = self._get_row(name)
-        _row.find_element(*list(self.elements["more_info"].values())).click()
-        keys = self.more_info_row.find_elements(*list(self.elements["more_info_key"].values()))
-        values = self.more_info_row.find_elements(*list(self.elements["more_info_value"].values()))        
+        _row.find_element(*list(self.elements["more_info"]._asdict().values())).click()
+        keys = self.more_info_row.find_elements(*list(self.elements["more_info_key"]._asdict().values()))
+        values = self.more_info_row.find_elements(*list(self.elements["more_info_value"]._asdict().values()))        
         more_info = {self.get_clear_text(key): self.get_clear_text(value) for key, value in zip(keys, values)}
 
         if cancel:
             _row = self._get_row(name)
-            _row.find_element(*list(self.elements["more_info"].values())).click()
+            _row.find_element(*list(self.elements["more_info"]._asdict().values())).click()
 
         return more_info
 

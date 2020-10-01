@@ -1,4 +1,4 @@
-from ..base_component import BaseComponent
+from ..base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 
 class Toggle(BaseComponent):
@@ -12,14 +12,8 @@ class Toggle(BaseComponent):
         """
         super(Toggle, self).__init__(browser, container)
         self.elements.update({
-        "toggle_btn": {
-            "by": By.CSS_SELECTOR,
-            "select": container["select"] + " .btn"
-        },
-        "selected": {
-            "by": By.CSS_SELECTOR,
-            "select": container["select"] + " .active"
-        }
+        "toggle_btn": Selector(select=container.select + " .btn"),
+        "selected": Selector(select=container.select + " .active")
     })
 
 

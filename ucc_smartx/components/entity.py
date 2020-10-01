@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from abc import abstractmethod
 from .controls.button import Button
 from .controls.message import Message
-from .base_component import BaseComponent
+from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
 import time
 
@@ -25,14 +25,14 @@ class Entity(BaseComponent):
         super(Entity, self).__init__(browser, container)
         
         # Controls
-        self.save_btn = Button(browser, {"by": By.CSS_SELECTOR, "select": container["select"] + " input.submit-btn" })
-        self.loading = Message(browser, {"by": By.CSS_SELECTOR,"select": container["select"] + " .msg-loading"})
+        self.save_btn = Button(browser, Selector(select=container.select + " input.submit-btn"))
+        self.loading = Message(browser,  Selector(select=container.select + " .msg-loading"))
         self.add_btn = add_btn
-        self.msg = Message(browser, {"by": By.CSS_SELECTOR,"select": " .msg-error"})
-        self.cancel_btn = Button(browser, {"by": By.CSS_SELECTOR, "select": container["select"] + " button.cancel-btn" })
-        self.close_btn = Button(browser, {"by": By.CSS_SELECTOR, "select": container["select"] + " button.close" })
+        self.msg = Message(browser,  Selector(select=" .msg-error"))
+        self.cancel_btn = Button(browser,  Selector(select=container.select + " button.cancel-btn" ))
+        self.close_btn = Button(browser,  Selector(select=container.select + " button.close" ))
         self.wait_for_seconds = wait_for
-        self.create_new_input = Dropdown(browser, {"by": By.CSS_SELECTOR, "select": " .add-button"})
+        self.create_new_input = Dropdown(browser,  Selector(select=" .add-button"))
         
 
     def get_error(self):

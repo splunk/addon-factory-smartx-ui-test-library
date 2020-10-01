@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from .base_component import BaseComponent
+from .base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import re
@@ -19,34 +19,13 @@ class Dropdown(BaseComponent):
         """
         super(Dropdown, self).__init__(browser, container)
         self.elements.update({
-            "currunt_value": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " a.dropdown-toggle .link-label"
-            },
-            "pagination_dropdown": {
-                "by": By.CSS_SELECTOR,
-                "select": " a.dropdown-toggle"
-            },
-            "type_dropdown": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " a.dropdown-toggle"
-            },
-            "page_list": {
-                "by": By.CSS_SELECTOR,
-                "select": ".dropdown-menu.open li a .link-label"
-            },
-            "type_list": {
-                "by": By.CSS_SELECTOR,
-                "select": ".dropdown-menu.open li a"
-            },
-            "add_input": {
-                "by": By.CSS_SELECTOR,
-                "select":" .add-button"
-            },
-            "type_filter_list":{
-                "by": By.CSS_SELECTOR,
-                "select": " .open li a"
-            }
+            "currunt_value": Selector(select=container.select + " a.dropdown-toggle .link-label"),
+            "pagination_dropdown": Selector(select=" a.dropdown-toggle"),
+            "type_dropdown": Selector(select=container.select + " a.dropdown-toggle"),
+            "page_list": Selector(select=".dropdown-menu.open li a .link-label"),
+            "type_list": Selector(select=".dropdown-menu.open li a"),
+            "add_input": Selector(select=" .add-button"),
+            "type_filter_list":Selector(select=" .open li a")
         })
 
         self.wait_for_seconds = wait_for_seconds
