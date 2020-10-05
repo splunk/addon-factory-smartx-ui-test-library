@@ -39,3 +39,39 @@ def backend_retry(retry_count):
                     raise(last_exc)
         return retry_method
     return backend_retry_decorator
+
+def verify_dict_equal(actual=dict(), expected=dict(), ignore_fields=list()):
+        """
+        :param: actual dict
+        :param: expected dict
+        :param ignore_fields dict, ignore_fields in actual will be ignored
+        Example:
+        actual = {"1": [a,b,c], "2": "hello","3" : {"4": "value"} }
+        expected = {"2": "hello","3" : {"4": "value"} }
+        ignore_fields = ["1"]
+        return True
+        """
+        if ignore_fields:
+            for field in ignore_fields:
+                if field in actual:
+                    del actual[field]
+                if field in expected:
+                    del expected[field]
+
+        if sorted(actual.keys()) != sorted(expected.keys()):
+            return False
+        elif sorted(actual.keys()) == sorted(expected.keys()):
+            for key in actual.keys():
+                if type(actual[key]) != type(expected[key]):
+                    return False
+                elif type(actual[key]) == type(expected[key]) == list:
+                    if sorted(actual[key]) != sorted(expected[key]):
+                        return False
+                elif (type(actual[key]) == type(expected[key]) == int) \
+                        or (type(actual[key]) == type(expected[key]) == str) \
+                        or (type(actual[key]) == type(expected[key]) == unicode):
+                    if actual[key] != expected[key]:
+                        return False
+                elif type(actual[key]) == type(expected[key]) == dict:
+                    verify_dict_equal(actual[key], expected[key])
+        return True
