@@ -68,8 +68,7 @@ def verify_dict_equal(actual=dict(), expected=dict(), ignore_fields=list()):
                     if sorted(actual[key]) != sorted(expected[key]):
                         return False
                 elif (type(actual[key]) == type(expected[key]) == int) \
-                        or (type(actual[key]) == type(expected[key]) == str) \
-                        or (type(actual[key]) == type(expected[key]) == unicode):
+                        or (type(actual[key]) == type(expected[key]) == str):
                     if actual[key] != expected[key]:
                         return False
                 elif type(actual[key]) == type(expected[key]) == dict:

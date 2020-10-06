@@ -1,4 +1,5 @@
 
+from ..components.base_component import Selector
 from ..components.tabs import Tab
 from ..components.entity import Entity
 from ..components.controls.single_select import SingleSelect
@@ -19,7 +20,7 @@ class Proxy(Entity):
             :param urls: Splunk web & management url. {"web": , "mgmt": }
             :param session_key: session key to access the rest endpoints
         """
-        entity_container = {"by": By.CSS_SELECTOR, "select": "#proxy-tab"}
+        entity_container = Selector(select="#proxy-tab")
         super(Proxy, self).__init__(ucc_smartx_configs.browser, entity_container)
         self.splunk_web_url = ucc_smartx_configs.splunk_web_url
         self.splunk_mgmt_url = ucc_smartx_configs.splunk_mgmt_url
@@ -32,16 +33,16 @@ class Proxy(Entity):
 
 
         # Controls
-        self.host = TextBox(ucc_smartx_configs.browser, {"by": By.NAME, "select": "proxy_url"})
-        self.port = TextBox(ucc_smartx_configs.browser, {"by": By.NAME, "select": "proxy_port"})
-        self.username = TextBox(ucc_smartx_configs.browser, {"by": By.NAME, "select": "proxy_username"})
-        self.password = TextBox(ucc_smartx_configs.browser, {"by": By.NAME, "select": "proxy_password"}, encrypted=True)
-        self.proxy_enable = Checkbox(ucc_smartx_configs.browser, {"by": By.CSS_SELECTOR, "select": " .proxy_enabled" })
-        self.dns_enable = Checkbox(ucc_smartx_configs.browser, {"by": By.CSS_SELECTOR, "select": " .proxy_rdns" })
-        
+        self.host = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_url"))
+        self.port = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_port"))
+        self.username = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_username"))
+        self.password = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_password"), encrypted=True)
+        self.proxy_enable = Checkbox(ucc_smartx_configs.browser, Selector(select=" .proxy_enabled" ))
+        self.dns_enable = Checkbox(ucc_smartx_configs.browser, Selector(select=" .proxy_rdns" ))
+
         # Components
         self.type = SingleSelect(
-            ucc_smartx_configs.browser, {"by": By.CSS_SELECTOR, "select": ".proxy_type"})
+            ucc_smartx_configs.browser, Selector(select=".proxy_type"))
        
         self.backend_conf = SingleBackendConf(self._get_proxy_endpoint(), ucc_smartx_configs.session_key)
 

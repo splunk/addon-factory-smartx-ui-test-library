@@ -16,7 +16,7 @@ class Logging(Entity):
             :param urls: Splunk web & management url. {"web": , "mgmt": }
             :param session_key: session key to access the rest endpoints
         """
-        entity_container = {"by": By.CSS_SELECTOR, "select": "#logging-tab"}
+        entity_container = Selector(select= "#logging-tab")
         super(Logging, self).__init__(ucc_smartx_configs.browser, entity_container)
         self.splunk_web_url = ucc_smartx_configs.splunk_web_url
         self.splunk_mgmt_url = ucc_smartx_configs.splunk_mgmt_url
@@ -29,7 +29,7 @@ class Logging(Entity):
 
         # Components
         self.log_level = SingleSelect(
-            ucc_smartx_configs.browser, {"by": By.CSS_SELECTOR, "select": ".loglevel"})
+            ucc_smartx_configs.browser, Selector(select=".loglevel"))
         self.backend_conf = SingleBackendConf(
             self._get_logging_url(), ucc_smartx_configs.session_key)
 
