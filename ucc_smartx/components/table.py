@@ -144,6 +144,20 @@ class Table(BaseComponent):
         except:
             print("Waitspinner did not appear")
 
+    def wait_for_rows_to_appear(self, row_count):
+        """
+        Wait for the table to load row_count rows
+            :param row_count: number of row_count to wait for. 
+        """
+        def _wait_for_rows_to_appear():
+            with open("jay.txt", "a") as fff:
+                fff.write("\n Inside the condition")
+
+            return list(self._get_rows()) == row_count
+        with open("jay.txt", "a") as fff:
+            fff.write("\n before wait_for")
+        self.wait_for(_wait_for_rows_to_appear, msg="Expected table to have {} ")
+
     def get_table(self):
         """
         Get whole table in dictionary form. The row_name will will be the key and all header:values will be it's value.
@@ -153,7 +167,6 @@ class Table(BaseComponent):
         table = dict()
         headers = list(self.get_headers())
 
-        time.sleep(5)
         for each_row in self._get_rows():
             row_name = self._get_column_value(each_row, "name")
             table[row_name] = dict()
