@@ -28,23 +28,29 @@ class Entity(BaseComponent):
         self.save_btn = Button(browser, Selector(select=container.select + " input.submit-btn"))
         self.loading = Message(browser,  Selector(select=container.select + " .msg-loading"))
         self.add_btn = add_btn
-        self.msg = Message(browser,  Selector(select=" .msg-error"))
+        self.msg_error = Message(browser,  Selector(select=" .msg-error"))
+        self.msg_warning = Message(browser,  Selector(select=" .msg-warning"))
         self.cancel_btn = Button(browser,  Selector(select=container.select + " button.cancel-btn" ))
         self.close_btn = Button(browser,  Selector(select=container.select + " button.close" ))
         self.wait_for_seconds = wait_for
         self.create_new_input = Dropdown(browser,  Selector(select=" .add-button"))
         
+    def get_warning(self):
+        """
+        Get the error message displayed while saving the configuration
+        """
+        return self.msg_warning.get_msg()
 
     def get_error(self):
         """
         Get the error message displayed while saving the configuration
         """
-        return self.msg.get_msg()
+        return self.msg_error.get_msg()
 
     def close_error(self):
-        return self.msg.close_msg()
+        return self.msg_error.close_msg()
 
-    def save(self, expect_error=False):
+    def save(self, expect_error=False, expect_warning=False):
         """
         Save the configuration
             :param expect_error: if True, the error message will be fetched. Otherwise, the function will return True if the configuration was saved properly
@@ -52,6 +58,8 @@ class Entity(BaseComponent):
         self.save_btn.click()
         if expect_error:
             return self.get_error()
+        elif expect_warning:
+            return self.get_warning()
         else:
             self.loading.wait_loading()
             return True
