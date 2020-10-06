@@ -12,9 +12,9 @@ class Logging(Entity):
 
     def __init__(self, ucc_smartx_configs, ta_name, ta_conf=""):
         """
-            :param browser: The selenium webdriver
-            :param urls: Splunk web & management url. {"web": , "mgmt": }
-            :param session_key: session key to access the rest endpoints
+            :param ucc_smartx_configs: Fixture with selenium driver, urls(web, mgmt) and session key
+            :param ta_name: Name of TA
+            :param ta_conf: Name of conf file
         """
         entity_container = Selector(select= "#logging-tab")
         super(Logging, self).__init__(ucc_smartx_configs.browser, entity_container)
