@@ -14,7 +14,7 @@ import time
 
 class Proxy(Entity):
 
-    def __init__(self, ucc_smartx_configs, ta_name):
+    def __init__(self, ucc_smartx_configs, ta_name, ta_conf=""):
         """
             :param browser: The selenium webdriver
             :param urls: Splunk web & management url. {"web": , "mgmt": }
@@ -25,6 +25,9 @@ class Proxy(Entity):
         self.splunk_web_url = ucc_smartx_configs.splunk_web_url
         self.splunk_mgmt_url = ucc_smartx_configs.splunk_mgmt_url
         self.ta_name = ta_name
+        self.ta_conf = ta_conf
+        if self.ta_conf == "":
+            self.ta_conf = "{}_settings".format(self.ta_name.lower())
         self.open()
 
 
@@ -56,4 +59,4 @@ class Proxy(Entity):
         """
         get rest endpoint for the configuration
         """
-        return '{}/servicesNS/nobody/{}/configs/conf-{}_settings/proxy'.format(self.splunk_mgmt_url, self.ta_name, self.ta_name.lower())
+        return '{}/servicesNS/nobody/{}/configs/conf-{}/proxy'.format(self.splunk_mgmt_url, self.ta_name, self.ta_conf)

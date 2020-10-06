@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from ..base_component import BaseComponent
+from ..base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 from .button import Button
 
@@ -14,15 +14,8 @@ class Message(BaseComponent):
         """
         super(Message, self).__init__(browser, container)  
         self.elements.update({
-            "msg_text": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .msg-text"
-            },
-            "msg_close":{
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .close"
-            }
-
+            "msg_text": Selector(select=container.select + " .msg-text"),
+            "msg_close": Selector(select=container.select + " .close")
         })
 
 

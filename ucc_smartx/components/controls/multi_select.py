@@ -1,5 +1,5 @@
 import time
-from ..base_component import BaseComponent
+from ..base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -17,34 +17,13 @@ class MultiSelect(BaseComponent):
         super(MultiSelect, self).__init__(browser, container)
 
         self.elements.update({
-            "internal_container": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " div.select2-container"
-            },
-            "dropdown": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .select2-choices"
-            },
-            "selected": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .select2-search-choice"
-            },
-            "deselect": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .select2-search-choice a"
-            },
-            "input": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] +  " .select2-input"                
-            },
-            "hidden_values": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .select2-offscreen option"                
-            },
-            "values": {
-                "by": By.CSS_SELECTOR,
-                "select": '.select2-drop-active[style*="display: block;"] li.select2-result-selectable'
-            }
+            "internal_container": Selector(select=container.select + " div.select2-container"),
+            "dropdown": Selector(select=container.select + " .select2-choices"),
+            "selected": Selector(select=container.select + " .select2-search-choice"),
+            "deselect": Selector(select=container.select + " .select2-search-choice a"),
+            "input": Selector(select=container.select +  " .select2-input"                ),
+            "hidden_values": Selector(select=container.select + " .select2-offscreen option"                ),
+            "values": Selector(select='.select2-drop-active[style*="display: block;"] li.select2-result-selectable')
         })
 
     def search(self, value):
@@ -91,11 +70,18 @@ class MultiSelect(BaseComponent):
         """
         for each in self.get_child_elements('selected'):
             if each.text.strip().lower() == value.lower():
-                each.find_element(*list(self.elements["deselect"].values())).click()
+                each.find_element(*list(self.elements["deselect"]._asdict().values())).click()
                 self.wait_for("internal_container")
                 return True
         else:
             raise ValueError("{} not found in select list".format(value))
+
+    def deselect_all(self):
+        """
+        Remove all items from selected list.
+        """
+        for each in self.get_values():
+            self.deselect(each)
 
     def get_values(self):
         """

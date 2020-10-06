@@ -1,5 +1,5 @@
 import time
-from ..base_component import BaseComponent
+from ..base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -18,36 +18,17 @@ class SingleSelect(BaseComponent):
         super(SingleSelect, self).__init__(browser, container)
         self.searchable = searchable
         self.elements.update({
-            "internal_container": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " div.select2-container"
-            },
-            "dropdown": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .select2-choice"
-            },
-            "selected": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + " .select2-choice:not(.select2-default)"
-            },
-            "values": {
-                "by": By.CSS_SELECTOR,
-                "select": '.select2-drop-active[style*="display: block;"] .select2-result-selectable'
-            },
-            "cancel_selected": {
-                "by": By.CSS_SELECTOR,
-                "select": container["select"] + ' .select2-search-choice-close'
-            }
-            
+            "internal_container": Selector(select=container.select + " div.select2-container"),
+            "dropdown": Selector(select=container.select + " .select2-choice"),
+            "selected": Selector(select=container.select + " .select2-choice:not(.select2-default)"),
+            "values": Selector(select='.select2-drop-active[style*="display: block;"] .select2-result-selectable'),
+            "cancel_selected":Selector(select=container.select + ' .select2-search-choice-close')
             # To update
         })
 
         if searchable:
             self.elements.update({
-                "input": {
-                    "by": By.CSS_SELECTOR,
-                    "select": '.select2-with-searchbox.select2-drop-active[style*="display: block;"] .select2-input'                
-                }
+                "input": Selector(select='.select2-with-searchbox.select2-drop-active[style*="display: block;"] .select2-input')
             })
 
     def select(self, value, open_dropdown=True):

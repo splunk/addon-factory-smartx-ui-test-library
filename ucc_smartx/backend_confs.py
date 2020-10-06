@@ -44,6 +44,11 @@ class BackendConf(object):
         return res.json()
 
     def rest_call_delete(self, url):
+        """
+        rest call to the splunk rest-endpoint
+            :param url: url to call
+            :returns : json result of the request
+        """
         res = requests.delete(url, headers=self.header, verify=False)
         assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
 
@@ -76,6 +81,7 @@ class ListBackendConf(BackendConf):
     def get_all_stanzas(self, query=None):
         """
         Get list of all stanzas of the configuration
+            :query: query params for filter the stanza
             :returns : dictionary {stanza: {param: value, ... }, ... }
         """
         url = self.url + "?count=0&output_mode=json"
@@ -108,11 +114,21 @@ class ListBackendConf(BackendConf):
         return self.rest_call_post(url, kwargs)
 
     def delete_all_stanzas(self, query=None):
+        """
+        Delete all stanza from the configuration.
+            :query: query params for filter the stanza
+            :returns : json result of the request
+        """
         all_stanzas = list(self.get_all_stanzas(query).keys())
         for stanza in all_stanzas:
             self.delete_stanza(stanza)
 
     def delete_stanza(self, stanza):
+        """
+        Delete a specific stanza of the configuration.
+            :param stanza: stanza to delete
+            :returns : json result of the request
+        """
         url = "{}/{}".format(self.url, urllib.parse.quote_plus(stanza))
         self.rest_call_delete(url)
 
