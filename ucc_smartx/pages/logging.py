@@ -1,4 +1,5 @@
 
+from ..components.base_component import Selector
 from ..components.tabs import Tab
 from ..components.entity import Entity
 from ..components.controls.single_select import SingleSelect
@@ -8,21 +9,26 @@ import time
 
 
 class Logging(Entity):
-    def __init__(self, ucc_smartx_configs):
+
+    def __init__(self, ucc_smartx_configs, ta_name, ta_conf=""):
         """
-            :param browser: The selenium webdriver
-            :param urls: Splunk web & management url. {"web": , "mgmt": }
-            :param session_key: session key to access the rest endpoints
+            :param ucc_smartx_configs: Fixture with selenium driver, urls(web, mgmt) and session key
+            :param ta_name: Name of TA
+            :param ta_conf: Name of conf file
         """
-        entity_container = {"by": By.CSS_SELECTOR, "select": "#logging-tab"}
+        entity_container = Selector(select= "#logging-tab")
         super(Logging, self).__init__(ucc_smartx_configs.browser, entity_container)
         self.splunk_web_url = ucc_smartx_configs.splunk_web_url
         self.splunk_mgmt_url = ucc_smartx_configs.splunk_mgmt_url
+        self.ta_name = ta_name
+        self.ta_conf = ta_conf
+        if self.ta_conf == "":
+            self.ta_conf = "{}_settings".format(self.ta_name.lower())
         self.open()
 
         # Components
         self.log_level = SingleSelect(
-            ucc_smartx_configs.browser, {"by": By.CSS_SELECTOR, "select": ".loglevel"})
+            ucc_smartx_configs.browser, Selector(select=".loglevel"))
         self.backend_conf = SingleBackendConf(
             self._get_logging_url(), ucc_smartx_configs.session_key)
 
@@ -31,7 +37,7 @@ class Logging(Entity):
         Open the required page. Page(super) class opens the page by default.
         """
         self.browser.get(
-            '{}/en-US/app/Splunk_TA_microsoft-cloudservices/configuration'.format(self.splunk_web_url))
+            '{}/en-US/app/{}/configuration'.format(self.splunk_web_url, self.ta_name))
         tab = Tab(self.browser)
         tab.open_tab("logging")
 
@@ -39,4 +45,4 @@ class Logging(Entity):
         """
         get rest endpoint for the configuration
         """
-        return '{}/servicesNS/nobody/Splunk_TA_microsoft-cloudservices/configs/conf-splunk_ta_mscs_settings/logging'.format(self.splunk_mgmt_url)
+        return '{}/servicesNS/nobody/{}/configs/conf-{}/logging'.format(self.splunk_mgmt_url, self.ta_name, self.ta_conf)

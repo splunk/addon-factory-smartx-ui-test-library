@@ -76,6 +76,13 @@ class MultiSelect(BaseComponent):
         else:
             raise ValueError("{} not found in select list".format(value))
 
+    def deselect_all(self):
+        """
+        Remove all items from selected list.
+        """
+        for each in self.get_values():
+            self.deselect(each)
+
     def get_values(self):
         """
         get list selected values

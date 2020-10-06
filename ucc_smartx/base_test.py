@@ -178,7 +178,6 @@ class SeleniumHelper(object):
 
     def login_to_splunk(self, *cred):
         try:
-            print(" login_to_splunk : {}".format(self))
             login_page = LoginPage(self)
             login_page.login.login(*cred)
         except:
@@ -187,7 +186,6 @@ class SeleniumHelper(object):
 
     @backend_retry(3)
     def start_session(self, username, password):
-        print("JAY: management url: " + self.splunk_mgmt_url)
         res = requests.post(self.splunk_mgmt_url + '/services/auth/login?output_mode=json',
                             data={'username': username, 'password': password }, verify=False)
         try:

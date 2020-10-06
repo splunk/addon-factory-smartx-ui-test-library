@@ -124,7 +124,7 @@ class ListBackendConf(BackendConf):
             self.delete_stanza(stanza)
 
     def delete_stanza(self, stanza):
-         """
+        """
         Delete a specific stanza of the configuration.
             :param stanza: stanza to delete
             :returns : json result of the request
@@ -157,4 +157,8 @@ class SingleBackendConf(BackendConf):
         """
         stanza_map = self.get_stanza()
         return stanza_map[param]
-        
+    
+    def update_parameters(self, kwargs):
+        kwargs['output_mode'] = 'json'
+        return self.rest_call_post(self.url, kwargs)
+
