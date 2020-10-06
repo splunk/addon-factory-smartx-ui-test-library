@@ -269,10 +269,7 @@ class Table(BaseComponent):
 
         if not find_by_col_number:
             col = copy.deepcopy(self.elements["col"])
-            print(type(col.select))
-            print(col.select)
             col = col._replace(select=col.select.format(column=column.lower().replace(" ","_")))
-            print(col.select)
             self.wait_for("app_listings")
             return self.get_clear_text(row.find_element(*list(col._asdict().values())))
         else:
