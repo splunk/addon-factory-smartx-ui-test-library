@@ -86,21 +86,25 @@ class BaseComponent(object):
         """
         return self.elements[key].by, self.elements[key].select
 
-    def wait_for(self, key, msg=None):
+    def wait_for(self, key, msg=None, timeout=None):
         """
         if key in element, Wait for an web element to be visible. Raises TimeoutException if the element not found.
         if key is a condition, wait for the condition to be true. 
             :param key: The key of the element mentioned in self.elements
             :param msg: The error-msg which should be mentioned in the TimeoutException
         """
+        if timeout:
+            wait = WebDriverWait(self.browser, timeout)
+        else:
+            wait = self.wait
         if key in self.elements:
             if not msg:
                 msg = "{} element is not present".format(key)
-            return self.wait.until(EC.presence_of_element_located(self.get_tuple(key)), msg)
+            return wait.until(EC.presence_of_element_located(self.get_tuple(key)), msg)
         else:
             if not msg:
                 msg = "{}: Timeout while waiting for the condition to be true".format(key)
-            return self.wait.until(key, msg)
+            return wait.until(key, msg)
 
     def wait_until(self, key, msg=None):
         """
@@ -167,5 +171,3 @@ class BaseComponent(object):
         return self.container.find_elements(by, select)
 
 Selector = namedtuple("Selector", ["by", "select"], defaults=[By.CSS_SELECTOR, None])
-# s = Selector()
-# s._asdict()
