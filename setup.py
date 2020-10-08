@@ -14,7 +14,8 @@ setup(
         "selenium",
         "future~=0.17.1",
         "configparser",
-        "urllib3~=1.21.1"
+        "urllib3~=1.21.1",
+        "webdriver_manager"
     ],
     extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},
     setup_requires=["pytest-runner"],

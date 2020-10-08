@@ -49,6 +49,12 @@ def pytest_addoption(parser):
         help="The number of times the browser should try to connect to the SeleniumBrowser"
     )
 
+    group.addoption(
+        "--headless", 
+        action="store_true", 
+        help="Run the test case on headless mode"
+    )
+
 
 
 
@@ -78,18 +84,24 @@ def ucc_smartx_configs(request, splunk, splunk_web_uri, splunk_rest_uri):
         LOGGER.debug("--setup-retry-count={}".format(retry_count))
 
 
+    if request.config.getoption("--headless"):
+        headless_run = True
+        LOGGER.debug("--headless")
+    else:
+        headless_run = False
+
     test_case = driver + "_" + request.node.nodeid.split("::")[-1]
     splunk_rest_session, splunk_rest_uri = splunk_rest_uri
 
-    LOGGER.info("Calling SeleniumHelper for test_case={test_case} with:: browser={driver}, web_url={web_url}, mgmt_url={mgmt_url}, debug={local_run}, cred=({username},{password})".format(
-        driver=driver, web_url=splunk_web_uri, mgmt_url=splunk_rest_uri, local_run=local_run, username=splunk["username"], password=splunk["password"], test_case=test_case
+    LOGGER.info("Calling SeleniumHelper for test_case={test_case} with:: browser={driver}, web_url={web_url}, mgmt_url={mgmt_url}, debug={local_run}, cred=({username},{password}, headless={headless_run})".format(
+        driver=driver, web_url=splunk_web_uri, mgmt_url=splunk_rest_uri, local_run=local_run, username=splunk["username"], password=splunk["password"], headless_run=headless_run, test_case=test_case
     ))
 
     # 3 Try to configure selenium & Login to splunk instance
     for try_number in range(retry_count):
         last_exc = Exception()
         try:
-            helper = SeleniumHelper(driver, driver_version, splunk_web_uri, splunk_rest_uri, debug=local_run, cred=(splunk["username"], splunk["password"]), test_case=test_case)
+            helper = SeleniumHelper(driver, driver_version, splunk_web_uri, splunk_rest_uri, debug=local_run, cred=(splunk["username"], splunk["password"]), headless=headless_run, test_case=test_case)
             request.node.selenium_helper = helper
             break
         except Exception as e:
