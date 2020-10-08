@@ -18,7 +18,7 @@ class LearnMore(BaseComponent):
         Redirects the browser object to the link provided by the container and returns the URL
         '''
         self.container.click()
-        time.sleep(10)
+        self.wait_for_tab()
         # For Safari window_handles works opposite as compared to Firefox and Chrome 
         # In Safari window_handles[1] represents the current window.
         # And in other browsers window_handels[0] represents the current window.
@@ -26,4 +26,21 @@ class LearnMore(BaseComponent):
             self.browser.switch_to.window(self.browser.window_handles[0])
         else:
             self.browser.switch_to.window(self.browser.window_handles[1])
+        self.wait_for_header()
         return self.browser.current_url
+
+    def wait_for_tab(self):
+        """
+        Wait for redirect page title to load.
+        """
+        def _wait_for_tab(driver):
+            return len(self.browser.window_handles) > 1
+        self.wait_for(_wait_for_tab, msg="Redirect page didn't open")
+
+    def wait_for_header(self):
+        """
+        Wait for header 
+        """
+        def _wait_for_header(driver):
+            return driver.find_element_by_tag_name("header")
+        self.wait_for(_wait_for_header, msg="Redirect page didn't open")

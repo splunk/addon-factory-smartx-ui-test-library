@@ -139,10 +139,19 @@ class Table(BaseComponent):
         There exist a loadspinner when sorting/filter has been applied. This method will wait until the spinner is dissapeared 
         """
         try:
-            self.wait_for("waitspinner")
+            self.wait_for("waitspinner", timeout=5)
             self.wait_until("waitspinner")
         except:
             print("Waitspinner did not appear")
+
+    def wait_for_rows_to_appear(self, row_count):
+        """
+        Wait for the table to load row_count rows
+            :param row_count: number of row_count to wait for. 
+        """
+        def _wait_for_rows_to_appear(driver):
+            return self.get_row_count() == row_count
+        self.wait_for(_wait_for_rows_to_appear, msg="Expected table to have {} rows".format(row_count))
 
     def get_table(self):
         """
@@ -153,7 +162,6 @@ class Table(BaseComponent):
         table = dict()
         headers = list(self.get_headers())
 
-        time.sleep(5)
         for each_row in self._get_rows():
             row_name = self._get_column_value(each_row, "name")
             table[row_name] = dict()
@@ -196,7 +204,6 @@ class Table(BaseComponent):
         """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["edit"]._asdict().values())).click()
-        time.sleep(self.wait_for_seconds)    
 
     def clone_row(self, name):
         """
@@ -205,7 +212,6 @@ class Table(BaseComponent):
         """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["clone"]._asdict().values())).click()
-        time.sleep(self.wait_for_seconds)     
 
     def delete_row(self, name, cancel=False, close=False, prompt_msg=False):
         """
@@ -244,7 +250,6 @@ class Table(BaseComponent):
         """
         self.filter.clear()
         self.filter.send_keys(filter_query)
-        time.sleep(1)
         self._wait_for_loadspinner()
         return self.get_column_values("name")
 
@@ -253,7 +258,6 @@ class Table(BaseComponent):
         Clean the filter textbox
         """
         self.filter.clear()
-        time.sleep(1)
         self._wait_for_loadspinner()
 
     def _get_column_value(self, row, column):

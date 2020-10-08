@@ -15,7 +15,7 @@ class Entity(BaseComponent):
     The instance of the class holds all the controls in the entity and provides the generic interaction that can be done with the entity
     """
     
-    def __init__(self, browser, container, add_btn=None, wait_for=0):
+    def __init__(self, browser, container, add_btn=None):
         """
             :param browser: The selenium webdriver
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
@@ -31,7 +31,6 @@ class Entity(BaseComponent):
         self.msg = Message(browser,  Selector(select=" .msg-error"))
         self.cancel_btn = Button(browser,  Selector(select=container.select + " button.cancel-btn" ))
         self.close_btn = Button(browser,  Selector(select=container.select + " button.close" ))
-        self.wait_for_seconds = wait_for
         self.create_new_input = Dropdown(browser,  Selector(select=" .add-button"))
         
 
@@ -78,7 +77,6 @@ class Entity(BaseComponent):
         """
         self.add_btn.click()
         self.save_btn.wait_to_display()
-        time.sleep(self.wait_for_seconds)
         return True
 
 
