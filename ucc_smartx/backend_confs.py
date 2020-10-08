@@ -161,4 +161,3 @@ class SingleBackendConf(BackendConf):
     def update_parameters(self, kwargs):
         kwargs['output_mode'] = 'json'
         return self.rest_call_post(self.url, kwargs)
-

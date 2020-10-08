@@ -226,7 +226,6 @@ class Table(BaseComponent):
         _row.find_element(*list(self.elements["delete"]._asdict().values())).click()        
 
         self.wait_for("delete_prompt")
-
         if cancel:
             self.delete_cancel.click()
             self.wait_until("delete_cancel")
