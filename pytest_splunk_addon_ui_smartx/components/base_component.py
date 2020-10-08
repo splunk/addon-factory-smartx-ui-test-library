@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import re
 
+DEFAULT_TIMEOUT = 20
+
 class BaseComponent(object):
     """
     Purpose:
@@ -25,7 +27,7 @@ class BaseComponent(object):
         """   
         self.elements = dict()
         self.browser = browser
-        self.wait = WebDriverWait(self.browser, 120)
+        self.wait = WebDriverWait(self.browser, DEFAULT_TIMEOUT)
         self.elements["container"] = container
 
     def get_clear_text(self, web_element):

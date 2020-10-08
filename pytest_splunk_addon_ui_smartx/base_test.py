@@ -3,6 +3,8 @@ from builtins import str
 from builtins import range
 from builtins import object
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -24,7 +26,7 @@ class SeleniumHelper(object):
     The helper class provides the Remote Browser
     """
 
-    def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), test_case=None):
+    def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), headless=False, test_case=None):
         self.splunk_web_url = splunk_web_url
         self.splunk_mgmt_url = splunk_mgmt_url
         self.cred = cred
@@ -36,7 +38,7 @@ class SeleniumHelper(object):
         try:
             if browser == "firefox":
                 if debug:
-                    self.browser = webdriver.Firefox()
+                    self.browser = webdriver.Firefox(executable_path=GeckoDriverManager().install(), firefox_options=self.get_local_firefox_opts(headless))
                 else:
                     self.browser = webdriver.Remote(
                     command_executor='https://ondemand.saucelabs.com:443/wd/hub',
@@ -44,7 +46,7 @@ class SeleniumHelper(object):
 
             elif browser == "chrome":
                 if debug:
-                    self.browser = webdriver.Chrome()
+                    self.browser = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=self.get_local_chrome_opts(headless))
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
@@ -145,6 +147,20 @@ class SeleniumHelper(object):
         capabilities['requireWindowFocus'] = True
         capabilities['nativeEvent'] = False
         return capabilities
+        
+    def get_local_chrome_opts(self, headless_run):
+        chrome_opts = webdriver.ChromeOptions()
+        if headless_run:
+            chrome_opts.add_argument('--headless')
+            chrome_opts.add_argument("--window-size=1280,768")
+        return chrome_opts
+
+    def get_local_firefox_opts(self, headless_run):
+        firefox_opts = webdriver.FirefoxOptions()
+        if headless_run:
+            firefox_opts.add_argument('--headless')
+            firefox_opts.add_argument("--window-size=1280,768")
+        return firefox_opts
 
     def get_sauce_firefox_opts(self, browser_version):
         firefox_opts = {
@@ -188,6 +204,7 @@ class SeleniumHelper(object):
     def start_session(self, username, password):
         res = requests.post(self.splunk_mgmt_url + '/services/auth/login?output_mode=json',
                             data={'username': username, 'password': password }, verify=False)
+
         try:
             res = res.json()
         except:
