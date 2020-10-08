@@ -64,7 +64,7 @@ class SingleSelect(BaseComponent):
         """
 
         self.search(value)
-        time.sleep(1)
+        self.wait_for_search_list()
         searched_values = list(self._list_visible_values())
         self.input.send_keys(Keys.ESCAPE)
         self.wait_for("container")
@@ -122,5 +122,18 @@ class SingleSelect(BaseComponent):
         '''
         return len(list(self.list_of_values()))
 
+    def wait_for_values(self):
+        """
+        Wait for dynamic values to load in SingleSelect
+        """
+        def _wait_for_values(driver):
+            return self.get_list_count() > 0
+        self.wait_for(_wait_for_values, msg="No values found in SingleSelect")
 
-    
+    def wait_for_search_list(self):
+        """
+        Wait for SingleSelect search to populate
+        """
+        def _wait_for_search_list(driver):
+            return len(list(self._list_visible_values())) > 1
+        self.wait_for(_wait_for_search_list, msg="No values found in SingleSelect search")

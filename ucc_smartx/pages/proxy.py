@@ -14,11 +14,11 @@ import time
 
 class Proxy(Entity):
 
-    def __init__(self, ucc_smartx_configs, ta_name, ta_conf = ""):
+    def __init__(self, ucc_smartx_configs, ta_name, ta_conf=""):
         """
-            :param browser: The selenium webdriver
-            :param urls: Splunk web & management url. {"web": , "mgmt": }
-            :param session_key: session key to access the rest endpoints
+            :param ucc_smartx_configs: Fixture with selenium driver, urls(web, mgmt) and session key
+            :param ta_name: Name of TA
+            :param ta_conf: Name of conf file
         """
         entity_container = Selector(select="#proxy-tab")
         super(Proxy, self).__init__(ucc_smartx_configs.browser, entity_container)
@@ -27,8 +27,7 @@ class Proxy(Entity):
         self.ta_name = ta_name
         self.ta_conf = ta_conf
         if self.ta_conf == "":
-            self.ta_conf = "conf-{}_settings".format(self.ta_name.lower())
-
+            self.ta_conf = "{}_settings".format(self.ta_name.lower())
         self.open()
 
 
@@ -60,4 +59,4 @@ class Proxy(Entity):
         """
         get rest endpoint for the configuration
         """
-        return '{}/servicesNS/nobody/{}/configs/{}/proxy'.format(self.splunk_mgmt_url, self.ta_name, self.ta_conf)
+        return '{}/servicesNS/nobody/{}/configs/conf-{}/proxy'.format(self.splunk_mgmt_url, self.ta_name, self.ta_conf)

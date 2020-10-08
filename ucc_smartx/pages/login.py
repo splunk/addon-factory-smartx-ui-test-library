@@ -8,7 +8,6 @@ class LoginPage(Page):
     Page: Login page
     """
     def __init__(self, ucc_smartx_configs):
-        print(" login_to_splunk : {}".format(self))
 
         super(LoginPage, self).__init__(ucc_smartx_configs)
         self.login = Login(ucc_smartx_configs.browser)

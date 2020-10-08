@@ -11,7 +11,7 @@ class Dropdown(BaseComponent):
     Component: Dropdown
     Base class of Input & Configuration table
     """
-    def __init__(self, browser, container, mapping=dict(), wait_for_seconds=10):
+    def __init__(self, browser, container, mapping=dict()):
         """
             :param browser: The selenium webdriver
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
@@ -28,7 +28,6 @@ class Dropdown(BaseComponent):
             "type_filter_list":Selector(select=" .open li a")
         })
 
-        self.wait_for_seconds = wait_for_seconds
 
     def select_page_option(self, value, open_dropdown=True):
         if open_dropdown:
@@ -49,7 +48,6 @@ class Dropdown(BaseComponent):
         for each in self.get_elements('type_list'):
             if each.text.strip().lower() == value.lower():
                 each.click()
-                time.sleep(self.wait_for_seconds)
                 return True
         else:
             raise ValueError("{} not found in select list".format(value))
