@@ -19,12 +19,12 @@ setup(
     ],
     extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},
     setup_requires=["pytest-runner"],
-    packages=find_packages(include=["ucc_smartx", "ucc_smartx.*"]),
+    packages=find_packages(include=["pytest_splunk_addon_ui_smartx", "pytest_splunk_addon_ui_smartx.*"]),
     test_suite="tests",
     version="1.0.0",
     entry_points={
         "pytest11": [
-            "ucc-smartx = ucc_smartx.plugin",
+            "ucc-smartx = pytest_splunk_addon_ui_smartx.plugin",
         ],
     }
 )
