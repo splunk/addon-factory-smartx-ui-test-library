@@ -1,7 +1,8 @@
 
 from ..base_component import BaseComponent
+from .base_control import BaseControl
 
-class TextBox(BaseComponent):
+class TextBox(BaseControl):
     """
     Entity-Component: TextBox
     """
@@ -40,3 +41,9 @@ class TextBox(BaseComponent):
         Clears the textbox value
         '''
         self.container.clear()
+
+    def get_type(self):
+        '''
+        Get type of value entered in textbox
+        '''
+        return self.container.get_attribute('type').strip()

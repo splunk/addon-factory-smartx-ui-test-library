@@ -1,9 +1,10 @@
 from __future__ import absolute_import
 from ..base_component import BaseComponent, Selector
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 from .button import Button
 
-class Message(BaseComponent):
+class Message(BaseControl):
     """
     Entity-Component: Message
     """

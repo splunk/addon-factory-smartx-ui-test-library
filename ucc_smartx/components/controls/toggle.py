@@ -1,7 +1,8 @@
 from ..base_component import BaseComponent, Selector
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 
-class Toggle(BaseComponent):
+class Toggle(BaseControl):
     """
     Entity_Component : Button
     """
