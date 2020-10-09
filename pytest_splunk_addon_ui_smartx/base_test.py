@@ -231,3 +231,13 @@ class UccTester(object):
     The default setup and teardown methods can be added here.
     Use in case if some additional configuration should be added to all the test cases
     """
+
+    def setup_class(self):
+        self.wait = WebDriverWait(None, 20)
+
+    def assert_equal(self, left, right, msg=None):
+        if not msg:
+            msg = "left value : {} didn't match with right value : {}".format(left, right)
+        def _assert(browser):
+            return left == right
+        self.wait.until(_assert, msg)
