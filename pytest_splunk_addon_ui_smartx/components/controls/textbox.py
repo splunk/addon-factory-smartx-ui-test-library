@@ -1,5 +1,6 @@
 
 from .base_control import BaseControl
+from ..base_component import Selector
 
 class TextBox(BaseControl):
     """
@@ -13,36 +14,39 @@ class TextBox(BaseControl):
         """
         super(TextBox, self).__init__(browser, container)
         self.encrypted = encrypted
+        self.elements.update({
+            "input": Selector(select=container.select + " input")
+        })
 
     def set_value(self, value):
         """
         set value of the textbox
         """
 
-        self.container.clear()
-        self.container.send_keys(value)
+        self.input.clear()
+        self.input.send_keys(value)
 
     def get_value(self):
         """
         get value from the textbox
         """
-        return self.container.get_attribute('value').strip()
+        return self.input.get_attribute('value').strip()
 
     def is_editable(self):
         '''
         Returns True if the Textbox is editable, False otherwise
         '''
-        return not bool(self.container.get_attribute("readonly") or self.container.get_attribute("readOnly") or self.container.get_attribute("disabled"))
+        return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))
 
 
     def clear_text(self):
         '''
         Clears the textbox value
         '''
-        self.container.clear()
+        self.input.clear()
 
     def get_type(self):
         '''
         Get type of value entered in textbox
         '''
-        return self.container.get_attribute('type').strip()
+        return self.input.get_attribute('type').strip()
