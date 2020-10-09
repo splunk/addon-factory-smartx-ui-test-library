@@ -32,10 +32,10 @@ class Proxy(Entity):
 
 
         # Controls
-        self.host = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_url"))
-        self.port = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_port"))
-        self.username = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_username"))
-        self.password = TextBox(ucc_smartx_configs.browser, Selector(by=By.NAME, select="proxy_password"), encrypted=True)
+        self.host = TextBox(ucc_smartx_configs.browser, Selector(select=".proxy_url"))
+        self.port = TextBox(ucc_smartx_configs.browser, Selector(select=".proxy_port"))
+        self.username = TextBox(ucc_smartx_configs.browser, Selector(select=".proxy_username"))
+        self.password = TextBox(ucc_smartx_configs.browser, Selector(select=".proxy_password"), encrypted=True)
         self.proxy_enable = Checkbox(ucc_smartx_configs.browser, Selector(select=" .proxy_enabled" ))
         self.dns_enable = Checkbox(ucc_smartx_configs.browser, Selector(select=" .proxy_rdns" ))
 
