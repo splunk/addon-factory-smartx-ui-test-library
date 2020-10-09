@@ -235,13 +235,13 @@ class UccTester(object):
     def setup_class(self):
         self.wait = WebDriverWait(None, 20)
 
-    def assert_equal(self, left, right, left_args=[], right_args=[], msg=None):
+    def assert_equal(self, left, right, left_args={}, right_args={}, msg=None):
         if not msg:
             msg = "left value : {} didn't match with right value : {}".format(left, right)
         def _assert(browser):
             if callable(left):
-                left = left(*left_args)
+                left = left(**left_args)
             if callable(right):
-                right = right(*right_args)
+                right = right(**right_args)
             return left == right
         self.wait.until(_assert, msg)
