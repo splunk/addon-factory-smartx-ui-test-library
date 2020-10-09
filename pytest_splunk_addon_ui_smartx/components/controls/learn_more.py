@@ -1,4 +1,3 @@
-from ..base_component import BaseComponent
 from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 import time

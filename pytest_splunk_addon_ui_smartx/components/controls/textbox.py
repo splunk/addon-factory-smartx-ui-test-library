@@ -1,5 +1,4 @@
 
-from ..base_component import BaseComponent
 from .base_control import BaseControl
 
 class TextBox(BaseControl):
