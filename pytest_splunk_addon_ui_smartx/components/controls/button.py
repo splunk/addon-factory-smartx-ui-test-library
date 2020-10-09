@@ -1,7 +1,7 @@
-from ..base_component import BaseComponent
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 
-class Button(BaseComponent):
+class Button(BaseControl):
     """
     Entity_Component : Button
     """

@@ -1,9 +1,10 @@
 import time
-from ..base_component import BaseComponent, Selector
+from ..base_component import Selector
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-class OAuthSelect(BaseComponent):
+class OAuthSelect(BaseControl):
     """
     Entity-Component: OAuthSelect
     OAuthSelect Javascript framework: OAuthSelect
