@@ -8,6 +8,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from .pages.login import LoginPage
 from .utils import backend_retry
 import pytest
@@ -239,22 +240,25 @@ class UccTester(object):
         args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args}
         if not msg:
             msg = "left value : {} didn't match with right value : {}".format(left, right)
+        operator_map = {
+            "==": lambda left,right: left == right,
+            "!=": lambda left,right: left != right,
+            "<": lambda left,right: left < right,
+            "<=": lambda left,right: left <= right,
+            ">": lambda left,right: left > right,
+            ">=": lambda left,right: left >= right,
+            "in": lambda left,right: left in right,
+            "not in": lambda left,right: left not in right,
+            "is": lambda left,right: left is right,
+            "is not": lambda left,right: left is not right,
+        }
         def _assert(browser):
-            operator_map = {
-                "==": lambda left,right: left == right,
-                "!=": lambda left,right: left != right,
-                "<": lambda left,right: left < right,
-                "<=": lambda left,right: left <= right,
-                ">": lambda left,right: left > right,
-                ">=": lambda left,right: left >= right,
-                "in": lambda left,right: left in right,
-                "not in": lambda left,right: left not in right,
-                "is": lambda left,right: left is right,
-                "is not": lambda left,right: left is not right,
-            }
             if callable(args['left']):
                 args['left'] = args['left'](**args['left_args'])
             if callable(args['right']):
                 args['right'] = args['right'](**args['right_args'])
             return operator_map[args['operator']](args['left'], args['right'])
-        self.wait.until(_assert, msg)
+        try:
+            self.wait.until(_assert, msg)
+        except TimeoutException:
+            assert operator_map[args['operator']](args['left'], args['right'])
