@@ -41,6 +41,7 @@ class MultiSelect(BaseControl):
             :returns : list of values
         """
         self.search(value)
+        self.wait_for_search_list()
         searched_values = list(self._list_visible_values())
         self.input.send_keys(Keys.ESCAPE)
         self.wait_for("container")
@@ -98,11 +99,33 @@ class MultiSelect(BaseControl):
         for each in self.get_child_elements('hidden_values'):
             yield each.get_attribute('textContent')
 
+    def get_list_count(self):
+        '''
+            Gets the total count of the Multiselect list
+        '''
+        return len(list(self.list_of_values()))
+
     def _list_visible_values(self):
         """
         Get list of values which are visible. Used while filtering 
         """
         for each in self.get_elements('values'):
             yield each.get_attribute('textContent')
+
+    def wait_for_values(self):
+        """
+        Wait for dynamic values to load in Mulitple select
+        """
+        def _wait_for_values(driver):
+            return self.get_list_count() > 0
+        self.wait_for(_wait_for_values, msg="No values found in Multiselect")
+
+    def wait_for_search_list(self):
+        """
+        Wait for Multiselect search to populate
+        """
+        def _wait_for_search_list(driver):
+            return len(list(self._list_visible_values())) > 0
+        self.wait_for(_wait_for_search_list, msg="No values found in Multiselect search")
 
     
