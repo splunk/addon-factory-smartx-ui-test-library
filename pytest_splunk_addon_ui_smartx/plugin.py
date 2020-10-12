@@ -77,12 +77,14 @@ def ucc_smartx_configs(request, splunk, splunk_web_uri, splunk_rest_uri):
     if request.config.getoption("--local"):
         local_run = True
         LOGGER.debug("--debug")
+    else:
+        local_run = False
 
     if request.config.getoption("--setup-retry-count"):
-        local_run = True
         retry_count = int(request.config.getoption("--setup-retry-count"))
         LOGGER.debug("--setup-retry-count={}".format(retry_count))
-
+    else:
+        retry_count = 1
 
     if request.config.getoption("--headless"):
         headless_run = True
