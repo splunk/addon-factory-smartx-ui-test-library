@@ -136,5 +136,5 @@ class SingleSelect(BaseControl):
         Wait for SingleSelect search to populate
         """
         def _wait_for_search_list(driver):
-            return len(list(self._list_visible_values())) > 1
+            return len(list(self._list_visible_values())) > 0
         self.wait_for(_wait_for_search_list, msg="No values found in SingleSelect search")
