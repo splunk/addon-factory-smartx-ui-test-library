@@ -235,14 +235,26 @@ class UccTester(object):
     def setup_class(self):
         self.wait = WebDriverWait(None, 20)
 
-    def assert_equal(self, left, right, left_args={}, right_args={}, msg=None):
-        args = {'left': left, 'right': right, 'left_args': left_args, 'right_args': right_args}
+    def assert_util(self, left, right, operator="==",left_args={}, right_args={}, msg=None):
+        args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args}
         if not msg:
             msg = "left value : {} didn't match with right value : {}".format(left, right)
         def _assert(browser):
+            operator_map = {
+                "==": lambda left,right: left == right,
+                "!=": lambda left,right: left != right,
+                "<": lambda left,right: left < right,
+                "<=": lambda left,right: left <= right,
+                ">": lambda left,right: left > right,
+                ">=": lambda left,right: left >= right,
+                "in": lambda left,right: left in right,
+                "not in": lambda left,right: left not in right,
+                "is": lambda left,right: left is right,
+                "is not": lambda left,right: left is not right,
+            }
             if callable(args['left']):
                 args['left'] = args['left'](**args['left_args'])
             if callable(args['right']):
                 args['right'] = args['right'](**args['right_args'])
-            return args['left'] == args['right']
+            return operator_map[args['operator']](args['left'], args['right'])
         self.wait.until(_assert, msg)
