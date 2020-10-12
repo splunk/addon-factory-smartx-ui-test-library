@@ -260,5 +260,8 @@ class UccTester(object):
             return operator_map[args['operator']](args['left'], args['right'])
         try:
             self.wait.until(_assert, msg)
+            condition_failed = False
         except TimeoutException:
+            condition_failed = True
+        if condition_failed:
             assert operator_map[args['operator']](args['left'], args['right'])
