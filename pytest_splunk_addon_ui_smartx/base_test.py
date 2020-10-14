@@ -237,7 +237,7 @@ class UccTester(object):
         self.wait = WebDriverWait(None, 20)
 
     def assert_util(self, left, right, operator="==",left_args={}, right_args={}, msg=None):
-        args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args}
+        args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args, 'left_value':None, 'right_value':None}
         operator_map = {
             "==": lambda left,right: left == right,
             "!=": lambda left,right: left != right,
@@ -252,10 +252,14 @@ class UccTester(object):
         }
         def _assert(browser):
             if callable(args['left']):
-                args['left'] = args['left'](**args['left_args'])
+                args['left_value'] = args['left'](**args['left_args'])
+            else:
+                args['left_value'] = args['left']
             if callable(args['right']):
-                args['right'] = args['right'](**args['right_args'])
-            return operator_map[args['operator']](args['left'], args['right'])
+                args['right_value'] = args['right'](**args['right_args'])
+            else:
+                args['right_value'] = args['right']
+            return operator_map[args['operator']](args['left_value'], args['right_value'])
         try:
             self.wait.until(_assert)
             condition_failed = False
@@ -263,6 +267,5 @@ class UccTester(object):
             condition_failed = True
         if condition_failed:
             if not msg:
-                msg = "Condition Failed. \nLeft-value: {}\nOperator: {}\nRight-value: {}".format(args['left'], args["operator"], args['right'])
-
-            assert operator_map[args['operator']](args['left'], args['right']), msg
+                msg = "Condition Failed. \nLeft-value: {}\nOperator: {}\nRight-value: {}".format(args['left_value'], args["operator"], args['right_value'])
+            assert operator_map[args['operator']](args['left_value'], args['right_value']), msg
