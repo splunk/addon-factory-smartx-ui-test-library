@@ -263,6 +263,6 @@ class UccTester(object):
             condition_failed = True
         if condition_failed:
             if not msg:
-                msg = "Condition Failed. \nLeft-value={}\nOperator={}\nRight-value={}".format(args['left'], args["operator"], args['right'])
+                msg = "Condition Failed. \nLeft-value: {}\nOperator: {}\nRight-value: {}".format(args['left'], args["operator"], args['right'])
 
             assert operator_map[args['operator']](args['left'], args['right']), msg
