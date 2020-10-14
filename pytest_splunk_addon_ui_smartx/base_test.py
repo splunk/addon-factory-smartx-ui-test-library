@@ -3,8 +3,6 @@ from builtins import str
 from builtins import range
 from builtins import object
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -38,7 +36,7 @@ class SeleniumHelper(object):
         try:
             if browser == "firefox":
                 if debug:
-                    self.browser = webdriver.Firefox(executable_path=GeckoDriverManager().install(), firefox_options=self.get_local_firefox_opts(headless))
+                    self.browser = webdriver.Firefox(firefox_options=self.get_local_firefox_opts(headless))
                 else:
                     self.browser = webdriver.Remote(
                     command_executor='https://ondemand.saucelabs.com:443/wd/hub',
@@ -46,7 +44,7 @@ class SeleniumHelper(object):
 
             elif browser == "chrome":
                 if debug:
-                    self.browser = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=self.get_local_chrome_opts(headless))
+                    self.browser = webdriver.Chrome(chrome_options=self.get_local_chrome_opts(headless))
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
