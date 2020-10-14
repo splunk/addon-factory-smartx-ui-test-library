@@ -27,7 +27,13 @@ class LearnMore(BaseControl):
         else:
             self.browser.switch_to.window(self.browser.window_handles[1])
         self.wait_for_header()
-        return self.browser.current_url
+        current_url = self.browser.current_url
+        self.browser.close()
+        if self.browser.name == "Safari":
+            self.browser.switch_to.window(self.browser.window_handles[1])
+        else:
+            self.browser.switch_to.window(self.browser.window_handles[0])
+        return current_url
 
     def wait_for_tab(self):
         """
