@@ -238,8 +238,6 @@ class UccTester(object):
 
     def assert_util(self, left, right, operator="==",left_args={}, right_args={}, msg=None):
         args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args}
-        if not msg:
-            msg = "left value : {} didn't match with right value : {}".format(left, right)
         operator_map = {
             "==": lambda left,right: left == right,
             "!=": lambda left,right: left != right,
@@ -259,9 +257,12 @@ class UccTester(object):
                 args['right'] = args['right'](**args['right_args'])
             return operator_map[args['operator']](args['left'], args['right'])
         try:
-            self.wait.until(_assert, msg)
+            self.wait.until(_assert)
             condition_failed = False
         except TimeoutException:
             condition_failed = True
         if condition_failed:
-            assert operator_map[args['operator']](args['left'], args['right'])
+            if not msg:
+                msg = "Condition Failed. \nLeft-value={}\nOperator={}\nRight-value={}".format(args['left'], args["operator"], args['right'])
+
+            assert operator_map[args['operator']](args['left'], args['right']), msg
