@@ -8,6 +8,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from .pages.login import LoginPage
 from .utils import backend_retry
 import pytest
@@ -235,9 +236,36 @@ class UccTester(object):
     def setup_class(self):
         self.wait = WebDriverWait(None, 20)
 
-    def assert_equal(self, left, right, msg=None):
-        if not msg:
-            msg = "left value : {} didn't match with right value : {}".format(left, right)
+    def assert_util(self, left, right, operator="==",left_args={}, right_args={}, msg=None):
+        args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args, 'left_value':None, 'right_value':None}
+        operator_map = {
+            "==": lambda left,right: left == right,
+            "!=": lambda left,right: left != right,
+            "<": lambda left,right: left < right,
+            "<=": lambda left,right: left <= right,
+            ">": lambda left,right: left > right,
+            ">=": lambda left,right: left >= right,
+            "in": lambda left,right: left in right,
+            "not in": lambda left,right: left not in right,
+            "is": lambda left,right: left is right,
+            "is not": lambda left,right: left is not right,
+        }
         def _assert(browser):
-            return left == right
-        self.wait.until(_assert, msg)
+            if callable(args['left']):
+                args['left_value'] = args['left'](**args['left_args'])
+            else:
+                args['left_value'] = args['left']
+            if callable(args['right']):
+                args['right_value'] = args['right'](**args['right_args'])
+            else:
+                args['right_value'] = args['right']
+            return operator_map[args['operator']](args['left_value'], args['right_value'])
+        try:
+            self.wait.until(_assert)
+            condition_failed = False
+        except TimeoutException:
+            condition_failed = True
+        if condition_failed:
+            if not msg:
+                msg = "Condition Failed. \nLeft-value: {}\nOperator: {}\nRight-value: {}".format(args['left_value'], args["operator"], args['right_value'])
+            assert operator_map[args['operator']](args['left_value'], args['right_value']), msg
