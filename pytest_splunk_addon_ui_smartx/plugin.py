@@ -59,7 +59,7 @@ def pytest_addoption(parser):
 
 
 # Fixture
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def ucc_smartx_configs(request, splunk, splunk_web_uri, splunk_rest_uri):
     # Configure pytest parameters, if provided
 
