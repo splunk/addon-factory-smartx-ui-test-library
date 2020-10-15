@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import time
 from ..components.base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By

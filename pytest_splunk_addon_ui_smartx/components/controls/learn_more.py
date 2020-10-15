@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 import time

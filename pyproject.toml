@@ -1,4 +1,7 @@
-[tool]
+# SPDX-FileCopyrightText: 2020 Splunk Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 [tool.poetry]
 name = "pytest-splunk-addon-ui-smartx"
 description = "Library to support testing Splunk Add-on UX"
