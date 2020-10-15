@@ -722,14 +722,6 @@ optional = false
 python-versions = "*"
 version = "0.2.5"
 
-[[package]]
-category = "main"
-description = "Library provides the way to automatically manage drivers for different browsers"
-name = "webdriver-manager"
-optional = false
-python-versions = ">=3.6"
-version = "3.2.2"
-
 [package.dependencies]
 configparser = "*"
 crayons = "*"
@@ -1097,10 +1089,6 @@ urllib3 = [
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
     {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
-]
-webdriver-manager = [
-    {file = "webdriver_manager-3.2.2-py2.py3-none-any.whl", hash = "sha256:18a665c6400bb7cf1a9ec9e1030ac5539cd5c892c97075f58940c62971470ce3"},
-    {file = "webdriver_manager-3.2.2.tar.gz", hash = "sha256:c2d4ee0a78226c355f3657dd0337e515187585a1497229af2ce5f4705234da9c"},
 ]
 zipp = [
     {file = "zipp-3.3.0-py3-none-any.whl", hash = "sha256:eed8ec0b8d1416b2ca33516a37a08892442f3954dee131e92cfd92d8fe3e7066"},

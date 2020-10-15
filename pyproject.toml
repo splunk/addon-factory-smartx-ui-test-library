@@ -24,7 +24,6 @@ pytest-html = "*"
 pytest-splunk-addon = "*"
 selenium = "*"
 urllib3 = "^1"
-webdriver-manager = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.2"
