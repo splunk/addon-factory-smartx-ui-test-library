@@ -1,7 +1,12 @@
-from ..base_component import BaseComponent, Selector
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
+from ..base_component import Selector
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 
-class Toggle(BaseComponent):
+class Toggle(BaseControl):
     """
     Entity_Component : Button
     """

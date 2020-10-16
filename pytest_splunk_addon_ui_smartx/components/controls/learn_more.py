@@ -1,8 +1,12 @@
-from ..base_component import BaseComponent
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 import time
 
-class LearnMore(BaseComponent):
+class LearnMore(BaseControl):
     """
     Entity_Component : Learn More
     """
@@ -27,7 +31,13 @@ class LearnMore(BaseComponent):
         else:
             self.browser.switch_to.window(self.browser.window_handles[1])
         self.wait_for_header()
-        return self.browser.current_url
+        current_url = self.browser.current_url
+        self.browser.close()
+        if self.browser.name == "Safari":
+            self.browser.switch_to.window(self.browser.window_handles[1])
+        else:
+            self.browser.switch_to.window(self.browser.window_handles[0])
+        return current_url
 
     def wait_for_tab(self):
         """

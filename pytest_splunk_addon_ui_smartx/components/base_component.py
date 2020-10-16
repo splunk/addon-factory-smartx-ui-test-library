@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from builtins import object
 from collections import namedtuple
 from selenium.webdriver.support.ui import WebDriverWait

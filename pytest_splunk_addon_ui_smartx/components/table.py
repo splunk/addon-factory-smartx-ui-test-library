@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import print_function
 from __future__ import absolute_import
 from builtins import str
@@ -269,10 +273,12 @@ class Table(BaseComponent):
         if column.lower().replace(" ","_") in self.header_mapping:
             column = self.header_mapping[column.lower().replace(" ","_")]
             find_by_col_number = isinstance(column, int)
+        else:
+            column=column.lower().replace(" ","_")
 
         if not find_by_col_number:
             col = copy.deepcopy(self.elements["col"])
-            col = col._replace(select=col.select.format(column=column.lower().replace(" ","_")))
+            col = col._replace(select=col.select.format(column=column))
             self.wait_for("app_listings")
             return self.get_clear_text(row.find_element(*list(col._asdict().values())))
         else:

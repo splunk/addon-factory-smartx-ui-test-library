@@ -1,13 +1,16 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import absolute_import
 from builtins import str
 from builtins import range
 from builtins import object
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from .pages.login import LoginPage
 from .utils import backend_retry
 import pytest
@@ -38,7 +41,7 @@ class SeleniumHelper(object):
         try:
             if browser == "firefox":
                 if debug:
-                    self.browser = webdriver.Firefox(executable_path=GeckoDriverManager().install(), firefox_options=self.get_local_firefox_opts(headless))
+                    self.browser = webdriver.Firefox(firefox_options=self.get_local_firefox_opts(headless))
                 else:
                     self.browser = webdriver.Remote(
                     command_executor='https://ondemand.saucelabs.com:443/wd/hub',
@@ -46,7 +49,7 @@ class SeleniumHelper(object):
 
             elif browser == "chrome":
                 if debug:
-                    self.browser = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=self.get_local_chrome_opts(headless))
+                    self.browser = webdriver.Chrome(chrome_options=self.get_local_chrome_opts(headless))
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
@@ -231,3 +234,40 @@ class UccTester(object):
     The default setup and teardown methods can be added here.
     Use in case if some additional configuration should be added to all the test cases
     """
+
+    def setup_class(self):
+        self.wait = WebDriverWait(None, 20)
+
+    def assert_util(self, left, right, operator="==",left_args={}, right_args={}, msg=None):
+        args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args, 'left_value':None, 'right_value':None}
+        operator_map = {
+            "==": lambda left,right: left == right,
+            "!=": lambda left,right: left != right,
+            "<": lambda left,right: left < right,
+            "<=": lambda left,right: left <= right,
+            ">": lambda left,right: left > right,
+            ">=": lambda left,right: left >= right,
+            "in": lambda left,right: left in right,
+            "not in": lambda left,right: left not in right,
+            "is": lambda left,right: left is right,
+            "is not": lambda left,right: left is not right,
+        }
+        def _assert(browser):
+            if callable(args['left']):
+                args['left_value'] = args['left'](**args['left_args'])
+            else:
+                args['left_value'] = args['left']
+            if callable(args['right']):
+                args['right_value'] = args['right'](**args['right_args'])
+            else:
+                args['right_value'] = args['right']
+            return operator_map[args['operator']](args['left_value'], args['right_value'])
+        try:
+            self.wait.until(_assert)
+            condition_failed = False
+        except TimeoutException:
+            condition_failed = True
+        if condition_failed:
+            if not msg:
+                msg = "Condition Failed. \nLeft-value: {}\nOperator: {}\nRight-value: {}".format(args['left_value'], args["operator"], args['right_value'])
+            assert operator_map[args['operator']](args['left_value'], args['right_value']), msg

@@ -1,9 +1,14 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import time
-from ..base_component import BaseComponent, Selector
+from ..base_component import Selector
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-class Checkbox(BaseComponent):
+class Checkbox(BaseControl):
 
 
     def __init__(self, browser, container, searchable=True):

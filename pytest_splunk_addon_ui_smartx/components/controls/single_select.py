@@ -1,9 +1,14 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import time
-from ..base_component import BaseComponent, Selector
+from ..base_component import Selector
+from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-class SingleSelect(BaseComponent):
+class SingleSelect(BaseControl):
     """
     Entity-Component: SingleSelect
     Select Javascript framework: select2
@@ -104,10 +109,11 @@ class SingleSelect(BaseComponent):
         selected_val = self.get_value()
         self.dropdown.click()
         first_element = None
+        list_of_values = []
         for each in self.get_elements('values'):
             if not first_element:
                 first_element = each
-            yield each.text.strip()
+            list_of_values.append(each.text.strip())
         if selected_val:
             self.select(selected_val, open_dropdown=False)
         elif self.searchable:
@@ -115,6 +121,7 @@ class SingleSelect(BaseComponent):
         elif first_element:
             self.select(first_element.text.strip(), open_dropdown=False)
         self.wait_for("internal_container")
+        return list_of_values
 
     def get_list_count(self):
         '''
@@ -135,5 +142,5 @@ class SingleSelect(BaseComponent):
         Wait for SingleSelect search to populate
         """
         def _wait_for_search_list(driver):
-            return len(list(self._list_visible_values())) > 1
+            return len(list(self._list_visible_values())) > 0
         self.wait_for(_wait_for_search_list, msg="No values found in SingleSelect search")
