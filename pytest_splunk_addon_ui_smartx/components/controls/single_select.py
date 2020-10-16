@@ -109,10 +109,11 @@ class SingleSelect(BaseControl):
         selected_val = self.get_value()
         self.dropdown.click()
         first_element = None
+        list_of_values = []
         for each in self.get_elements('values'):
             if not first_element:
                 first_element = each
-            yield each.text.strip()
+            list_of_values.append(each.text.strip())
         if selected_val:
             self.select(selected_val, open_dropdown=False)
         elif self.searchable:
@@ -120,6 +121,7 @@ class SingleSelect(BaseControl):
         elif first_element:
             self.select(first_element.text.strip(), open_dropdown=False)
         self.wait_for("internal_container")
+        return list_of_values
 
     def get_list_count(self):
         '''
