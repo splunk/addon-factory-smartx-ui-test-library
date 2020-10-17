@@ -163,7 +163,8 @@ workflows:
           requires:
             - build
           matrix:
-            splunk_version: ["7.3"]
+            parameters:
+              splunk_version: ["7.3"]
       - approval-tag-alpha:
           requires:
             - test
