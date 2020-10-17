@@ -18,7 +18,6 @@ commands:
           echo "Setup for Testing..."
           pip install git+https://github.com/pixelb/crudini        
           mkdir test-results
-          cp -r /tmp/workspace/output output
     - run:
         name: Splunk Testing
         command: |
