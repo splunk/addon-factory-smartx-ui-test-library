@@ -11,7 +11,7 @@ commands:
         default: latest
     steps:
     - attach_workspace:
-        at: /tmp/workspace
+        at: /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example
     - run:
         name: Setup for testing
         command: |
