@@ -28,7 +28,7 @@ commands:
         name: Splunk Testing
         command: |
           # Start Splunk
-          # cd /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example
+          cd /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example
           echo "Starting Splunk..."
           echo ">> PWD"
           pwd
