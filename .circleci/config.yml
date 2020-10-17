@@ -15,7 +15,7 @@ commands:
     - run:
         name: Generating package
         command: |
-          cd /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example
+          cd tests/deps/splunk-add-on-for-ucc-example
           sudo ./build.sh
     - run:
         name: Setup for testing
@@ -28,6 +28,7 @@ commands:
         name: Splunk Testing
         command: |
           # Start Splunk
+          # cd /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example
           echo "Starting Splunk..."
           echo ">> PWD"
           pwd
