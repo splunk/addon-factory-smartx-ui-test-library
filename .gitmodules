@@ -1,3 +1,4 @@
 [submodule "tests/deps/splunk-add-on-for-ucc-example"]
 	path = tests/deps/splunk-add-on-for-ucc-example
+	branch = develop
 	url = https://github.com/splunk/splunk-add-on-for-ucc-example
