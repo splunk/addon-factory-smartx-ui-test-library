@@ -115,6 +115,8 @@ jobs:
       - run: git submodule update --remote --merge
       - attach_workspace:
           at: /tmp/workspace
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Install Tools
           command: |
