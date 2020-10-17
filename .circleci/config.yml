@@ -23,12 +23,12 @@ commands:
           echo "Setup for Testing..."
           pip install git+https://github.com/pixelb/crudini        
           mkdir test-results
-          # cp -r /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output output
+          cp -r tests/deps/splunk-add-on-for-ucc-example/output output
     - run:
         name: Splunk Testing
         command: |
           # Start Splunk
-          cd /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example
+          cd tests/deps/splunk-add-on-for-ucc-example
           echo "Starting Splunk..."
           echo ">> PWD"
           pwd
