@@ -2,6 +2,31 @@
 version: 2.1
 orbs:
   go: circleci/go@0.2.0
+commands:
+  test_smartx:
+    parameters:
+      splunk_version:
+        description: Image version
+        type: string
+        default: latest
+    steps:
+    - attach_workspace:
+        at: /tmp/workspace
+    - run:
+      name: Setup for testing
+      command: |
+        echo "Setup for Testing..."
+    - run:
+      name: Splunk Testing
+      command: |
+        # Start Splunk
+        echo "Starting Splunk..."
+        echo ">> PWD"
+        pwd
+        echo ">> ls"
+        ls
+        echo ">> Splunk version"
+        echo "<<parameters.splunk_version>>"
 
 jobs:
   build:
@@ -45,12 +70,16 @@ jobs:
       - image: circleci/python:3.7-node
     steps:
       - checkout
+      - run: git submodule sync
+      - run: git submodule update --init
       - attach_workspace:
           at: /tmp/workspace
       - run:
           name: Install Tools
           command: |
             pip install /tmp/workspace/dist/*
+      - test_smartx:
+          splunk_version: <<parameters.splunk_version>>
   publish:
     docker:
       - image: circleci/python:3.7-node
@@ -133,6 +162,8 @@ workflows:
       - test:
           requires:
             - build
+          matrix:
+            splunk_version: ["7.3"]
       - approval-tag-alpha:
           requires:
             - test

@@ -1,0 +1,3 @@
+[submodule "tests/deps/splunk-add-on-for-ucc-example"]
+	path = tests/deps/splunk-add-on-for-ucc-example
+	url = https://github.com/splunk/splunk-add-on-for-ucc-example
