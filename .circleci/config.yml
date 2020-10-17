@@ -13,15 +13,20 @@ commands:
     - attach_workspace:
         at: /tmp/workspace
     - run:
+        name: Generating package
+        command: |
+          cd /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example
+          sudo ./build.sh
+    - run:
         name: Setup for testing
         command: |
           echo "Setup for Testing..."
           pip install git+https://github.com/pixelb/crudini        
           mkdir test-results
+          # cp -r /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output output
     - run:
         name: Splunk Testing
         command: |
-          cd tests/deps/splunk-add-on-for-ucc-example
           # Start Splunk
           echo "Starting Splunk..."
           echo ">> PWD"
@@ -49,6 +54,13 @@ commands:
                               registry.access.redhat.com/ubi7/ubi
           docker cp dummy:/home/circleci/work/test-results/test.xml test-results/  || true
           exit "$test_exit_code"
+
+
+    - store_artifacts:
+        path: test-results
+        destination: test-results
+    - store_test_results:
+        path: test-results
 
 jobs:
   build:
