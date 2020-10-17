@@ -13,20 +13,20 @@ commands:
     - attach_workspace:
         at: /tmp/workspace
     - run:
-      name: Setup for testing
-      command: |
-        echo "Setup for Testing..."
+        name: Setup for testing
+        command: |
+          echo "Setup for Testing..."
     - run:
-      name: Splunk Testing
-      command: |
-        # Start Splunk
-        echo "Starting Splunk..."
-        echo ">> PWD"
-        pwd
-        echo ">> ls"
-        ls
-        echo ">> Splunk version"
-        echo "<<parameters.splunk_version>>"
+        name: Splunk Testing
+        command: |
+          # Start Splunk
+          echo "Starting Splunk..."
+          echo ">> PWD"
+          pwd
+          echo ">> ls"
+          ls
+          echo ">> Splunk version"
+          echo "<<parameters.splunk_version>>"
 
 jobs:
   build:
@@ -68,6 +68,11 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.7-node
+    parameters:
+      splunk_version:
+        description: Image version
+        type: string
+        default: latest
     steps:
       - checkout
       - run: git submodule sync
@@ -79,7 +84,7 @@ jobs:
           command: |
             pip install /tmp/workspace/dist/*
       - test_smartx:
-          splunk_version: <<parameters.splunk_version>>
+            splunk_version: <<parameters.splunk_version>>
   publish:
     docker:
       - image: circleci/python:3.7-node
