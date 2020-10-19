@@ -15,16 +15,15 @@ class BackendConf(object):
     """
     Base Class to fetch configurations from rest endpoint. The classes need management url & session_id of the splunk to fetch the configurations.
     """
-    def __init__(self, url, session_key, username, password):
+    def __init__(self, url, username, password):
         """
             :param url: management url of the Splunk instance.
-            :param session_key: active session_key of the Splunk instance
+            :param username: username of the Splunk instance
+            :param password: password of the Splunk instance
         """
         self.url = url
-        self.header = {'Authorization': 'Splunk %s' % session_key}
         self.username = username
         self.password = password
-        self.data = {'username': username, 'password': password}
 
     @backend_retry(3)
     def rest_call(self, url):
@@ -47,7 +46,6 @@ class BackendConf(object):
             :returns : json result of the request
         """
         res = requests.post(url, kwargs, auth=(self.username, self.password), verify=False)
-        print(kwargs)
         assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
         return res.json()
 

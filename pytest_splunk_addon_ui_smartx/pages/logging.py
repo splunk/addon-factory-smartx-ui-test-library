@@ -34,7 +34,7 @@ class Logging(Entity):
         if ucc_smartx_rest_helper:
             self.splunk_mgmt_url = ucc_smartx_rest_helper.splunk_mgmt_url
             self.backend_conf = SingleBackendConf(
-                self._get_logging_url(), ucc_smartx_rest_helper.session_key, ucc_smartx_rest_helper.username, ucc_smartx_rest_helper.password)
+                self._get_logging_url(), ucc_smartx_rest_helper.username, ucc_smartx_rest_helper.password)
 
 
     def open(self):
