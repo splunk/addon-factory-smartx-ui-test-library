@@ -4,19 +4,23 @@ standard_library.install_aliases()
 from builtins import object
 from .utils import backend_retry
 import requests
+from requests.auth import HTTPBasicAuth
 import urllib.request, urllib.parse, urllib.error
 
 class BackendConf(object):
     """
     Base Class to fetch configurations from rest endpoint. The classes need management url & session_id of the splunk to fetch the configurations.
     """
-    def __init__(self, url, session_key):
+    def __init__(self, url, session_key, username, password):
         """
             :param url: management url of the Splunk instance.
             :param session_key: active session_key of the Splunk instance
         """
         self.url = url
         self.header = {'Authorization': 'Splunk %s' % session_key}
+        self.username = username
+        self.password = password
+        self.data = {'username': username, 'password': password}
 
     @backend_retry(3)
     def rest_call(self, url):
@@ -25,7 +29,7 @@ class BackendConf(object):
             :param url: url to call
             :returns : json result of the request
         """
-        res = requests.get(url, headers=self.header, verify=False)
+        res = requests.get(url, auth=(self.username, self.password), verify=False)
         assert res.status_code == 200, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
         return res.json()
     
@@ -38,7 +42,8 @@ class BackendConf(object):
             :param kwargs: body of request method
             :returns : json result of the request
         """
-        res = requests.post(url, kwargs, headers=self.header, verify=False)
+        res = requests.post(url, kwargs, auth=(self.username, self.password), verify=False)
+        print(kwargs)
         assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
         return res.json()
 
@@ -48,7 +53,7 @@ class BackendConf(object):
             :param url: url to call
             :returns : json result of the request
         """
-        res = requests.delete(url, headers=self.header, verify=False)
+        res = requests.delete(url, auth=(self.username, self.password), verify=False)
         assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
 
     def parse_conf(self, json_res, single_stanza=False):
