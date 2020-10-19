@@ -123,6 +123,23 @@ class SingleSelect(BaseControl):
         self.wait_for("internal_container")
         return list_of_values
 
+    def get_single_value(self):
+        """
+        Return one value from Single Select 
+        """
+        selected_val = self.get_value()
+        self.dropdown.click()
+        first_element = None
+        single_element = self.get_element('values')
+        if selected_val:
+            self.select(selected_val, open_dropdown=False)
+        elif self.searchable:
+            self.input.send_keys(Keys.ESCAPE)
+        elif first_element:
+            self.select(first_element.text.strip(), open_dropdown=False)
+        self.wait_for("internal_container")
+        return single_element
+
     def get_list_count(self):
         '''
             Gets the total count of the SingleSelect list
@@ -134,7 +151,7 @@ class SingleSelect(BaseControl):
         Wait for dynamic values to load in SingleSelect
         """
         def _wait_for_values(driver):
-            return self.get_list_count() > 0
+            return self.get_single_value()
         self.wait_for(_wait_for_values, msg="No values found in SingleSelect")
 
     def wait_for_search_list(self):
