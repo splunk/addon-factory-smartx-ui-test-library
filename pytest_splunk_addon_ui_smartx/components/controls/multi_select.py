@@ -96,9 +96,11 @@ class MultiSelect(BaseControl):
         Get list of possible values to select from dropdown
         """
         self.wait_for("internal_container")
+        list_of_values = []
         for each in self.get_child_elements('hidden_values'):
-            yield each.get_attribute('textContent')
-
+            list_of_values.append(each.get_attribute('textContent'))
+        return list_of_values
+        
     def get_list_count(self):
         '''
             Gets the total count of the Multiselect list

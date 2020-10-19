@@ -47,5 +47,7 @@ class OAuthSelect(BaseControl):
         selected_val = self.get_value()
         self.container.click()
         first_element = None
+        list_of_values = []
         for each in self.get_elements('values'):
-            yield each.text.strip()
+            list_of_values.append(each.text.strip())
+        return list_of_values    
