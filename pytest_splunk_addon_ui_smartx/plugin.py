@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import pytest
 from filelock import FileLock
 from collections import namedtuple
@@ -56,7 +60,7 @@ def pytest_addoption(parser):
         help="Run the test case on headless mode"
     )
 
-SmartConfigs = namedtuple("SmartConfigs", ['driver', 'driver_version', 'local_run', 'retry_count', 'headless_run', 'test_case'])
+SmartConfigs = namedtuple("SmartConfigs", ['driver', 'driver_version', 'local_run', 'retry_count', 'headless_run'])
 
 @pytest.fixture(scope="session")
 def ucc_smartx_configs(request):
@@ -90,21 +94,20 @@ def ucc_smartx_configs(request):
     else:
         headless_run = False
 
-    test_case = driver + "_" + request.node.nodeid.split("::")[-1]
-
-    LOGGER.info("Calling SeleniumHelper for test_case={test_case} with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
-        driver=driver, local_run=local_run, headless_run=headless_run, test_case=test_case
+    LOGGER.info("Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
+        driver=driver, local_run=local_run, headless_run=headless_run
     ))
-    smartx_configs = SmartConfigs(driver=driver, driver_version=driver_version, local_run=local_run, retry_count=retry_count, headless_run=headless_run, test_case=test_case)
+    smartx_configs = SmartConfigs(driver=driver, driver_version=driver_version, local_run=local_run, retry_count=retry_count, headless_run=headless_run)
     return smartx_configs
 
 @pytest.fixture
 def ucc_smartx_selenium_helper(request, ucc_smartx_configs, splunk, splunk_web_uri, splunk_rest_uri):
     # Try to configure selenium & Login to splunk instance
+    test_case = "{}_{}".format(ucc_smartx_configs.driver, request.node.nodeid.split("::")[-1])
     for try_number in range(ucc_smartx_configs.retry_count):
         last_exc = Exception()
         try:
-            selenium_helper = SeleniumHelper(ucc_smartx_configs.driver, ucc_smartx_configs.driver_version, splunk_web_uri, splunk_rest_uri, debug=ucc_smartx_configs.local_run, cred=(splunk["username"], splunk["password"]), headless=ucc_smartx_configs.headless_run, test_case=ucc_smartx_configs.test_case)
+            selenium_helper = SeleniumHelper(ucc_smartx_configs.driver, ucc_smartx_configs.driver_version, splunk_web_uri, splunk_rest_uri, debug=ucc_smartx_configs.local_run, cred=(splunk["username"], splunk["password"]), headless=ucc_smartx_configs.headless_run, test_case=test_case)
             request.node.selenium_helper = selenium_helper
             break
         except Exception as e:
@@ -147,4 +150,3 @@ def ucc_smartx_rest_helper(ucc_smartx_configs, splunk, splunk_rest_uri):
         LOGGER.error("Could not connect to Splunk instance. Please check the logs for detailed error of each retry")
         raise(last_exc)
     return rest_helper
-    
