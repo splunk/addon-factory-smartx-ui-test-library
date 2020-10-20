@@ -77,7 +77,6 @@ class SeleniumHelper(object):
         try:
             self.browser_session = self.browser.session_id
             self.login_to_splunk(*self.cred)
-            self.session_key = self.start_session(*self.cred)
         except:
             self.browser.quit()
             if not debug:
@@ -203,21 +202,6 @@ class SeleniumHelper(object):
             self.browser.save_screenshot("login_error.png")
             raise
 
-    @backend_retry(3)
-    def start_session(self, username, password):
-        res = requests.post(self.splunk_mgmt_url + '/services/auth/login?output_mode=json',
-                            data={'username': username, 'password': password }, verify=False)
-
-        try:
-            res = res.json()
-        except:
-            raise Exception("Could not parse the content returned from Management Port. Recheck the mgmt url.")
-        if (len(res.get("messages", [])) > 0) and (res["messages"][0].get("type") == "WARN"):
-            raise Exception("Could not connect to the Splunk instance, verify credentials")
-
-        session_key = str(res["sessionKey"])
-        return session_key
-
     def update_saucelab_job(self, status):
         data = '{"passed": false}' if status else '{"passed": true}'
         response = requests.put('https://saucelabs.com/rest/v1/{}/jobs/{}'.format(
@@ -228,6 +212,27 @@ class SeleniumHelper(object):
         logger.info("SauceLabs job_id={}".format(response.get("id")))
         logger.info("SauceLabs Video_url={}".format(response.get("video_url")))
 
+class RestHelper(object):
+
+    def __init__(self, splunk_mgmt_url, username ,password):
+        self.splunk_mgmt_url = splunk_mgmt_url
+        self.username = username
+        self.password = password
+        self.start_session()
+
+    @backend_retry(3)
+    def start_session(self):
+        res = requests.post(self.splunk_mgmt_url + '/services/auth/login?output_mode=json',
+                            data={'username': self.username, 'password': self.password }, verify=False)
+
+        try:
+            res = res.json()
+        except:
+            raise Exception("Could not parse the content returned from Management Port. Recheck the mgmt url.")
+        if (len(res.get("messages", [])) > 0) and (res["messages"][0].get("type") == "WARN"):
+            raise Exception("Could not connect to the Splunk instance, verify credentials")
+
+        self.session_key = str(res["sessionKey"])
 
 class UccTester(object):
     """

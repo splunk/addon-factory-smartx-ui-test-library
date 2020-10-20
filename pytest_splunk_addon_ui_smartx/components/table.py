@@ -155,7 +155,7 @@ class Table(BaseComponent):
         """
         def _wait_for_rows_to_appear(driver):
             return self.get_row_count() == row_count
-        self.wait_for(_wait_for_rows_to_appear, msg="Expected table to have {} rows".format(row_count))
+        self.wait_for(_wait_for_rows_to_appear, msg="Expected rows : {} :: Found rows : {}".format(row_count, self.get_row_count()))
 
     def get_table(self):
         """
