@@ -17,13 +17,14 @@ import time
 
 class Proxy(Entity):
 
-    def __init__(self, ta_name, ta_conf="", ucc_smartx_selenium_helper=None, ucc_smartx_rest_helper=None):
+    def __init__(self, ta_name, ta_proxy_url, ta_conf="", ucc_smartx_selenium_helper=None, ucc_smartx_rest_helper=None):
         """
             :param ucc_smartx_configs: Fixture with selenium driver, urls(web, mgmt) and session key
             :param ta_name: Name of TA
             :param ta_conf: Name of conf file
         """
         self.ta_name = ta_name
+        self.ta_proxy_url = ta_proxy_url
         self.ta_conf = ta_conf
         if self.ta_conf == "":
             self.ta_conf = "{}_settings".format(self.ta_name.lower())
@@ -41,6 +42,7 @@ class Proxy(Entity):
             self.open()
         if ucc_smartx_rest_helper:
             self.splunk_mgmt_url = ucc_smartx_rest_helper.splunk_mgmt_url
+            self.backend_conf_configs = SingleBackendConf(self._get_proxy_configs_endpoint(), ucc_smartx_rest_helper.username, ucc_smartx_rest_helper.password)
             self.backend_conf = SingleBackendConf(self._get_proxy_endpoint(), ucc_smartx_rest_helper.username, ucc_smartx_rest_helper.password)
 
     def open(self):
@@ -57,4 +59,7 @@ class Proxy(Entity):
         """
         get rest endpoint for the configuration
         """
+        return '{}/{}'.format(self.splunk_mgmt_url, self.ta_proxy_url)
+
+    def _get_proxy_configs_endpoint(self):
         return '{}/servicesNS/nobody/{}/configs/conf-{}/proxy'.format(self.splunk_mgmt_url, self.ta_name, self.ta_conf)
