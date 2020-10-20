@@ -13,7 +13,6 @@ class Page(object):
         """
             :param ucc_smartx_selenium_helper: The selenium webdriver
             :param ucc_smartx_rest_helper: Splunk web & management url. {"web": , "mgmt": }
-            :param session_key: session key to access the rest endpoints
         """
         if ucc_smartx_selenium_helper:
             self.browser = ucc_smartx_selenium_helper.browser
