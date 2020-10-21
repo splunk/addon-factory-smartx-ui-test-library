@@ -161,3 +161,9 @@ class SingleSelect(BaseControl):
         def _wait_for_search_list(driver):
             return len(list(self._list_visible_values())) > 0
         self.wait_for(_wait_for_search_list, msg="No values found in SingleSelect search")
+
+    def is_editable(self):
+        '''
+        Returns True if the Textbox is editable, False otherwise
+        '''
+        return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))
