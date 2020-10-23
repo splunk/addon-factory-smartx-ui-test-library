@@ -44,6 +44,4 @@ class AlertEntity(Entity):
         """
         Open the required page. Page(super) class opens the page by default.
         """
-        self.browser.get(
-            '{}/en-US/manager/search/saved/searches'.format(self.splunk_web_url))
         self.add_alert.click()

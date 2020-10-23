@@ -148,14 +148,14 @@ class Table(BaseComponent):
         except:
             print("Waitspinner did not appear")
 
-    def wait_for_rows_to_appear(self, row_count):
+    def wait_for_rows_to_appear(self, row_count=1):
         """
         Wait for the table to load row_count rows
             :param row_count: number of row_count to wait for. 
         """
         def _wait_for_rows_to_appear(driver):
-            return self.get_row_count() == row_count
-        self.wait_for(_wait_for_rows_to_appear, msg="Expected rows : {} :: Found rows : {}".format(row_count, self.get_row_count()))
+            return self.get_row_count() >= row_count
+        self.wait_for(_wait_for_rows_to_appear, msg="Expected rows : {} to be greater or equal to {}".format(row_count, self.get_row_count()))
 
     def get_table(self):
         """

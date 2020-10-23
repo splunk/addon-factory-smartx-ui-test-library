@@ -15,7 +15,6 @@ class AlertToggle(Toggle):
 
     def select(self, value):
         for each in self.get_elements('toggle_btn'):
-            print(each.get_attribute("value"))
             if each.get_attribute("value").strip().lower() == value.lower():
                 each.click()
                 return True
