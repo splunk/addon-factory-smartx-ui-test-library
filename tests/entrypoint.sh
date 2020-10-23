@@ -6,4 +6,4 @@
 ##
 
 cd /work
-pytest $@
+pytest $@ ${TEST_SUITE} --browser=${TEST_BROWSER}

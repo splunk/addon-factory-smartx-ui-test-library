@@ -5,6 +5,14 @@ orbs:
 commands:
   test_smartx:
     parameters:
+      test_suite:
+        description: Test Suite
+        type: string
+        default: -k test_splunk_ta_example_addon_account
+      browser:
+        description: Browser name
+        type: string
+        default: firefox
       splunk_version:
         description: Image version
         type: string
@@ -25,16 +33,18 @@ commands:
           mkdir test-results
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
           export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
-          
           export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
           export TEST_SET=tests/deps/splunk-add-on-for-ucc-example/tests/ui
-
+          export TEST_BROWSER="<<parameters.splunk_version>>"
+          export TEST_SUITE="-k <<parameters.test_suite>>"
           echo "environment setup..."
           echo $SPLUNK_VERSION
           echo $SPLUNK_APP_ID
           echo $SPLUNK_APP_PACKAGE
           echo $TEST_SET
+          echo $TEST_BROWSER
+          echo $TEST_SUITE
           echo "Building..."
           docker-compose -f docker-compose-ci.yml build
     - run:
@@ -109,6 +119,15 @@ jobs:
         description: Image version
         type: string
         default: latest
+      test_suite:
+        description: Test Suite
+        type: string
+        default: -k test_splunk_ta_example_addon_account
+      browser:
+        description: Browser name
+        type: string
+        default: firefox
+
     steps:
       - checkout
       - run:
@@ -134,6 +153,8 @@ jobs:
             pip install /tmp/workspace/dist/*
       - test_smartx:
             splunk_version: <<parameters.splunk_version>>
+            browser: <<parameters.browser>>
+            test_suite: <<parameters.test_suite>>
   publish:
     docker:
       - image: circleci/python:3.7-node
@@ -219,6 +240,8 @@ workflows:
           matrix:
             parameters:
               splunk_version: ["7.3"]
+              browser: ["firefox"]
+              test_suite: ["test_splunk_ta_example_addon_logging"]
       - approval-tag-alpha:
           requires:
             - test
