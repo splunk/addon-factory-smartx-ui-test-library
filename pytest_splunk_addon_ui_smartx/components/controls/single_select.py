@@ -89,6 +89,7 @@ class SingleSelect(BaseControl):
             Gets the selected value
         """
         try:
+            self.wait_for_text("selected")
             return self.selected.text.strip()
         except:
             return False
