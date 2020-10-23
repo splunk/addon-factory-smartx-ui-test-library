@@ -36,6 +36,7 @@ commands:
           echo "Setup for Testing..."
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results
+          cp /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output tests/deps/splunk-add-on-for-ucc-example/output
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
           export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
           export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
