@@ -5,4 +5,4 @@
 [submodule "tests/deps/build/addonfactory_test_matrix_splunk"]
 	path = tests/deps/build/addonfactory_test_matrix_splunk
 	url = https://github.com/splunk/addonfactory_test_matrix_splunk
-	branch = develop
+	branch = master
