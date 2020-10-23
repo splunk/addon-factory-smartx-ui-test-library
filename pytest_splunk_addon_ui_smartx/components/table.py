@@ -189,8 +189,11 @@ class Table(BaseComponent):
         Get list of values of  column
             :param column: column header of the table
         """
+        value_list = []
         for each_row in self._get_rows():
-            yield self._get_column_value(each_row, column)
+            value_list.append(self._get_column_value(each_row, column))
+        return value_list
+
 
     def get_list_of_actions(self, name):
         """

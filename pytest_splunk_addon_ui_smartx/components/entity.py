@@ -58,6 +58,7 @@ class Entity(BaseComponent):
         Save the configuration
             :param expect_error: if True, the error message will be fetched. Otherwise, the function will return True if the configuration was saved properly
         """
+        self.save_btn.wait_to_be_clickable()
         self.save_btn.click()
         if expect_error:
             return self.get_error()

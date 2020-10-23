@@ -128,6 +128,16 @@ class BaseComponent(object):
         """
         self.wait_for("container")
 
+    def wait_to_be_clickable(self, key, msg=None):
+        """
+        Wait for an web element to be invisible. Raises TimeoutException if the element does not dissapear.
+            :param key: The key of the element mentioned in self.elements
+            :param msg: The error-msg which should be mentioned in the TimeoutException
+        """
+        if not msg:
+            msg = "{} element is not clickable".format(key)
+        self.wait.until(EC.element_to_be_clickable(self.get_tuple(key)), msg)
+
     def __getattr__(self, key):
         """
         Makes the web-elements to be accessible directly.

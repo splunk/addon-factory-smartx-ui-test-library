@@ -97,6 +97,7 @@ class SingleSelect(BaseControl):
             Cancels the currently selected value in the SingleSelect
         '''
         try:
+            self.wait_to_be_clickable("cancel_selected")
             self.cancel_selected.click()
             return True
         except:
