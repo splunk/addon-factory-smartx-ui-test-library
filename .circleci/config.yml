@@ -119,6 +119,7 @@ jobs:
     docker:
       - image: circleci/python:3.7-node
     steps:
+      - checkout
       - run:
           name: Update Submodules
           command: |
@@ -138,6 +139,10 @@ jobs:
           command: |
             cd tests/deps/splunk-add-on-for-ucc-example
             sudo ./build.sh
+      - persist_to_workspace:
+          root: .
+          paths:
+            - tests/deps/splunk-add-on-for-ucc-example/output
 
   test:
     docker:
