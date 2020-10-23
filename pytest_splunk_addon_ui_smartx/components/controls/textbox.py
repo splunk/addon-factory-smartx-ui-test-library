@@ -54,7 +54,7 @@ class TextBox(BaseControl):
         '''
         return self.input.get_attribute('type').strip()
 
-    def wait_for_field_to_be_editable(self):
+    def wait_to_be_editable(self):
         """
         Wait for the textbox field to be editable
         """
