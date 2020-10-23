@@ -6,13 +6,11 @@ from ..components.base_component import Selector
 from ..components.tabs import Tab
 from ..components.entity import Entity
 from ..components.controls.single_select import SingleSelect
-from ..components.entity import Entity
 from ..components.controls.checkbox import Checkbox
 from ..components.controls.button import Button
 from ..components.controls.textbox import TextBox
 from ..backend_confs import SingleBackendConf
 from selenium.webdriver.common.by import By
-import time
 
 
 class Proxy(Entity):
