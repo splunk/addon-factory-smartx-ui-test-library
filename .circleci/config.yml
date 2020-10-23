@@ -30,6 +30,12 @@ commands:
           export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
           export TEST_SET=tests/deps/splunk-add-on-for-ucc-example/tests/ui
 
+          echo "environment setup..."
+          echo $SPLUNK_VERSION
+          echo $SPLUNK_APP_ID
+          echo $SPLUNK_APP_PACKAGE
+          echo $TEST_SET
+          echo "Building..."
           docker-compose -f docker-compose-ci.yml build
     - run:
         name: Splunk Testing
