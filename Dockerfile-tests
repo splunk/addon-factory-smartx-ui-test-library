@@ -16,7 +16,6 @@ COPY tests/pytest-ci.ini /work/pytest.ini
 COPY .pytest.expect /work/.pytest.expect
 
 COPY tests/deps/splunk-add-on-for-ucc-example/tests/ui /work/tests
-RUN pip install -r /work/tests/requirements.txt
 COPY tests/deps/splunk-add-on-for-ucc-example/package /work/package
 
 CMD /entrypoint.sh
