@@ -36,6 +36,13 @@ def pytest_configure(config):
         except OSError:
             pass
 
+def pytest_fixture_setup(fixturedef, request):
+    """
+    Setup configuration after command-line options are parsed
+    """
+    if fixturedef.argname == "ucc_smartx_selenium_helper" and request.config.getoption("--local"):
+        fixturedef.scope = "session"
+
 def pytest_addoption(parser):
     parser.conflict_handler = "resolve"
     group = parser.getgroup("splunk-ucc-smartx")
@@ -107,7 +114,7 @@ def ucc_smartx_configs(request):
     smartx_configs = SmartConfigs(driver=driver, driver_version=driver_version, local_run=local_run, retry_count=retry_count, headless_run=headless_run)
     return smartx_configs
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def ucc_smartx_selenium_helper(request, ucc_smartx_configs, splunk, splunk_web_uri, splunk_rest_uri):
     # Try to configure selenium & Login to splunk instance
     test_case = "{}_{}".format(ucc_smartx_configs.driver, request.node.nodeid.split("::")[-1])

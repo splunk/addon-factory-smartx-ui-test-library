@@ -38,6 +38,7 @@ class SingleSelect(BaseControl):
 
     def select(self, value, open_dropdown=True):
         if open_dropdown:
+            self.wait_to_be_clickable("dropdown")
             self.dropdown.click()
         
         for each in self.get_elements('values'):
@@ -88,6 +89,7 @@ class SingleSelect(BaseControl):
             Gets the selected value
         """
         try:
+            self.wait_for_text("selected")
             return self.selected.text.strip()
         except:
             return False
@@ -97,6 +99,7 @@ class SingleSelect(BaseControl):
             Cancels the currently selected value in the SingleSelect
         '''
         try:
+            self.wait_to_be_clickable("cancel_selected")
             self.cancel_selected.click()
             return True
         except:
@@ -161,3 +164,9 @@ class SingleSelect(BaseControl):
         def _wait_for_search_list(driver):
             return len(list(self._list_visible_values())) > 0
         self.wait_for(_wait_for_search_list, msg="No values found in SingleSelect search")
+
+    def is_editable(self):
+        '''
+        Returns True if the Textbox is editable, False otherwise
+        '''
+        return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))
