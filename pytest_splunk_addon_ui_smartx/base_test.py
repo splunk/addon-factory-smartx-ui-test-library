@@ -41,7 +41,7 @@ class SeleniumHelper(object):
         try:
             if browser == "firefox":
                 if debug:
-                    self.browser = webdriver.Firefox(firefox_options=self.get_local_firefox_opts(headless))
+                    self.browser = webdriver.Firefox(firefox_options=self.get_local_firefox_opts(headless), log_path="selenium.log")
                 else:
                     self.browser = webdriver.Remote(
                     command_executor='https://ondemand.saucelabs.com:443/wd/hub',
@@ -49,7 +49,10 @@ class SeleniumHelper(object):
 
             elif browser == "chrome":
                 if debug:
-                    self.browser = webdriver.Chrome(chrome_options=self.get_local_chrome_opts(headless))
+                    self.browser = webdriver.Chrome(
+                        chrome_options=self.get_local_chrome_opts(headless), 
+                        service_args=["--verbose", "--log-path=selenium.log"]
+                    )
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
@@ -159,6 +162,7 @@ class SeleniumHelper(object):
 
     def get_local_firefox_opts(self, headless_run):
         firefox_opts = webdriver.FirefoxOptions()
+        firefox_opts.log.level = "trace"
         if headless_run:
             firefox_opts.add_argument('--headless')
             firefox_opts.add_argument("--window-size=1280,768")
