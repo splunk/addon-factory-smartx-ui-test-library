@@ -38,6 +38,7 @@ class SingleSelect(BaseControl):
 
     def select(self, value, open_dropdown=True):
         if open_dropdown:
+            self.wait_to_be_clickable("dropdown")
             self.dropdown.click()
         
         for each in self.get_elements('values'):
