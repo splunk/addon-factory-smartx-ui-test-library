@@ -264,7 +264,7 @@ workflows:
       - build
       - package_example_ta:
           requires:
-            build
+            - build
       - test:
           requires:
             - package_example_ta
