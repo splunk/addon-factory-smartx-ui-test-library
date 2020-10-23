@@ -112,6 +112,18 @@ class BaseComponent(object):
                 msg = "{}: Timeout while waiting for the condition to be true".format(key)
             return wait.until(key, msg)
 
+    def wait_for_text(self, key, msg=None):
+        """
+        if key in element, Wait for an text in web element to be visible. Raises TimeoutException if the text not element found.
+            :param key: The key of the element mentioned in self.elements
+            :param msg: The error-msg which should be mentioned in the TimeoutException
+        """
+        if not msg:
+            msg = "Text not present in element {}".format(key)
+        def _wait_for_text(browser):
+            return len(self.get_element(key).text.strip()) > 0
+        return self.wait_for(_wait_for_text, msg)
+
     def wait_until(self, key, msg=None):
         """
         Wait for an web element to be invisible. Raises TimeoutException if the element does not dissapear.

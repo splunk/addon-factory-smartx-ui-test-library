@@ -242,7 +242,8 @@ class Table(BaseComponent):
             self.wait_until("delete_close")
             return True  
         elif prompt_msg:
-            return self.get_clear_text(self.delete_prompt)    
+            self.wait_for_text("delete_prompt")
+            return self.get_clear_text(self.delete_prompt)  
         else:
             self.delete_btn.click()
             self.wait_for("app_listings")
