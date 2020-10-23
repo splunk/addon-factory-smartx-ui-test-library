@@ -113,6 +113,13 @@ jobs:
       - run: git submodule sync
       - run: git submodule update --init --recursive
       - run: git submodule update --remote --merge
+      - run:
+          name: Update Example TA submodules
+          command: |
+            cd tests/deps/splunk-add-on-for-ucc-example
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
       - attach_workspace:
           at: /tmp/workspace
       - setup_remote_docker:
