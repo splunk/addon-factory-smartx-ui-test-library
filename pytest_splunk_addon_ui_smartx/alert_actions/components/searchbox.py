@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from selenium.webdriver.common.action_chains import ActionChains
 from .textbox import TextBox
 from ...components.base_component import Selector

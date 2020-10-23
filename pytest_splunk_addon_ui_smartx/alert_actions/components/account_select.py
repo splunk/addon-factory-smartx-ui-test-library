@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from ...components.controls.single_select import SingleSelect
 from ...components.base_component import Selector, BaseComponent
 
