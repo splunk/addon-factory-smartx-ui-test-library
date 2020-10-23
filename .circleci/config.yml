@@ -36,7 +36,7 @@ commands:
           export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
           export TEST_SET=tests/deps/splunk-add-on-for-ucc-example/tests/ui
-          export TEST_BROWSER="<<parameters.splunk_version>>"
+          export TEST_BROWSER="<<parameters.browser>>"
           export TEST_SUITE="-k <<parameters.test_suite>>"
           echo "environment setup..."
           echo $SPLUNK_VERSION
