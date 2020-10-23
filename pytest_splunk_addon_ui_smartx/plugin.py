@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2020 2020
 #
 # SPDX-License-Identifier: Apache-2.0
-
+import os
 import pytest
 from filelock import FileLock
 from collections import namedtuple
@@ -20,6 +20,7 @@ from pytest_splunk_addon.splunk import (
 from .base_test import SeleniumHelper, RestHelper
 
 LOGGER = logging.getLogger("pytest-ucc-smartx")
+PNG_PATH = "assets"
 
 def pytest_configure(config):
     """
@@ -28,6 +29,12 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "ucc: UCC Tests"
     )
+    pytest_html = config.pluginmanager.getplugin('html')
+    if pytest_html:
+        try:
+            os.mkdir(PNG_PATH)
+        except OSError:
+            pass
 
 def pytest_fixture_setup(fixturedef, request):
     """
@@ -157,3 +164,40 @@ def ucc_smartx_rest_helper(ucc_smartx_configs, splunk, splunk_rest_uri):
         LOGGER.error("Could not connect to Splunk instance. Please check the logs for detailed error of each retry")
         raise(last_exc)
     return rest_helper
+
+
+@pytest.mark.hookwrapper
+def pytest_runtest_makereport(item, call):
+    """
+    pytest_runtest_makereport will be called after each test case is executed.
+    Capture a screenshot if the test case is failed.
+    item.selenium_helper has been added by the fixture "test_helper". The scope of the fixture must be function.
+        :param item: the method of the test case.
+    """
+    LOGGER.debug("pytest_runtest_makereport: Start making report")
+    try:
+        pytest_html = item.config.pluginmanager.getplugin('html')
+        if pytest_html:
+            outcome = yield
+            report = outcome.get_result()
+            if report.when == "call" or report.when == "setup":
+                setattr(item, 'report', report)
+                if report.failed:
+                    try:
+                        if report.when == "setup":
+                            # Possible - Login failed
+                            # the item will not have selenium_helper
+                            screenshot_path = os.path.join(PNG_PATH, "login_error.png")
+                        else:
+                            # Test Failed
+                            screenshot_path = os.path.join(PNG_PATH, item.nodeid.split("::")[-1] + ".png")
+                            item.selenium_helper.browser.save_screenshot(screenshot_path)
+
+                        report.extra = [pytest_html.extras.image(screenshot_path)]
+                    except:
+                        LOGGER.warn("Screenshot can not be captured. Scope of the fixture test_helper must be 'function' to capture the screenshot. ")
+        else:
+            LOGGER.warn("pytest-html is not installed. Install by using: pip install pytest-html")
+    except Exception as e:
+        LOGGER.warn("Got exception while making test report. Exception  {}".format(e))
+        LOGGER.debug("test_report, Exception: {}".format(traceback.format_exc()))
