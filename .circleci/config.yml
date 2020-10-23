@@ -121,6 +121,9 @@ jobs:
       - image: circleci/python:3.7-node
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - example-ta-package
       - run:
           name: Update Submodules
           command: |
@@ -140,6 +143,10 @@ jobs:
           command: |
             cd tests/deps/splunk-add-on-for-ucc-example
             sudo ./build.sh
+      - save_cache:
+          key: example-ta-package
+          paths:
+            - tests/deps/splunk-add-on-for-ucc-example/output
       - persist_to_workspace:
           root: .
           paths:
