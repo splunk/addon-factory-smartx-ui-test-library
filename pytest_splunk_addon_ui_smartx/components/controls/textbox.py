@@ -53,3 +53,11 @@ class TextBox(BaseControl):
         Get type of value entered in textbox
         '''
         return self.input.get_attribute('type').strip()
+
+    def wait_to_be_editable(self):
+        """
+        Wait for the textbox field to be editable
+        """
+        def _wait_for_field_to_be_editable(driver):
+            return self.is_editable == True
+        self.wait_for(_wait_for_field_to_be_editable, msg="Field is uneditable")
