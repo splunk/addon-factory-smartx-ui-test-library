@@ -17,7 +17,5 @@ COPY tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /work/.pytest.expec
 
 COPY tests/deps/splunk-add-on-for-ucc-example/tests/ui /work/tests
 COPY tests/deps/splunk-add-on-for-ucc-example/package /work/package
-RUN sudo chown -R circleci /home/circleci/
 
-USER circleci
 ENTRYPOINT /entrypoint.sh
