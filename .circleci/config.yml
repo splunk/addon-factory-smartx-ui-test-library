@@ -13,7 +13,7 @@ commands:
     - attach_workspace:
         at: /tmp/workspace
     - run:
-        name: Generating package
+        name: Building Example-TA
         command: |
           cd tests/deps/splunk-add-on-for-ucc-example
           sudo ./build.sh
@@ -21,29 +21,24 @@ commands:
         name: Setup for testing
         command: |
           echo "Setup for Testing..."
-          pip install git+https://github.com/pixelb/crudini        
+          pip install git+https://github.com/pixelb/crudini
           mkdir test-results
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
+          export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
+          
+          export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
+          export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
+          export TEST_SET=tests/deps/splunk-add-on-for-ucc-example/tests/ui
+
+          docker-compose -f docker-compose-ci.yml build
     - run:
         name: Splunk Testing
         command: |
           # Start Splunk
           cd tests/deps/splunk-add-on-for-ucc-example
-          echo "Starting Splunk..."
-          echo ">> PWD"
-          pwd
-          echo ">> ls"
-          ls
-          echo ">> Splunk version"
-          echo "<<parameters.splunk_version>>"
 
           #
           [ ! -d "tests/ui" ] && echo "No Tests found. skipping..." &&  exit 0
-          export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
-          export SPLUNK_APP_ID=$(crudini --get package/default/app.conf id name)
-          export SPLUNK_APP_PACKAGE=output/$(ls output/)
-          export TEST_SET=tests/ui
-          docker-compose -f docker-compose-ci.yml build
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
 

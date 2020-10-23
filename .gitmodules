@@ -2,3 +2,7 @@
 	path = tests/deps/splunk-add-on-for-ucc-example
 	branch = develop
 	url = https://github.com/splunk/splunk-add-on-for-ucc-example
+[submodule "tests/deps/build/addonfactory_test_matrix_splunk"]
+	path = tests/deps/build/addonfactory_test_matrix_splunk
+	url = https://github.com/splunk/addonfactory_test_matrix_splunk
+	branch = develop
