@@ -38,6 +38,7 @@ class SingleSelect(BaseControl):
 
     def select(self, value, open_dropdown=True):
         if open_dropdown:
+            self.wait_to_be_clickable("dropdown")
             self.dropdown.click()
         
         for each in self.get_elements('values'):
@@ -97,6 +98,7 @@ class SingleSelect(BaseControl):
             Cancels the currently selected value in the SingleSelect
         '''
         try:
+            self.wait_to_be_clickable("cancel_selected")
             self.cancel_selected.click()
             return True
         except:
