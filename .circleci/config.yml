@@ -3,6 +3,16 @@ version: 2.1
 orbs:
   go: circleci/go@0.2.0
 commands:
+  build_example_ta:
+    steps:
+    - attach_workspace:
+        at: /tmp/workspace
+    - run:
+        name: Building Example-TA
+        command: |
+          cd tests/deps/splunk-add-on-for-ucc-example
+          sudo ./build.sh
+
   test_smartx:
     parameters:
       test_suite:
@@ -20,11 +30,6 @@ commands:
     steps:
     - attach_workspace:
         at: /tmp/workspace
-    - run:
-        name: Building Example-TA
-        command: |
-          cd tests/deps/splunk-add-on-for-ucc-example
-          sudo ./build.sh
     - run:
         name: Setup for testing
         command: |
@@ -110,6 +115,29 @@ jobs:
           paths:
             - dist
             - output
+  package_example_ta:
+    docker:
+      - image: circleci/python:3.7-node
+    steps:
+      - run:
+          name: Update Submodules
+          command: |
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
+      - run:
+          name: Update Example TA submodules
+          command: |
+            cd tests/deps/splunk-add-on-for-ucc-example
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
+
+      - run:
+          name: Building Example-TA
+          command: |
+            cd tests/deps/splunk-add-on-for-ucc-example
+            sudo ./build.sh
 
   test:
     docker:
@@ -234,9 +262,12 @@ workflows:
   build_test:
     jobs:
       - build
+      - package_example_ta:
+          requires:
+            build
       - test:
           requires:
-            - build
+            - package_example_ta
           matrix:
             parameters:
               splunk_version: ["7.3"]
