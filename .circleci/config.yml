@@ -44,7 +44,7 @@ commands:
           export SPLUNK_APP_PACKAGE=output/$(ls output/)
           export TEST_SET=tests/ui
           docker-compose -f docker-compose-ci.yml build
-          docker-compose -f docker-compose-ci.yml up -d splunk                
+          docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
 
           # Run the tests
@@ -110,9 +110,12 @@ jobs:
         default: latest
     steps:
       - checkout
-      - run: git submodule sync
-      - run: git submodule update --init --recursive
-      - run: git submodule update --remote --merge
+      - run:
+          name: Update Submodules
+          command: |
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
       - run:
           name: Update Example TA submodules
           command: |
