@@ -22,7 +22,7 @@ import os
 # requests.urllib3.disable_warnings()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
+PNG_PATH = "assets"
 
 class SeleniumHelper(object):
     """
@@ -199,7 +199,7 @@ class SeleniumHelper(object):
             login_page = LoginPage(self)
             login_page.login.login(*cred)
         except:
-            self.browser.save_screenshot("login_error.png")
+            self.browser.save_screenshot(os.path.join(PNG_PATH, "login_error.png"))
             raise
 
     def update_saucelab_job(self, status):
