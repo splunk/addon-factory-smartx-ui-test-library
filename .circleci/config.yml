@@ -181,11 +181,7 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Install Tools
-          command: |
-            pip install /tmp/workspace/dist/*
+          docker_layer_caching: true            
       - test_smartx:
             splunk_version: <<parameters.splunk_version>>
             browser: <<parameters.browser>>
