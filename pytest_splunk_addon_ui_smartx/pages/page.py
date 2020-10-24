@@ -9,18 +9,18 @@ class Page(object):
     The page class should not have any interaction method for any visible components. It is supposed to hold all the components only.
     """
 
-    def __init__(self, ucc_smartx_configs, open_page=True):
+    def __init__(self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, open_page=True):
         """
-            :param browser: The selenium webdriver
-            :param urls: Splunk web & management url. {"web": , "mgmt": }
-            :param session_key: session key to access the rest endpoints
+            :param ucc_smartx_selenium_helper: The selenium webdriver
+            :param ucc_smartx_rest_helper: Splunk web & management url. {"web": , "mgmt": }
         """
-
-        self.browser = ucc_smartx_configs.browser
-        self.splunk_web_url = ucc_smartx_configs.splunk_web_url
-        self.splunk_mgmt_url = ucc_smartx_configs.splunk_mgmt_url
-        if open_page:
-            self.open()
+        if ucc_smartx_selenium_helper:
+            self.browser = ucc_smartx_selenium_helper.browser
+            self.splunk_web_url = ucc_smartx_selenium_helper.splunk_web_url
+            if open_page:
+                self.open()
+        if ucc_smartx_rest_helper:
+            self.splunk_mgmt_url = ucc_smartx_rest_helper.splunk_mgmt_url
 
     def open(self):
         """

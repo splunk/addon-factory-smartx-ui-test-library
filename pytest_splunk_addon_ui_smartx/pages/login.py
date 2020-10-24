@@ -11,7 +11,7 @@ class LoginPage(Page):
     """
     Page: Login page
     """
-    def __init__(self, ucc_smartx_configs):
+    def __init__(self, ucc_smartx_selenium_helper):
 
-        super(LoginPage, self).__init__(ucc_smartx_configs)
-        self.login = Login(ucc_smartx_configs.browser)
+        super(LoginPage, self).__init__(ucc_smartx_selenium_helper, ucc_smartx_rest_helper=None)
+        self.login = Login(ucc_smartx_selenium_helper.browser)

@@ -22,7 +22,7 @@ import os
 # requests.urllib3.disable_warnings()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
+PNG_PATH = "assets"
 
 class SeleniumHelper(object):
     """
@@ -41,7 +41,7 @@ class SeleniumHelper(object):
         try:
             if browser == "firefox":
                 if debug:
-                    self.browser = webdriver.Firefox(firefox_options=self.get_local_firefox_opts(headless))
+                    self.browser = webdriver.Firefox(firefox_options=self.get_local_firefox_opts(headless), log_path="selenium.log")
                 else:
                     self.browser = webdriver.Remote(
                     command_executor='https://ondemand.saucelabs.com:443/wd/hub',
@@ -49,7 +49,10 @@ class SeleniumHelper(object):
 
             elif browser == "chrome":
                 if debug:
-                    self.browser = webdriver.Chrome(chrome_options=self.get_local_chrome_opts(headless))
+                    self.browser = webdriver.Chrome(
+                        chrome_options=self.get_local_chrome_opts(headless), 
+                        service_args=["--verbose", "--log-path=selenium.log"]
+                    )
                 else:
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
@@ -77,7 +80,6 @@ class SeleniumHelper(object):
         try:
             self.browser_session = self.browser.session_id
             self.login_to_splunk(*self.cred)
-            self.session_key = self.start_session(*self.cred)
         except:
             self.browser.quit()
             if not debug:
@@ -160,6 +162,7 @@ class SeleniumHelper(object):
 
     def get_local_firefox_opts(self, headless_run):
         firefox_opts = webdriver.FirefoxOptions()
+        firefox_opts.log.level = "trace"
         if headless_run:
             firefox_opts.add_argument('--headless')
             firefox_opts.add_argument("--window-size=1280,768")
@@ -200,23 +203,8 @@ class SeleniumHelper(object):
             login_page = LoginPage(self)
             login_page.login.login(*cred)
         except:
-            self.browser.save_screenshot("login_error.png")
+            self.browser.save_screenshot(os.path.join(PNG_PATH, "login_error.png"))
             raise
-
-    @backend_retry(3)
-    def start_session(self, username, password):
-        res = requests.post(self.splunk_mgmt_url + '/services/auth/login?output_mode=json',
-                            data={'username': username, 'password': password }, verify=False)
-
-        try:
-            res = res.json()
-        except:
-            raise Exception("Could not parse the content returned from Management Port. Recheck the mgmt url.")
-        if (len(res.get("messages", [])) > 0) and (res["messages"][0].get("type") == "WARN"):
-            raise Exception("Could not connect to the Splunk instance, verify credentials")
-
-        session_key = str(res["sessionKey"])
-        return session_key
 
     def update_saucelab_job(self, status):
         data = '{"passed": false}' if status else '{"passed": true}'
@@ -228,6 +216,27 @@ class SeleniumHelper(object):
         logger.info("SauceLabs job_id={}".format(response.get("id")))
         logger.info("SauceLabs Video_url={}".format(response.get("video_url")))
 
+class RestHelper(object):
+
+    def __init__(self, splunk_mgmt_url, username ,password):
+        self.splunk_mgmt_url = splunk_mgmt_url
+        self.username = username
+        self.password = password
+        self.start_session()
+
+    @backend_retry(3)
+    def start_session(self):
+        res = requests.post(self.splunk_mgmt_url + '/services/auth/login?output_mode=json',
+                            data={'username': self.username, 'password': self.password }, verify=False)
+
+        try:
+            res = res.json()
+        except:
+            raise Exception("Could not parse the content returned from Management Port. Recheck the mgmt url.")
+        if (len(res.get("messages", [])) > 0) and (res["messages"][0].get("type") == "WARN"):
+            raise Exception("Could not connect to the Splunk instance, verify credentials")
+
+        self.session_key = str(res["sessionKey"])
 
 class UccTester(object):
     """

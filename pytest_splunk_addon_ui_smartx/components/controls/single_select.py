@@ -38,6 +38,7 @@ class SingleSelect(BaseControl):
 
     def select(self, value, open_dropdown=True):
         if open_dropdown:
+            self.wait_to_be_clickable("dropdown")
             self.dropdown.click()
         
         for each in self.get_elements('values'):
@@ -88,6 +89,7 @@ class SingleSelect(BaseControl):
             Gets the selected value
         """
         try:
+            self.wait_for_text("selected")
             return self.selected.text.strip()
         except:
             return False
@@ -97,6 +99,7 @@ class SingleSelect(BaseControl):
             Cancels the currently selected value in the SingleSelect
         '''
         try:
+            self.wait_to_be_clickable("cancel_selected")
             self.cancel_selected.click()
             return True
         except:
@@ -123,6 +126,23 @@ class SingleSelect(BaseControl):
         self.wait_for("internal_container")
         return list_of_values
 
+    def get_single_value(self):
+        """
+        Return one value from Single Select 
+        """
+        selected_val = self.get_value()
+        self.dropdown.click()
+        first_element = None
+        single_element = self.get_element('values')
+        if selected_val:
+            self.select(selected_val, open_dropdown=False)
+        elif self.searchable:
+            self.input.send_keys(Keys.ESCAPE)
+        elif first_element:
+            self.select(first_element.text.strip(), open_dropdown=False)
+        self.wait_for("internal_container")
+        return single_element
+
     def get_list_count(self):
         '''
             Gets the total count of the SingleSelect list
@@ -134,7 +154,7 @@ class SingleSelect(BaseControl):
         Wait for dynamic values to load in SingleSelect
         """
         def _wait_for_values(driver):
-            return self.get_list_count() > 0
+            return self.get_single_value()
         self.wait_for(_wait_for_values, msg="No values found in SingleSelect")
 
     def wait_for_search_list(self):
@@ -144,3 +164,9 @@ class SingleSelect(BaseControl):
         def _wait_for_search_list(driver):
             return len(list(self._list_visible_values())) > 0
         self.wait_for(_wait_for_search_list, msg="No values found in SingleSelect search")
+
+    def is_editable(self):
+        '''
+        Returns True if the Textbox is editable, False otherwise
+        '''
+        return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))

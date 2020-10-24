@@ -22,4 +22,6 @@ class Button(BaseControl):
         """
         self.container.click()
 
+    def wait_to_be_clickable(self):
+        super(Button, self).wait_to_be_clickable("container")
     

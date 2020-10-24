@@ -148,14 +148,14 @@ class Table(BaseComponent):
         except:
             print("Waitspinner did not appear")
 
-    def wait_for_rows_to_appear(self, row_count):
+    def wait_for_rows_to_appear(self, row_count=1):
         """
         Wait for the table to load row_count rows
             :param row_count: number of row_count to wait for. 
         """
         def _wait_for_rows_to_appear(driver):
-            return self.get_row_count() == row_count
-        self.wait_for(_wait_for_rows_to_appear, msg="Expected table to have {} rows".format(row_count))
+            return self.get_row_count() >= row_count
+        self.wait_for(_wait_for_rows_to_appear, msg="Expected rows : {} to be greater or equal to {}".format(row_count, self.get_row_count()))
 
     def get_table(self):
         """
@@ -189,8 +189,11 @@ class Table(BaseComponent):
         Get list of values of  column
             :param column: column header of the table
         """
+        value_list = []
         for each_row in self._get_rows():
-            yield self._get_column_value(each_row, column)
+            value_list.append(self._get_column_value(each_row, column))
+        return value_list
+
 
     def get_list_of_actions(self, name):
         """
@@ -239,7 +242,8 @@ class Table(BaseComponent):
             self.wait_until("delete_close")
             return True  
         elif prompt_msg:
-            return self.get_clear_text(self.delete_prompt)    
+            self.wait_for_text("delete_prompt")
+            return self.get_clear_text(self.delete_prompt)  
         else:
             self.delete_btn.click()
             self.wait_for("app_listings")
