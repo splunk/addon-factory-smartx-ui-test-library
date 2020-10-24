@@ -28,8 +28,6 @@ commands:
         type: string
         default: latest
     steps:
-    - attach_workspace:
-        at: /tmp/workspace
     - run:
         name: Setup for testing
         command: |
