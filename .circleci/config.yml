@@ -57,10 +57,6 @@ commands:
         name: Splunk Testing
         command: |
           # Start Splunk
-          cd tests/deps/splunk-add-on-for-ucc-example
-
-          #
-          [ ! -d "tests/ui" ] && echo "No Tests found. skipping..." &&  exit 0
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
 
