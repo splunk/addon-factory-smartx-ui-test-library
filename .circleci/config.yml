@@ -124,29 +124,29 @@ jobs:
       - restore_cache:
           keys:
             - example-ta-package-1
-      - run:
-          name: Update Submodules
-          command: |
-            git submodule sync
-            git submodule update --init --recursive
-            git submodule update --remote --merge
-      - run:
-          name: Update Example TA submodules
-          command: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            git submodule sync
-            git submodule update --init --recursive
-            git submodule update --remote --merge
+      # - run:
+      #     name: Update Submodules
+      #     command: |
+      #       git submodule sync
+      #       git submodule update --init --recursive
+      #       git submodule update --remote --merge
+      # - run:
+      #     name: Update Example TA submodules
+      #     command: |
+      #       cd tests/deps/splunk-add-on-for-ucc-example
+      #       git submodule sync
+      #       git submodule update --init --recursive
+      #       git submodule update --remote --merge
 
-      - run:
-          name: Building Example-TA
-          command: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            sudo ./build.sh
-      - save_cache:
-          key: example-ta-package-1
-          paths:
-            - tests/deps/splunk-add-on-for-ucc-example/output
+      # - run:
+      #     name: Building Example-TA
+      #     command: |
+      #       cd tests/deps/splunk-add-on-for-ucc-example
+      #       sudo ./build.sh
+      # - save_cache:
+      #     key: example-ta-package-1
+      #     paths:
+      #       - tests/deps/splunk-add-on-for-ucc-example/output
       - persist_to_workspace:
           root: .
           paths:
