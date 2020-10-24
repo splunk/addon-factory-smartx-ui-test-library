@@ -61,6 +61,7 @@ commands:
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
 
           # Run the tests
+          test_exit_code=0
           docker-compose -f docker-compose-ci.yml up  --abort-on-container-exit test || test_exit_code=$?
           # Collect Results
           docker container create --name dummy \
@@ -70,7 +71,7 @@ commands:
           docker cp dummy:/home/circleci/work/assets test-results/assets  || true
           docker cp dummy:/home/circleci/work/report.html test-results/report.html  || true
           echo exit code "$test_exit_code"
-          exit "$test_exit_code" || true
+          exit "$test_exit_code"
 
 
     - store_artifacts:
