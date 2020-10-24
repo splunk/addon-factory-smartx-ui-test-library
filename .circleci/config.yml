@@ -55,15 +55,6 @@ commands:
     - run:
         name: Splunk Testing
         command: |
-          echo "environment setup..."
-          echo $SPLUNK_VERSION
-          echo $SPLUNK_APP_ID
-          echo $SPLUNK_APP_PACKAGE
-          echo $TEST_SET
-          echo $TEST_BROWSER
-          echo $TEST_SUITE
-          echo "Testing..."
-
           # Start Splunk
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done

@@ -13,6 +13,8 @@ services:
       - password=${PASSWORD}
       - token_1=${TOKEN_1}
       - password_1=${PASSWORD_1} 
+      - TEST_SUITE=${TEST_SUITE}
+      - TEST_BROWSER=${TEST_BROWSER}
     build:
       context: .
       dockerfile: Dockerfile-tests
