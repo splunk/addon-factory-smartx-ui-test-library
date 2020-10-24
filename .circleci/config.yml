@@ -280,8 +280,13 @@ workflows:
           matrix:
             parameters:
               splunk_version: ["7.3"]
-              browser: ["firefox"]
-              test_suite: ["test_splunk_ta_example_addon_logging"]
+              browser: ["firefox", "chrome"]
+              test_suite: 
+                - "test_splunk_ta_example_addon_logging"
+                - "test_splunk_ta_example_addon_account"
+                - "test_splunk_ta_example_addon_input"
+                - "test_splunk_ta_example_addon_proxy"
+                - "test_splunk_ta_example_addon_custom"
       - approval-tag-alpha:
           requires:
             - test
