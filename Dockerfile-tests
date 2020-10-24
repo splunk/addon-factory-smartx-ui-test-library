@@ -10,7 +10,7 @@ FROM circleci/python:3.7-browsers
 RUN mkdir -p /home/circleci/work/tests
 RUN mkdir -p /home/circleci/work/test-results/functional
 
-COPY /tmp/workspace/dist /home/circleci/work/dist
+COPY dist /home/circleci/work/dist
 RUN pip install /home/circleci/work/dist/*
 COPY tests/entrypoint.sh /
 COPY tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /home/circleci/work/.pytest.expect
