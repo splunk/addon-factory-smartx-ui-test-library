@@ -37,6 +37,10 @@ commands:
           cp -r /tmp/workspace/dist dist
           cp -r /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output tests/deps/splunk-add-on-for-ucc-example/output
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
+          docker-compose -f docker-compose-ci.yml build
+    - run:
+        name: Splunk Testing
+        command: |
           export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
           export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
@@ -50,11 +54,8 @@ commands:
           echo $TEST_SET
           echo $TEST_BROWSER
           echo $TEST_SUITE
-          echo "Building..."
-          docker-compose -f docker-compose-ci.yml build
-    - run:
-        name: Splunk Testing
-        command: |
+          echo "Testing..."
+
           # Start Splunk
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
