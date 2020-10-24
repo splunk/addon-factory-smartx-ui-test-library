@@ -24,4 +24,4 @@ COPY tests/deps/splunk-add-on-for-ucc-example/package /home/circleci/work/packag
 RUN sudo chown -R circleci /home/circleci/
 
 USER circleci
-CMD sudo /entrypoint.sh
+CMD /entrypoint.sh
