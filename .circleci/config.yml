@@ -69,6 +69,7 @@ commands:
           docker cp dummy:/home/circleci/work/test-results/test.xml test-results/  || true
           docker cp dummy:/home/circleci/work/assets test-results/assets  || true
           docker cp dummy:/home/circleci/work/report.html test-results/report.html  || true
+          echo exit code "$test_exit_code"
           exit "$test_exit_code"
 
 
