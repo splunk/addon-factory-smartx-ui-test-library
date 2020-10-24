@@ -37,7 +37,6 @@ commands:
           cp -r /tmp/workspace/dist dist
           cp -r /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output tests/deps/splunk-add-on-for-ucc-example/output
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
-          docker-compose -f docker-compose-ci.yml build
     - run:
         name: Splunk Testing
         command: |
@@ -55,6 +54,7 @@ commands:
           echo $TEST_BROWSER
           echo $TEST_SUITE
           echo "Testing..."
+          docker-compose -f docker-compose-ci.yml build
 
           # Start Splunk
           docker-compose -f docker-compose-ci.yml up -d splunk
