@@ -67,6 +67,8 @@ commands:
                               -v project_results:/home/circleci/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
           docker cp dummy:/home/circleci/work/test-results/test.xml test-results/  || true
+          docker cp dummy:/home/circleci/work/assets test-results/assets  || true
+          docker cp dummy:/home/circleci/work/report.html test-results/report.html  || true
           exit "$test_exit_code"
 
 
