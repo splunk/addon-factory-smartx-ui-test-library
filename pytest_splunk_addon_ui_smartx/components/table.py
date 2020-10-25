@@ -157,6 +157,15 @@ class Table(BaseComponent):
             return self.get_row_count() >= row_count
         self.wait_for(_wait_for_rows_to_appear, msg="Expected rows : {} to be greater or equal to {}".format(row_count, self.get_row_count()))
 
+    def wait_for_column_to_appear(self, column_name):
+        """
+        Wait for the table to load the column with the given column name.
+            :param column_name: Name of the column to wait for.
+        """
+        def _wait_for_column_to_appear(driver):
+            return column_name in self.get_headers()
+        self.wait_for(_wait_for_column_to_appear, msg="Column {} not found in the table".format(column_name))
+
     def get_table(self):
         """
         Get whole table in dictionary form. The row_name will will be the key and all header:values will be it's value.
