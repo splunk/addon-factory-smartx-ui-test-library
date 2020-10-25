@@ -79,16 +79,19 @@ SmartConfigs = namedtuple("SmartConfigs", ['driver', 'driver_version', 'local_ru
 @pytest.fixture(scope="session")
 def ucc_smartx_configs(request):
 
-    if request.config.getoption("--browser"):
-        driver = request.config.getoption("--browser")
-        LOGGER.debug("--browser={}".format(driver))
-        if len(driver.split(':')) == 2:
-            driver, driver_version = driver.split(':')
+    if not request.config.getoption("--browser"):
+        raise ValueError(
+            "--browser parameter was not provided while running the test cases."
+            )
+    driver = request.config.getoption("--browser")
+    LOGGER.debug("--browser={}".format(driver))
+    if len(driver.split(':')) == 2:
+        driver, driver_version = driver.split(':')
+    else:
+        if driver == 'safari':
+            driver_version = '12'
         else:
-            if driver == 'safari':
-                driver_version = '12'
-            else:
-                driver_version = "latest"
+            driver_version = "latest"
         
     if request.config.getoption("--local"):
         local_run = True
