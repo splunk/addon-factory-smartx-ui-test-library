@@ -40,7 +40,7 @@ def pytest_fixture_setup(fixturedef, request):
     """
     Setup configuration after command-line options are parsed
     """
-    if fixturedef.argname == "ucc_smartx_selenium_helper" and request.config.getoption("--local"):
+    if fixturedef.argname == "ucc_smartx_selenium_helper" and request.config.getoption("--local") and request.config.getoption("--persist-browser"):
         fixturedef.scope = "session"
 
 def pytest_addoption(parser):
@@ -59,6 +59,14 @@ def pytest_addoption(parser):
         "--local", 
         action="store_true", 
         help="The test will be run on local browsers"
+    )
+
+    group.addoption(
+        "--persist-browser", 
+        action="store_true", 
+        help=(
+            "For local execution, keep a single browser to executed all tests."
+        )
     )
 
     group.addoption(
