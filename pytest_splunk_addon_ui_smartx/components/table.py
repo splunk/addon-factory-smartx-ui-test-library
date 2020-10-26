@@ -199,7 +199,14 @@ class Table(BaseComponent):
             :param column: column header of the table
         """
         value_list = []
+        col = copy.deepcopy(self.elements["col"])
+        col = col._replace(select=col.select.format(column=column))
+        self.wait_to_be_stale(self._get_element(col.by, col.select))
+        first_row = True
         for each_row in self._get_rows():
+            if first_row:
+                self.wait_to_be_stale(each_row)
+                first_row = False
             value_list.append(self._get_column_value(each_row, column))
         return value_list
 
