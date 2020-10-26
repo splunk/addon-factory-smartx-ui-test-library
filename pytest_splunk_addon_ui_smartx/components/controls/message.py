@@ -53,5 +53,5 @@ class Message(BaseControl):
         """
         Wait till the message appears
         """
-        return self.container.text
+        return self.container.text.strip()
         
