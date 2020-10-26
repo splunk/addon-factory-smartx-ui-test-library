@@ -19,7 +19,7 @@ class LearnMore(BaseControl):
         super(LearnMore, self).__init__(browser, container)
 
     @contextmanager
-    def go_to_link(self):
+    def open_link(self):
         '''
         Redirects the browser object to the link provided by the container and returns the URL
         '''
