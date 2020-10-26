@@ -36,13 +36,6 @@ def pytest_configure(config):
         except OSError:
             pass
 
-def pytest_fixture_setup(fixturedef, request):
-    """
-    Setup configuration after command-line options are parsed
-    """
-    if fixturedef.argname == "ucc_smartx_selenium_helper" and request.config.getoption("--local") and request.config.getoption("--persist-browser"):
-        fixturedef.scope = "session"
-
 def pytest_addoption(parser):
     parser.conflict_handler = "resolve"
     group = parser.getgroup("splunk-ucc-smartx")
@@ -66,6 +59,7 @@ def pytest_addoption(parser):
         action="store_true", 
         help=(
             "For local execution, keep a single browser to executed all tests."
+            " (Only supported with --local)"
         )
     )
 
@@ -125,7 +119,17 @@ def ucc_smartx_configs(request):
     smartx_configs = SmartConfigs(driver=driver, driver_version=driver_version, local_run=local_run, retry_count=retry_count, headless_run=headless_run)
     return smartx_configs
 
-@pytest.fixture(scope="function")
+def get_browser_scope(fixture_name, config):
+    """
+    Set the scope of the browser dyncamically. 
+    """
+    if config.getoption("--local") and config.getoption("--persist-browser"):
+        return "session"
+    else:
+        return "function"
+
+
+@pytest.fixture(scope=get_browser_scope)
 def ucc_smartx_selenium_helper(request, ucc_smartx_configs, splunk, splunk_web_uri, splunk_rest_uri):
     # Try to configure selenium & Login to splunk instance
     test_case = "{}_{}".format(ucc_smartx_configs.driver, request.node.nodeid.split("::")[-1])
@@ -133,7 +137,6 @@ def ucc_smartx_selenium_helper(request, ucc_smartx_configs, splunk, splunk_web_u
         last_exc = Exception()
         try:
             selenium_helper = SeleniumHelper(ucc_smartx_configs.driver, ucc_smartx_configs.driver_version, splunk_web_uri, splunk_rest_uri, debug=ucc_smartx_configs.local_run, cred=(splunk["username"], splunk["password"]), headless=ucc_smartx_configs.headless_run, test_case=test_case)
-            request.node.selenium_helper = selenium_helper
             break
         except Exception as e:
             last_exc = e
@@ -142,22 +145,21 @@ def ucc_smartx_selenium_helper(request, ucc_smartx_configs, splunk, splunk_web_u
         LOGGER.error("Could not connect to Browser or login to Splunk instance. Please check the logs for detailed error of each retry")
         raise(last_exc)
 
-    def fin():
-        LOGGER.info("Quiting browser..")
-        selenium_helper.browser.quit()
+    yield selenium_helper
 
-        if not ucc_smartx_configs.local_run:
-            LOGGER.debug("Notifying the status of the testcase to SauceLabs...")
-            try:
-                if hasattr(request.node, 'report'):
-                    selenium_helper.update_saucelab_job(request.node.report.failed)
-                else:
-                    LOGGER.info("Could not notify to sauce labs because scope of fixture is not set to function")
-            except:
-                LOGGER.warn("Could not notify to Saucelabs \nTRACEBACK::{}".format(traceback.format_exc()))
+    LOGGER.info("Quiting browser..")
+    selenium_helper.browser.quit()
 
-    request.addfinalizer(fin)
-    return selenium_helper
+    if not ucc_smartx_configs.local_run:
+        LOGGER.debug("Notifying the status of the testcase to SauceLabs...")
+        try:
+            if hasattr(request.node, 'report'):
+                selenium_helper.update_saucelab_job(request.node.report.failed)
+            else:
+                LOGGER.info("Could not notify to sauce labs because scope of fixture is not set to function")
+        except:
+            LOGGER.warn("Could not notify to Saucelabs \nTRACEBACK::{}".format(traceback.format_exc()))
+
 
 @pytest.fixture(scope="session")
 def ucc_smartx_rest_helper(ucc_smartx_configs, splunk, splunk_rest_uri):
@@ -176,6 +178,10 @@ def ucc_smartx_rest_helper(ucc_smartx_configs, splunk, splunk_rest_uri):
         raise(last_exc)
     return rest_helper
 
+@pytest.fixture(scope="function", autouse=True)
+def ucc_smartx_screenshot_helper(request):
+    if "ucc_smartx_selenium_helper" in request.fixturenames:
+        request.node.selenium_helper = request.getfixturevalue("ucc_smartx_selenium_helper")
 
 @pytest.mark.hookwrapper
 def pytest_runtest_makereport(item, call):
