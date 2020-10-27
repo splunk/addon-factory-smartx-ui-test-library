@@ -10,7 +10,6 @@ from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
 from contextlib import contextmanager
 import re
 import time
