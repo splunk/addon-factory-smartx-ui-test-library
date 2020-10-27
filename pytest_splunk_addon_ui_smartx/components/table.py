@@ -267,11 +267,11 @@ class Table(BaseComponent):
         self.filter.clear()
         self.filter.send_keys(filter_query)
         self._wait_for_loadspinner()
-        col = copy.deepcopy(self.elements["col"])
-        col = col._replace(select=col.select.format(column="name"))
-        self.wait_to_be_stale(self._get_element(col.by, col.select))
         rows = list(self._get_rows())
-        self.wait_to_be_stale(rows[0])
+        if self.wait_to_be_stale(rows[0]):   
+            col = copy.deepcopy(self.elements["col"])
+            col = col._replace(select=col.select.format(column="name"))
+            self.wait_to_be_stale(self._get_element(col.by, col.select))
         return self.get_column_values("name")
 
     def clean_filter(self):

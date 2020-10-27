@@ -147,6 +147,7 @@ class BaseComponent(object):
         wait = WebDriverWait(self.browser, DEFAULT_TIMEOUT)
         try:
             wait.until(EC.staleness_of(key), msg)
+            return True
         except TimeoutException:
             pass
 
