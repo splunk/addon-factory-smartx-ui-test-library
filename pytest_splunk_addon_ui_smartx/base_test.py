@@ -182,7 +182,7 @@ class SeleniumHelper(object):
             'platformName': 'Windows 10',
             'browserName': 'chrome',
             'browserVersion': browser_version,
-            'goog:chromeOptions': {'w3c': True},
+            'goog:chromeOptions': {'w3c': True,'args':['--ignore-certificate-errors','--ignore-ssl-errors=yes']},
             'sauce:options': self.get_sauce_opts()
         }
         return chrome_opts
