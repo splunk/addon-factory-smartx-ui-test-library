@@ -289,7 +289,7 @@ workflows:
                 - "test_splunk_ta_example_addon_custom"
       - approval-tag-alpha:
           requires:
-            - test
+            - build
           type: approval
           filters:
             branches:
