@@ -28,4 +28,7 @@ class BaseControl(BaseComponent):
         return self.get_clear_text(self.help_text)
 
     def get_input_label(self):
+        """
+        get field label value
+        """
         return self.get_label_text(self.label_text)
