@@ -31,4 +31,4 @@ class BaseControl(BaseComponent):
         """
         get field label value
         """
-        return self.get_label_text(self.label_text)
+        return self.get_clear_text(self.label_text)

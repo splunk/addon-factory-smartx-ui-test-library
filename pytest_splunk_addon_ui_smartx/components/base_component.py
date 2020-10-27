@@ -36,13 +36,6 @@ class BaseComponent(object):
 
     def get_clear_text(self, web_element):
         return re.sub('\s+', ' ', web_element.text).strip()
-
-    def get_label_text(self, web_element):
-        """
-        Get the element text. 
-            :param web_element: label element
-        """
-        return re.sub('\s+', ' ', web_element.text).strip()
         
     def get_element(self, key):
         """
