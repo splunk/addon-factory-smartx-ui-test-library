@@ -39,7 +39,7 @@ class LearnMore(BaseControl):
         self.browser.switch_to.window(self.browser.window_handles[0])
 
     def get_current_url(self):
-        self.browser.current_url
+        return self.browser.current_url
 
     def wait_for_tab(self):
         """
