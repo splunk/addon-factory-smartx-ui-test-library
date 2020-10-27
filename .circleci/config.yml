@@ -279,7 +279,7 @@ workflows:
             - package_example_ta
           matrix:
             parameters:
-              splunk_version: ["7.3"]
+              splunk_version: ["8.1"]
               browser: ["firefox", "chrome"]
               test_suite: 
                 - "test_splunk_ta_example_addon_logging"
