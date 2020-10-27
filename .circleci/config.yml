@@ -2,6 +2,83 @@
 version: 2.1
 orbs:
   go: circleci/go@0.2.0
+commands:
+  build_example_ta:
+    steps:
+    - attach_workspace:
+        at: /tmp/workspace
+    - run:
+        name: Building Example-TA
+        command: |
+          cd tests/deps/splunk-add-on-for-ucc-example
+          sudo ./build.sh
+
+  test_smartx:
+    parameters:
+      test_suite:
+        description: Test Suite
+        type: string
+        default: -k test_splunk_ta_example_addon_account
+      browser:
+        description: Browser name
+        type: string
+        default: firefox
+      splunk_version:
+        description: Image version
+        type: string
+        default: latest
+    steps:
+    - run:
+        name: Setup for testing
+        command: |
+          echo "Setup for Testing..."
+          pip install git+https://github.com/pixelb/crudini
+          mkdir test-results
+          cp -r /tmp/workspace/dist dist
+          cp -r /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output tests/deps/splunk-add-on-for-ucc-example/output
+          cp -r tests/deps/splunk-add-on-for-ucc-example/output output
+    - run:
+        name: Splunk Testing
+        command: |
+          export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
+          export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
+          export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
+          export TEST_SET=tests/deps/splunk-add-on-for-ucc-example/tests/ui
+          export TEST_BROWSER="<<parameters.browser>>"
+          export TEST_SUITE="-k <<parameters.test_suite>>"
+          echo "environment setup..."
+          echo $SPLUNK_VERSION
+          echo $SPLUNK_APP_ID
+          echo $SPLUNK_APP_PACKAGE
+          echo $TEST_SET
+          echo $TEST_BROWSER
+          echo $TEST_SUITE
+          echo "Testing..."
+          docker-compose -f docker-compose-ci.yml build
+
+          # Start Splunk
+          docker-compose -f docker-compose-ci.yml up -d splunk
+          until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
+
+          # Run the tests
+          test_exit_code=0
+          docker-compose -f docker-compose-ci.yml up  --abort-on-container-exit test || test_exit_code=$?
+          # Collect Results
+          docker container create --name dummy \
+                              -v project_results:/home/circleci/work \
+                              registry.access.redhat.com/ubi7/ubi
+          docker cp dummy:/home/circleci/work/test-results/test.xml test-results/  || true
+          docker cp dummy:/home/circleci/work/assets test-results/assets  || true
+          docker cp dummy:/home/circleci/work/report.html test-results/report.html  || true
+          echo exit code "$test_exit_code"
+          exit "$test_exit_code"
+
+
+    - store_artifacts:
+        path: test-results
+        destination: test-results
+    - store_test_results:
+        path: test-results
 
 jobs:
   build:
@@ -39,18 +116,82 @@ jobs:
           paths:
             - dist
             - output
-
-  test:
+  package_example_ta:
     docker:
       - image: circleci/python:3.7-node
     steps:
       - checkout
+      # - restore_cache:
+      #     keys:
+      #       - example-ta-package-1
+      - run:
+          name: Update Submodules
+          command: |
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
+      - run:
+          name: Update Example TA submodules
+          command: |
+            cd tests/deps/splunk-add-on-for-ucc-example
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
+
+      - run:
+          name: Building Example-TA
+          command: |
+            cd tests/deps/splunk-add-on-for-ucc-example
+            sudo ./build.sh
+      # - save_cache:
+      #     key: example-ta-package-1
+      #     paths:
+      #       - tests/deps/splunk-add-on-for-ucc-example/output
+      - persist_to_workspace:
+          root: .
+          paths:
+            - tests/deps/splunk-add-on-for-ucc-example/output
+
+  test:
+    docker:
+      - image: circleci/python:3.7-node
+    parameters:
+      splunk_version:
+        description: Image version
+        type: string
+        default: latest
+      test_suite:
+        description: Test Suite
+        type: string
+        default: -k test_splunk_ta_example_addon_account
+      browser:
+        description: Browser name
+        type: string
+        default: firefox
+
+    steps:
+      - checkout
+      - run:
+          name: Update Submodules
+          command: |
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
+      - run:
+          name: Update Example TA submodules
+          command: |
+            cd tests/deps/splunk-add-on-for-ucc-example
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
       - attach_workspace:
           at: /tmp/workspace
-      - run:
-          name: Install Tools
-          command: |
-            pip install /tmp/workspace/dist/*
+      - setup_remote_docker:
+          docker_layer_caching: true            
+      - test_smartx:
+            splunk_version: <<parameters.splunk_version>>
+            browser: <<parameters.browser>>
+            test_suite: <<parameters.test_suite>>
   publish:
     docker:
       - image: circleci/python:3.7-node
@@ -130,9 +271,22 @@ workflows:
   build_test:
     jobs:
       - build
-      - test:
+      - package_example_ta:
           requires:
             - build
+      - test:
+          requires:
+            - package_example_ta
+          matrix:
+            parameters:
+              splunk_version: ["7.3"]
+              browser: ["firefox", "chrome"]
+              test_suite: 
+                - "test_splunk_ta_example_addon_logging"
+                - "test_splunk_ta_example_addon_account"
+                - "test_splunk_ta_example_addon_input"
+                - "test_splunk_ta_example_addon_proxy"
+                - "test_splunk_ta_example_addon_custom"
       - approval-tag-alpha:
           requires:
             - test
