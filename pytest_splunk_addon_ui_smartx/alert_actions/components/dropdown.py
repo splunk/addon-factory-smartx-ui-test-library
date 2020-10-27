@@ -27,10 +27,18 @@ class ActionDropdown(BaseComponent):
         self.add_action.click()
         value_list = []
         for each_action in self.get_elements("action_name"):
-            value_list.append(self.get_clear_text(each_action))
+            if self.get_clear_text(each_action):
+                value_list.append(self.get_clear_text(each_action))
         self.add_action.click()
         return value_list
 
+    def wait_for_values(self):
+        """
+        Wait for dynamic values to load in SingleSelect
+        """
+        def _wait_for_values(driver):
+            return bool(self.get_value_list())
+        self.wait_for(_wait_for_values, msg="No values found in the dropdown")
 
     def select_action(self, action_name):
         self.add_action.click()
