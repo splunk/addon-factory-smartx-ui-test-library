@@ -36,7 +36,7 @@ class BaseComponent(object):
 
     def get_clear_text(self, web_element):
         return re.sub('\s+', ' ', web_element.text).strip()
-        
+
     def get_element(self, key):
         """
         Get the web-element. 
