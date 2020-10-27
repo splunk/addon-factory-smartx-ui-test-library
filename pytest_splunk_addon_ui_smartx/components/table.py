@@ -10,6 +10,7 @@ from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 import re
 import time
 import copy
@@ -256,7 +257,7 @@ class Table(BaseComponent):
         else:
             self.delete_btn.click()
             self.wait_for("app_listings")
-            
+        self.wait_stale()
             
     def set_filter(self, filter_query):
         """
@@ -267,12 +268,20 @@ class Table(BaseComponent):
         self.filter.clear()
         self.filter.send_keys(filter_query)
         self._wait_for_loadspinner()
-        rows = list(self._get_rows())
-        if self.wait_to_be_stale(rows[0]):   
-            col = copy.deepcopy(self.elements["col"])
-            col = col._replace(select=col.select.format(column="name"))
-            self.wait_to_be_stale(self._get_element(col.by, col.select))
+        self.wait_stale()
         return self.get_column_values("name")
+
+    def wait_stale(self):
+        rows = list(self._get_rows())
+        col = copy.deepcopy(self.elements["col"])
+        col = col._replace(select=col.select.format(column="name"))
+        try:
+            col_element = self._get_element(col.by, col.select)
+        except TimeoutException:
+            pass
+        if len(rows) > 0 and self.wait_to_be_stale(rows[0]):
+            if col_element:   
+                self.wait_to_be_stale(col_element)
 
     def clean_filter(self):
         """
