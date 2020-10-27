@@ -10,6 +10,7 @@ from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 from contextlib import contextmanager
 import re
 import time
@@ -239,24 +240,25 @@ class Table(BaseComponent):
         """
 
         # Click on action
-        _row = self._get_row(name)
-        _row.find_element(*list(self.elements["delete"]._asdict().values())).click()        
+        with self.wait_stale():
+            _row = self._get_row(name)
+            _row.find_element(*list(self.elements["delete"]._asdict().values())).click()        
 
-        self.wait_for("delete_prompt")
-        if cancel:
-            self.delete_cancel.click()
-            self.wait_until("delete_cancel")
-            return True
-        elif close:
-            self.delete_close.click()
-            self.wait_until("delete_close")
-            return True  
-        elif prompt_msg:
-            self.wait_for_text("delete_prompt")
-            return self.get_clear_text(self.delete_prompt)  
-        else:
-            self.delete_btn.click()
-            self.wait_for("app_listings")
+            self.wait_for("delete_prompt")
+            if cancel:
+                self.delete_cancel.click()
+                self.wait_until("delete_cancel")
+                return True
+            elif close:
+                self.delete_close.click()
+                self.wait_until("delete_close")
+                return True  
+            elif prompt_msg:
+                self.wait_for_text("delete_prompt")
+                return self.get_clear_text(self.delete_prompt)  
+            else:
+                self.delete_btn.click()
+                self.wait_for("app_listings")
             
     def set_filter(self, filter_query):
         """
