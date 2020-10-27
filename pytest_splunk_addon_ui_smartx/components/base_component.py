@@ -5,6 +5,7 @@
 from builtins import object
 from collections import namedtuple
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import re
@@ -139,6 +140,16 @@ class BaseComponent(object):
         Wait for the component container to be displayed
         """
         self.wait_for("container")
+
+    def wait_to_be_stale(self, key, msg=None):
+        if not msg:
+            msg = "{} element is not stale.".format(key)
+        wait = WebDriverWait(self.browser, DEFAULT_TIMEOUT)
+        try:
+            wait.until(EC.staleness_of(key), msg)
+            return True
+        except TimeoutException:
+            pass
 
     def wait_to_be_clickable(self, key, msg=None):
         """

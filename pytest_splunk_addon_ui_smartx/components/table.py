@@ -10,6 +10,7 @@ from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from contextlib import contextmanager
 import re
 import time
 import copy
@@ -238,25 +239,25 @@ class Table(BaseComponent):
         """
 
         # Click on action
-        _row = self._get_row(name)
-        _row.find_element(*list(self.elements["delete"]._asdict().values())).click()        
+        with self.wait_stale():
+            _row = self._get_row(name)
+            _row.find_element(*list(self.elements["delete"]._asdict().values())).click()        
 
-        self.wait_for("delete_prompt")
-        if cancel:
-            self.delete_cancel.click()
-            self.wait_until("delete_cancel")
-            return True
-        elif close:
-            self.delete_close.click()
-            self.wait_until("delete_close")
-            return True  
-        elif prompt_msg:
-            self.wait_for_text("delete_prompt")
-            return self.get_clear_text(self.delete_prompt)  
-        else:
-            self.delete_btn.click()
-            self.wait_for("app_listings")
-            
+            self.wait_for("delete_prompt")
+            if cancel:
+                self.delete_cancel.click()
+                self.wait_until("delete_cancel")
+                return True
+            elif close:
+                self.delete_close.click()
+                self.wait_until("delete_close")
+                return True  
+            elif prompt_msg:
+                self.wait_for_text("delete_prompt")
+                return self.get_clear_text(self.delete_prompt)  
+            else:
+                self.delete_btn.click()
+                self.wait_for("app_listings")
             
     def set_filter(self, filter_query):
         """
@@ -264,10 +265,21 @@ class Table(BaseComponent):
             :param filter_query: query of the filter
             :returns : resultant list of filtered row_names
         """
-        self.filter.clear()
-        self.filter.send_keys(filter_query)
-        self._wait_for_loadspinner()
+        with self.wait_stale():
+            self.filter.clear()
+            self.filter.send_keys(filter_query)
+            self._wait_for_loadspinner()
         return self.get_column_values("name")
+
+    @contextmanager
+    def wait_stale(self):
+        rows = list(self._get_rows())
+        col = copy.deepcopy(self.elements["col"])
+        col = col._replace(select=col.select.format(column="name"))
+        col_element = self._get_element(col.by, col.select)
+        yield
+        if len(rows) > 0 and self.wait_to_be_stale(rows[0]):  
+            self.wait_to_be_stale(col_element)
 
     def clean_filter(self):
         """
@@ -363,5 +375,3 @@ class Table(BaseComponent):
                 return True
         else:
             raise ValueError("{} not found".format(page_next))
-
-        
