@@ -2,9 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from .base_control import BaseControl
-from selenium.webdriver.common.by import By
 import time
+from contextlib import contextmanager
+from selenium.webdriver.common.by import By
+from .base_control import BaseControl
 
 class LearnMore(BaseControl):
     """
@@ -17,7 +18,8 @@ class LearnMore(BaseControl):
         """
         super(LearnMore, self).__init__(browser, container)
 
-    def go_to_link(self):
+    @contextmanager
+    def open_link(self):
         '''
         Redirects the browser object to the link provided by the container and returns the URL
         '''
@@ -32,9 +34,12 @@ class LearnMore(BaseControl):
             self.browser.switch_to.window(self.browser.window_handles[1])
         self.wait_for_header()
         current_url = self.browser.current_url
+        yield current_url
         self.browser.close()
         self.browser.switch_to.window(self.browser.window_handles[0])
-        return current_url
+
+    def get_current_url(self):
+        self.browser.current_url
 
     def wait_for_tab(self):
         """
