@@ -97,7 +97,7 @@ class SeleniumHelper(object):
             self.sauce_tunnel_parent = None
 
         self.jenkins_build = os.environ.get('JOB_NAME') or os.environ.get('JENKINS_JOB_ID') or "Local Run"
-        logger.warning("Using Saucelabs tunnel: {}".format(self.sauce_tunnel_id))
+        print("Using Saucelabs tunnel: {}".format(self.sauce_tunnel_id))
         if not self.sauce_username or not self.sauce_access_key: 
             raise Exception(
                     "SauceLabs Credentials not found in the environment."
@@ -222,8 +222,8 @@ class SeleniumHelper(object):
                         data=data, 
                         auth=(self.sauce_username, self.sauce_access_key))
         response = response.json()
-        logger.warning("SauceLabs job_id={}".format(response.get("id")))
-        logger.warning("SauceLabs Video_url={}".format(response.get("video_url")))
+        print("SauceLabs job_id={}".format(response.get("id")))
+        print("SauceLabs Video_url={}".format(response.get("video_url")))
 
 class RestHelper(object):
 
