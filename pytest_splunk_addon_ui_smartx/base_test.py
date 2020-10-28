@@ -92,7 +92,10 @@ class SeleniumHelper(object):
         self.sauce_username = os.environ.get('SAUCE_USERNAME')
         self.sauce_access_key = os.environ.get('SAUCE_PASSWORD')
         self.sauce_tunnel_id = os.environ.get('SAUCE_TUNNEL_ID') or 'sauce-ha-tunnel'
-        self.sauce_tunnel_parent = os.environ.get('SAUCE_TUNNEL_PARENT', 'qtidev')
+        self.sauce_tunnel_parent = os.environ.get('SAUCE_TUNNEL_PARENT') or 'qtidev'
+        if self.sauce_tunnel_parent in ["null", "none"]:
+            self.sauce_tunnel_parent = None
+
         self.jenkins_build = os.environ.get('JOB_NAME') or os.environ.get('JENKINS_JOB_ID') or "Local Run"
         logger.warning("Using Saucelabs tunnel: {}".format(self.sauce_tunnel_id))
         if not self.sauce_username or not self.sauce_access_key: 

@@ -16,6 +16,9 @@ classifiers = [
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
 ]
+packages = [
+        {include = "pytest_splunk_addon_ui_smartx/**/*.py"},
+]
 version = "0.0.0"
 
 [tool.poetry.dependencies]
