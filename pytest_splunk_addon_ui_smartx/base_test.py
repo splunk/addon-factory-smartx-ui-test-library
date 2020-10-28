@@ -222,8 +222,8 @@ class SeleniumHelper(object):
                         data=data, 
                         auth=(self.sauce_username, self.sauce_access_key))
         response = response.json()
-        logger.info("SauceLabs job_id={}".format(response.get("id")))
-        logger.info("SauceLabs Video_url={}".format(response.get("video_url")))
+        logger.warning("SauceLabs job_id={}".format(response.get("id")))
+        logger.warning("SauceLabs Video_url={}".format(response.get("video_url")))
 
 class RestHelper(object):
 
