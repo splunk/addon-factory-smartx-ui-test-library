@@ -28,12 +28,14 @@ class Message(BaseControl):
     def get_msg(self):
         '''
         Returns the error message
+            :return: Str error message
         '''
         return self.msg_text.text.strip()
 
     def close_msg(self):
         """
         Cancel the error message 
+            :return: Bool if successful
         """
         self.msg_close.click()
         return True
@@ -41,6 +43,7 @@ class Message(BaseControl):
     def wait_loading(self):
         """
         Wait till the message appears and then dissapears
+            :return: Str The text message after waiting
         """
         try:
             text = self.container.text
@@ -52,6 +55,7 @@ class Message(BaseControl):
     def wait_to_display(self):
         """
         Wait till the message appears
+            :return: Str The text message after appearing
         """
         return self.container.text.strip()
         

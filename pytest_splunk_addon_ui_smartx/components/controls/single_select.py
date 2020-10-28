@@ -37,6 +37,12 @@ class SingleSelect(BaseControl):
             })
 
     def select(self, value, open_dropdown=True):
+        """
+        Selects the value within the select dropdown
+            :param value: the value to select
+            :param open_dropdown: Bool Whether to open the the dropwdown or not 
+            :return: Bool if successful in selection, else raises an error
+        """
         if open_dropdown:
             self.wait_to_be_clickable("dropdown")
             self.dropdown.click()
@@ -54,6 +60,7 @@ class SingleSelect(BaseControl):
         """
         search with the singleselect input
             :param value: string value to search
+            :assert: Asserts whether or not the single select is seachable
         """
 
         assert self.searchable, "Can not search, as the Singleselect is not searchable"
@@ -66,7 +73,7 @@ class SingleSelect(BaseControl):
         """
         search with the singleselect input and return the list
             :param value: string value to search        
-            :returns : list of values
+            :returns: list of values
         """
 
         self.search(value)
@@ -78,7 +85,8 @@ class SingleSelect(BaseControl):
 
     def _list_visible_values(self):
         """
-            Gets list of values which are visible. Used while filtering 
+        Gets list of values which are visible. Used while filtering
+            :returns: List of the values that are visible
         """
         for each in self.get_elements('values'):
             yield each.get_attribute('textContent')
@@ -86,7 +94,8 @@ class SingleSelect(BaseControl):
 
     def get_value(self):
         """
-            Gets the selected value
+        Gets the selected value
+            :return: The selected value's text, or returns false if unsuccessful
         """
         try:
             self.wait_for_text("selected")
@@ -96,7 +105,8 @@ class SingleSelect(BaseControl):
 
     def cancel_selected_value(self):
         '''
-            Cancels the currently selected value in the SingleSelect
+        Cancels the currently selected value in the SingleSelect
+            :return: Bool whether or not canceling the selected item was successful, else raises a error
         '''
         try:
             self.wait_to_be_clickable("cancel_selected")
@@ -107,7 +117,8 @@ class SingleSelect(BaseControl):
 
     def list_of_values(self):
         """
-            Gets the list of value from the Single Select
+        Gets the list of value from the Single Select
+            :returns: list of options avaialble within the single select
         """
         selected_val = self.get_value()
         self.dropdown.click()
@@ -145,7 +156,8 @@ class SingleSelect(BaseControl):
 
     def get_list_count(self):
         '''
-            Gets the total count of the SingleSelect list
+        Gets the total count of the SingleSelect list
+            :return: Int the count of the options within the Single Select
         '''
         return len(list(self.list_of_values()))
 

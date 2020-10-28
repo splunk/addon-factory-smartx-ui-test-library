@@ -9,7 +9,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 class Checkbox(BaseControl):
-
+    """
+    Entity_Component : Checkbox
+    """
 
     def __init__(self, browser, container, searchable=True):
         super(Checkbox, self).__init__(browser, container)
@@ -30,6 +32,7 @@ class Checkbox(BaseControl):
     def check(self):
         '''
         Checks the checkbox if unchecked
+            :return: Bool true if successful, else it will return a statement that it was already checked
         '''
         try:
             if self.is_checked() == False:
@@ -41,6 +44,7 @@ class Checkbox(BaseControl):
     def uncheck(self):
         '''
         Unchecks the checkbox if checked
+            :return: Bool true if successful, else it will return a statement that it was already unchecked
         '''
         try:
             if self.is_checked() == True:
@@ -52,6 +56,7 @@ class Checkbox(BaseControl):
     def is_checked(self):
         '''
         Returns True if the checkbox is already checked, otherwise False
+            :return: Bool True if checked, False if unchecked
         '''
         element = self.get_element("checkbox_enabled")
         a = element.value_of_css_property("display")

@@ -25,13 +25,13 @@ class TextBox(BaseControl):
         """
         set value of the textbox
         """
-
         self.input.clear()
         self.input.send_keys(value)
 
     def get_value(self):
         """
         get value from the textbox
+            :return: Str The current value of the textbox
         """
         return self.input.get_attribute('value').strip()
 
@@ -44,6 +44,7 @@ class TextBox(BaseControl):
     def is_editable(self):
         '''
         Returns True if the Textbox is editable, False otherwise
+            :return: Bool whether or not the textbox is editable
         '''
         return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))
 
@@ -57,6 +58,7 @@ class TextBox(BaseControl):
     def get_type(self):
         '''
         Get type of value entered in textbox
+            :return: Type of input within the textbox
         '''
         return self.input.get_attribute('type').strip()
 

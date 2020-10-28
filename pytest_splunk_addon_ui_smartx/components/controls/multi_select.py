@@ -11,7 +11,9 @@ from selenium.webdriver.common.keys import Keys
 class MultiSelect(BaseControl):
     """
     Entity-Component: Multiselect
+
     Select Javascript framework: select2
+    
     A dropdown which can select more than one values
     """
     def __init__(self, browser, container):
@@ -42,7 +44,7 @@ class MultiSelect(BaseControl):
         """
         search with the multiselect input and return the list
             :param value: string value to search        
-            :returns : list of values
+            :returns: list of values
         """
         self.search(value)
         self.wait_for_search_list()
@@ -55,6 +57,7 @@ class MultiSelect(BaseControl):
         """
         select a single value
             :param value: the value to select
+            :return: Bool returns true if selection was successful, else raises an exception
         """
         try:
             self.input.click()
@@ -72,7 +75,8 @@ class MultiSelect(BaseControl):
     def deselect(self, value):
         """
         Remove an item from selected list.
-        :param value: the value to deselect
+            :param value: the value to deselect
+            :return: Bool returns true if deselect was successful, else raises an exception
         """
         for each in self.get_child_elements('selected'):
             if each.text.strip().lower() == value.lower():
@@ -92,12 +96,14 @@ class MultiSelect(BaseControl):
     def get_values(self):
         """
         get list selected values
+            :returns: List of values selected within the multi-select
         """
         return [each.text.strip() for each in self.get_child_elements("selected")]
 
     def list_of_values(self):
         """
         Get list of possible values to select from dropdown
+            :returns: List of options within the multi-select dropdown
         """
         self.wait_for("internal_container")
         list_of_values = []
@@ -114,6 +120,7 @@ class MultiSelect(BaseControl):
     def _list_visible_values(self):
         """
         Get list of values which are visible. Used while filtering 
+            :returns: List of visible options within the multi-select dropdown
         """
         for each in self.get_elements('values'):
             yield each.get_attribute('textContent')

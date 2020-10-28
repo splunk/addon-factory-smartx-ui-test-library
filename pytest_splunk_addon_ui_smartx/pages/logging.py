@@ -49,5 +49,6 @@ class Logging(Entity):
     def _get_logging_url(self):
         """
         get rest endpoint for the configuration
+            :returns: str endpoint for the configuration file
         """
         return '{}/servicesNS/nobody/{}/configs/conf-{}/logging'.format(self.splunk_mgmt_url, self.ta_name, self.ta_conf)

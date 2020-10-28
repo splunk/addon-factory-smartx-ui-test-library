@@ -11,7 +11,9 @@ from selenium.webdriver.common.keys import Keys
 class OAuthSelect(BaseControl):
     """
     Entity-Component: OAuthSelect
+
     OAuthSelect Javascript framework: OAuthSelect
+    
     A dropdown which can select only one value
     """
     def __init__(self, browser, container, searchable=True):
@@ -26,6 +28,12 @@ class OAuthSelect(BaseControl):
         })
 
     def select(self, value, open_dropdown=True):
+        """
+        Selects the value within hte select dropdown
+            :param value: the value to select
+            :param open_dropdown: Bool Whether to open the the dropwdown or not 
+            :return: Bool if successful in selection, else raises an error
+        """
         if open_dropdown:
             self.container.click()
         for each in self.get_elements('values'):
@@ -37,7 +45,8 @@ class OAuthSelect(BaseControl):
 
     def get_value(self):
         """
-            Gets the selected value
+        Gets the selected value
+            :return: Str The elected value within the dropdown, else returns blank
         """
         try:
             return self.container.get_attribute('value').strip()
@@ -46,7 +55,8 @@ class OAuthSelect(BaseControl):
 
     def list_of_values(self):
         """
-            Gets the list of value from the Single Select
+        Gets the list of value from the Single Select
+            :returns: List of options from the single select
         """
         selected_val = self.get_value()
         self.container.click()

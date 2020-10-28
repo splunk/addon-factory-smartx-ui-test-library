@@ -13,8 +13,8 @@ class LearnMore(BaseControl):
     """
     def __init__(self, browser, container):
         """
-        :param browser: The selenium webdriver
-        :param container: The locator of the container where the control is located in. 
+            :param browser: The selenium webdriver
+            :param container: The locator of the container where the control is located in. 
         """
         super(LearnMore, self).__init__(browser, container)
 

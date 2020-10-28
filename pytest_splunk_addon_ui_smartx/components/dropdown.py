@@ -34,6 +34,12 @@ class Dropdown(BaseComponent):
 
 
     def select_page_option(self, value, open_dropdown=True):
+        """
+        Selects the page option that the user specifies in value
+            :param value: The value in which we want to select
+            :param open_dropdown: Whether or not the dropdown should be opened
+            :return: Returns True if successful, otherwise raises an error
+        """
         if open_dropdown:
             self.pagination_dropdown.click()
         for each in self.get_elements('page_list'):
@@ -44,9 +50,18 @@ class Dropdown(BaseComponent):
             raise ValueError("{} not found in select list".format(value))
 
     def get_value(self):
+        """
+        Returns the current value for the dropdown
+            :return: Str The current value for the dropdown
+        """
         return self.currunt_value.text.strip()
 
     def select(self, value):
+        """
+        Selects the value we want from the type list
+            :param value: The value in which we want to select
+            :return: Returns True if successful, otherwise raises an error
+        """
 
         self.add_input.click()
         for each in self.get_elements('type_list'):
@@ -57,6 +72,12 @@ class Dropdown(BaseComponent):
             raise ValueError("{} not found in select list".format(value))
 
     def select_input_type(self, value, open_dropdown=True):
+        """
+        Selects the input type option that the user specifies in value
+            :param value: The value in which we want to select
+            :param open_dropdown: Whether or not the dropdown should be opened
+            :return: Returns True if successful, otherwise raises an error
+        """
         if open_dropdown:
             self.type_dropdown.click()
         for each in self.get_elements('type_filter_list'):
@@ -67,14 +88,26 @@ class Dropdown(BaseComponent):
             raise ValueError("{} not found in select list".format(value))
 
     def get_inputs_list(self):
+        """
+        Returns a generator list for the options available in the add input dropdown
+            :return: Returns Generator list of values 
+        """
         self.add_input.click()
         return [each.text.strip() for each in self.get_elements("type_list")]
 
     def get_pagination_list(self):
+        """
+        Returns a generator list for the pagination text available in the add input dropdown
+            :return: Returns Generator list of values 
+        """
         self.pagination_dropdown.click()
         return [each.text.strip() for each in self.get_elements("page_list")]
 
     def get_input_type_list(self):
+        """
+        Returns a generator list for the input types available in the add input dropdown
+            :return: Returns Generator list of values 
+        """
         self.type_dropdown.click()
         return [each.text.strip() for each in self.get_elements("type_filter_list")]
 

@@ -27,6 +27,9 @@ pytest-html = "*"
 pytest-splunk-addon = "1.3.6"
 urllib3 = "1.21.1"
 selenium = "*"
+webdriver-manager = "*"
+Sphinx = "*"
+sphinx_rtd_theme = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.2"

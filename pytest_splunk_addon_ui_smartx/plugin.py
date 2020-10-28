@@ -37,6 +37,9 @@ def pytest_configure(config):
             pass
 
 def pytest_addoption(parser):
+    """
+    Register argparse-style options and ini-style config values, called once at the beginning of a test run.
+    """
     parser.conflict_handler = "resolve"
     group = parser.getgroup("splunk-ucc-smartx")
   
@@ -80,6 +83,9 @@ SmartConfigs = namedtuple("SmartConfigs", ['driver', 'driver_version', 'local_ru
 
 @pytest.fixture(scope="session")
 def ucc_smartx_configs(request):
+    """
+    Configure pytest parameters, if provided
+    """
 
     if not request.config.getoption("--browser"):
         raise ValueError(
@@ -189,6 +195,7 @@ def pytest_runtest_makereport(item, call):
     pytest_runtest_makereport will be called after each test case is executed.
     Capture a screenshot if the test case is failed.
     item.selenium_helper has been added by the fixture "test_helper". The scope of the fixture must be function.
+    
         :param item: the method of the test case.
     """
     LOGGER.debug("pytest_runtest_makereport: Start making report")
