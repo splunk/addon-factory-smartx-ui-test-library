@@ -155,6 +155,8 @@ class SeleniumHelper(object):
         
     def get_local_chrome_opts(self, headless_run):
         chrome_opts = webdriver.ChromeOptions()
+        chrome_opts.add_argument('--ignore-ssl-errors=yes')
+        chrome_opts.add_argument('--ignore-certificate-errors')
         if headless_run:
             chrome_opts.add_argument('--headless')
             chrome_opts.add_argument("--window-size=1280,768")
