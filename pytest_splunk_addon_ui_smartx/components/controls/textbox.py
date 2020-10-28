@@ -35,6 +35,12 @@ class TextBox(BaseControl):
         """
         return self.input.get_attribute('value').strip()
 
+    def get_placeholder_value(self):
+        """
+        get placeholder value from the textbox
+        """
+        return self.input.get_attribute('placeholder').strip()
+
     def is_editable(self):
         '''
         Returns True if the Textbox is editable, False otherwise
