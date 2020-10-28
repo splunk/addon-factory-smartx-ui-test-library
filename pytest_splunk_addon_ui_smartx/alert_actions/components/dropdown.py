@@ -27,6 +27,11 @@ class ActionDropdown(BaseComponent):
             if self.get_clear_text(each_action):
                 value_list.append(self.get_clear_text(each_action))
         self.add_action.click()
+        if not value_list:
+            for each_action in self.get_elements("action_name"):
+                if self.get_clear_text(each_action):
+                    value_list.append(self.get_clear_text(each_action))
+            self.add_action.click()
         return value_list
 
     def wait_for_values(self):
