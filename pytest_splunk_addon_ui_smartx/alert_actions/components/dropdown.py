@@ -19,11 +19,8 @@ class ActionDropdown(BaseComponent):
             "action_name": Selector(select=".unselected-action span:first-of-type"), 
         })
 
-    def _get_action_title(self, action_obj):
-        action_obj.find_element(*self.elements)
-
-
     def get_value_list(self):
+        self.wait_to_be_clickable("add_action")
         self.add_action.click()
         value_list = []
         for each_action in self.get_elements("action_name"):
@@ -41,10 +38,15 @@ class ActionDropdown(BaseComponent):
         self.wait_for(_wait_for_values, msg="No values found in the dropdown")
 
     def select_action(self, action_name):
+        self.wait_to_be_clickable("add_action")
         self.add_action.click()
+        value_list = []
         for each_action in self.get_elements("action_name"):
-            if  action_name == self.get_clear_text(each_action):
+            if action_name == self.get_clear_text(each_action):
                 each_action.click()
                 break
+            else:
+                value_list.append(each_action)
         else:
-            raise ValueError("{} not found in Alert Action list".format(action_name))
+            self.add_action.click()
+            raise ValueError("{} not found in Alert Action list. Founded list: {}".format(action_name, value_list))
