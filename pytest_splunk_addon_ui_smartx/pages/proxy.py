@@ -56,6 +56,7 @@ class Proxy(Entity):
     def _get_proxy_endpoint(self):
         """
         get rest endpoint for the configuration
+            :returns: str endpoint for the configuration file
         """
         return '{}/{}'.format(self.splunk_mgmt_url, self.ta_proxy_url)
 

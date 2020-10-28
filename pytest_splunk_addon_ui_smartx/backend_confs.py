@@ -30,7 +30,7 @@ class BackendConf(object):
         """
         rest call to the splunk rest-endpoint
             :param url: url to call
-            :returns : json result of the request
+            :returns: json result of the request
         """
         res = requests.get(url, auth=(self.username, self.password), verify=False)
         assert res.status_code == 200, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
@@ -40,10 +40,10 @@ class BackendConf(object):
         """
         rest call to the splunk rest-endpoint
             :param url: url to call
-            :returns : json result of the request
+            :returns: json result of the request
 
             :param kwargs: body of request method
-            :returns : json result of the request
+            :returns: json result of the request
         """
         res = requests.post(url, kwargs, auth=(self.username, self.password), verify=False)
         assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
@@ -53,7 +53,7 @@ class BackendConf(object):
         """
         rest call to the splunk rest-endpoint
             :param url: url to call
-            :returns : json result of the request
+            :returns: json result of the request
         """
         res = requests.delete(url, auth=(self.username, self.password), verify=False)
         assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
@@ -62,7 +62,7 @@ class BackendConf(object):
         """
         Parse the json result in to the configuration dictionary
             :param json_res: the json_res got from the request
-            :returns : dictionary
+            :returns: dictionary
         """
         stanzas_map = dict()
         for each_stanzas in json_res["entry"]:
@@ -88,7 +88,7 @@ class ListBackendConf(BackendConf):
         """
         Get list of all stanzas of the configuration
             :query: query params for filter the stanza
-            :returns : dictionary {stanza: {param: value, ... }, ... }
+            :returns: dictionary {stanza: {param: value, ... }, ... }
         """
         url = self.url + "?count=0&output_mode=json"
         if query:
@@ -101,7 +101,7 @@ class ListBackendConf(BackendConf):
         """
         Get a specific stanza of the configuration.
             :param stanza: stanza to fetch
-            :returns : dictionary {param: value, ... }
+            :returns: dictionary {param: value, ... }
         """
         url = "{}/{}?count=0&output_mode=json".format(self.url, urllib.parse.quote_plus(stanza))
         if decrypt:
@@ -113,10 +113,10 @@ class ListBackendConf(BackendConf):
         """
         Create a specific stanza of the configuration.
             :param url: url to call
-            :returns : json result of the request
+            :returns: json result of the request
 
             :param kwargs: body of request method
-            :returns : json result of the request
+            :returns: json result of the request
         """
         kwargs['output_mode'] = 'json'
         return self.rest_call_post(url, kwargs)
@@ -125,7 +125,7 @@ class ListBackendConf(BackendConf):
         """
         Delete all stanza from the configuration.
             :query: query params for filter the stanza
-            :returns : json result of the request
+            :returns: json result of the request
         """
         all_stanzas = list(self.get_all_stanzas(query).keys())
         for stanza in all_stanzas:
@@ -135,7 +135,7 @@ class ListBackendConf(BackendConf):
         """
         Delete a specific stanza of the configuration.
             :param stanza: stanza to delete
-            :returns : json result of the request
+            :returns: json result of the request
         """
         url = "{}/{}".format(self.url, urllib.parse.quote_plus(stanza))
         self.rest_call_delete(url)
@@ -143,7 +143,9 @@ class ListBackendConf(BackendConf):
     def get_stanza_value(self, stanza, param, decrypt=False):
         """
         Get value of a specific parameter from a stanza
-            :param
+            :param stanza: str The Stanza we are interested in
+            :param param: the parameter to fetch
+            :returns: str value
         """
         stanza_map = self.get_stanza(stanza, decrypt)
         return stanza_map[param]
@@ -154,6 +156,10 @@ class SingleBackendConf(BackendConf):
     """
 
     def get_stanza(self, decrypt=False):
+        """
+        Get the values of the Stanza from the configuration
+            :returns: dictionary {param: value, ... }
+        """
         url = self.url + "?output_mode=json"
         if decrypt:
             url = "{}&--cred--=1".format(url)
@@ -164,10 +170,16 @@ class SingleBackendConf(BackendConf):
         """
         Get value of a specific parameter from the stanza
             :param param: the parameter to fetch
+            :returns: str value
         """
         stanza_map = self.get_stanza(decrypt)
         return stanza_map[param]
     
     def update_parameters(self, kwargs):
+        """
+        Updates the values of the stanza in the configuration
+            :param kwargs: body of request method
+            :returns: json result of the request
+        """
         kwargs['output_mode'] = 'json'
         return self.rest_call_post(self.url, kwargs)

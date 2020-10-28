@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 class BaseControl(BaseComponent):
     """
     Purpose:
-    The base class for the controls present in the entity. It iss implemented to simplify accessing of controls.
+    The base class for the controls present in the entity. It is implemented to simplify accessing of controls.
     """
     
     def __init__(self, browser, container):

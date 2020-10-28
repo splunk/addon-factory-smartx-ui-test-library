@@ -19,6 +19,7 @@ from selenium.common import exceptions
 class Table(BaseComponent):
     """
     Component: Table
+    
     Base class of Input & Configuration table
     """
     def __init__(self, browser, container, mapping=dict(),wait_for_seconds = 10):
@@ -61,26 +62,30 @@ class Table(BaseComponent):
     def get_count_title(self):
         """
         Get the count mentioned in the table title
+            :return: Str The count of the table title
         """
         return self.get_clear_text(self.count) 
 
     def get_row_count(self):
         """
         Count the number of rows in the page.
+            :return: Int The count of the table rows
         """
         return len(list(self._get_rows()))
 
     def get_headers(self):
         """
         Get list of headers from the table
+            :return: Generator for Str list The headers in the table
         """
         return [self.get_clear_text(each) for each in self.get_elements("header")]
 
     def get_sort_order(self):
         """
-        Get the column-header which is sorted rn.
-        Warning: It depends on the class of the headers and due to it, the returned result might give wrong answer.
-        :returns : a dictionary with the "header" & "ascending" order
+        Get the column-header which is sorted rn. 
+            Warning: It depends on the class of the headers and due to it, the returned result might give wrong answer.
+
+            :returns: a dictionary with the "header" & "ascending" order
         """
         for each_header in self.get_elements("header"):
             if re.search(r"\basc\b", each_header.get_attribute("class")):
@@ -169,8 +174,8 @@ class Table(BaseComponent):
 
     def get_table(self):
         """
-        Get whole table in dictionary form. The row_name will will be the key and all header:values will be it's value.
-        {row_1 : {header_1: value_1, . . .}, . . .}
+        Get whole table in dictionary form. The row_name will will be the key and all header:values will be it's value. {row_1 : {header_1: value_1, . . .}, . . .}
+            :return: dict The data within the table
         """
 
         table = dict()
@@ -190,6 +195,7 @@ class Table(BaseComponent):
         Get a specific cell value.
             :param name: row_name of the table
             :param column: column header of the table
+            :return: str The value within the cell that we are looking for
         """
         _row = self._get_row(name)
         return self._get_column_value(_row, column)
@@ -198,6 +204,7 @@ class Table(BaseComponent):
         """
         Get list of values of  column
             :param column: column header of the table
+            :return: List The values within the certain column
         """
         value_list = []
         for each_row in self._get_rows():
@@ -208,7 +215,8 @@ class Table(BaseComponent):
     def get_list_of_actions(self, name):
         """
         Get list of possible actions for a specific row
-        :param name: The name of the row
+            :param name: The name of the row
+            :return: Generator List The list of actions available within a certain row of the table
         """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["action_values"]._asdict().values()))
@@ -236,6 +244,7 @@ class Table(BaseComponent):
             :param name: row_name of the table
             :param cancel: if provided, after the popup is opened, click on cancel button and Do Not delete the row
             :param close:  if provided, after the popup is opened, click on close button and Do Not delete the row
+            :return: Bool Returns true if successful or returns the string of the delete prompt if looking for prompt message
         """
 
         # Click on action
@@ -263,7 +272,7 @@ class Table(BaseComponent):
         """
         Provide a string in table filter.
             :param filter_query: query of the filter
-            :returns : resultant list of filtered row_names
+            :returns: resultant list of filtered row_names
         """
         with self.wait_stale():
             self.filter.clear()
@@ -291,8 +300,9 @@ class Table(BaseComponent):
     def _get_column_value(self, row, column):
         """
         Get the column from a specific row provided.
-        :param row: the webElement of the row
-        :param column: the header name of the column
+            :param row: the webElement of the row
+            :param column: the header name of the column
+            :return: The list of column values from a specific column and row    
         """
         find_by_col_number = False
         if column.lower().replace(" ","_") in self.header_mapping:
@@ -316,6 +326,7 @@ class Table(BaseComponent):
     def _get_rows(self):
         """
         Get list of rows
+            :return: The list of rows within the table
         """
         for each_row in self.get_elements("rows"):
             yield each_row
@@ -324,6 +335,7 @@ class Table(BaseComponent):
         """
         Get the specified row.
         :param name: row name 
+            :return: element Gets the row specified within the table, or raises a warning if not found
         """
         for each_row in self._get_rows():
             if self._get_column_value(each_row, "name") == name:
@@ -332,14 +344,29 @@ class Table(BaseComponent):
             raise ValueError("{} row not found in table".format(name)) 
 
     def get_action_values(self, name):
+        """
+        Get the specified rows action values
+            :param name: row name 
+            :return: List Gets the action values of the row specified within the table
+        """
         _row = self._get_row(name)
         return [self.get_clear_text(each) for each in self.get_elements("action_values")]
 
     def get_count_number(self):
+        """
+        Returns the count from the title of the table.
+            :return: Int The title count of the table. 
+        """
         row_count = self.get_count_title()
         return int(re.search(r'\d+', row_count).group())
 
     def get_more_info(self, name, cancel=True):
+        """
+        Returns the text from the more info field within a tables row
+            :param name: Str row name 
+            :param cancel: Bool Whether or not to click cancel after getting the info 
+            :return: Dict The information found when opening the info table on a row in the table
+        """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["more_info"]._asdict().values())).click()
         keys = self.more_info_row.find_elements(*list(self.elements["more_info_key"]._asdict().values()))
@@ -353,6 +380,12 @@ class Table(BaseComponent):
         return more_info
 
     def switch_to_page(self, value):
+        """
+        Switches the table to specified page
+            :param value: Int The page to switch the table to
+            :return: Bool whether or not switching to the page was successful
+
+        """
         for each in self.get_elements('switch_to_page'):
             if self.get_clear_text(each).lower() not in ['prev','next'] and self.get_clear_text(each) == str(value):
                 each.click()
@@ -361,6 +394,10 @@ class Table(BaseComponent):
             raise ValueError("{} not found".format(value))
 
     def switch_to_prev(self):
+        """
+        Switches the table's page back by 1
+            :return: Bool whether or not switching to the previous page was successful
+        """
         for page_prev in self.get_elements('switch_to_page'):
             if self.get_clear_text(page_prev).lower() == "prev":
                 page_prev.click()
@@ -369,6 +406,10 @@ class Table(BaseComponent):
             raise ValueError("{} not found".format(page_prev))
 
     def switch_to_next(self):
+        """
+        Switches the table's page forward by 1
+            :return: Bool whether or not switching to the next page was successful
+        """
         for page_next in self.get_elements('switch_to_page'):
             if self.get_clear_text(page_next).lower() == "next":
                 page_next.click()

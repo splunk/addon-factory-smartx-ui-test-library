@@ -56,7 +56,10 @@ class Entity(BaseComponent):
     def save(self, expect_error=False, expect_warning=False):
         """
         Save the configuration
-            :param expect_error: if True, the error message will be fetched. Otherwise, the function will return True if the configuration was saved properly
+            :param expect_error: if True, the error message will be fetched.
+            :param expoect_warning: If True, the warning message will be fetched.
+            :returns: If expect_error or expect_warning is True, then it will return the message appearing on page. 
+                       Otherwise, the function will return True if the configuration was saved properly
         """
         self.save_btn.wait_to_be_clickable()
         self.save_btn.click()
@@ -70,7 +73,8 @@ class Entity(BaseComponent):
 
     def cancel(self):
         """
-        Cancel the entity 
+        Cancel the entity
+            :return: True if done properly
         """
         self.cancel_btn.click()
         self.save_btn.wait_until("container")
@@ -79,6 +83,7 @@ class Entity(BaseComponent):
     def close(self):
         """
         Close the entity 
+            :return: True if done properly
         """
         self.close_btn.click()
         self.save_btn.wait_until("container")
@@ -87,6 +92,7 @@ class Entity(BaseComponent):
     def open(self):
         """
         Open the entity by click on "New" button. 
+            :return: True if done properly
         """
         self.add_btn.click()
         self.save_btn.wait_to_display()

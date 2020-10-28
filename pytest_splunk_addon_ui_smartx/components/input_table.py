@@ -16,6 +16,11 @@ class InputTable(Table):
     Input table has enable/disable, more-info views additionally to configuration table.
     """
     def __init__(self, browser, container, mapping={}):
+        """
+            :param browser: The selenium webdriver
+            :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
+            :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
+        """
         super(InputTable, self).__init__(browser, container, mapping)
 
         self.elements.update({
@@ -27,6 +32,12 @@ class InputTable(Table):
 
 
     def input_status_toggle(self, name, enable):
+        """
+        This function sets the table row status as either enabled or disabled. If it is already enabled then it reuturns an exception
+            :param name: Str The row that we want to enable st the status to as enabled or disabled
+            :param enable: Bool Whether or not we want the table field to be set to enable or disable
+            :return: Bool whether or not enabling or disabling the field was successful, If the field was already in the state we wanted it in, then it will return an exception
+        """
         _row = self._get_row(name)
         input_status = _row.find_element(*list(self.elements["input_status"]._asdict().values()))
         status = input_status.text.strip().lower()

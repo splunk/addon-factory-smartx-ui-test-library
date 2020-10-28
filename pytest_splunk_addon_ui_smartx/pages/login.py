@@ -12,6 +12,9 @@ class LoginPage(Page):
     Page: Login page
     """
     def __init__(self, ucc_smartx_selenium_helper):
+        """
+        :param ucc_smartx_selenium_helper: Fixture with selenium driver, urls(web, mgmt) and session key
+        """
 
         super(LoginPage, self).__init__(ucc_smartx_selenium_helper, ucc_smartx_rest_helper=None)
         self.login = Login(ucc_smartx_selenium_helper.browser)

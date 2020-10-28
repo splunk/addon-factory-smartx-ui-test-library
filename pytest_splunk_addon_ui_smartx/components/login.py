@@ -28,6 +28,8 @@ class Login(BaseComponent):
     def login(self, username, password):
         """
         Login into the Splunk instance
+            :param username: Str the username for the splunk instance we want to access
+            :param password: Str the password for the splunk instance we want to access
         """
         self.username.send_keys(username)
         self.password.send_keys(password)

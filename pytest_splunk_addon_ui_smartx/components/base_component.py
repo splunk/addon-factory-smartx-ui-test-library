@@ -36,22 +36,31 @@ class BaseComponent(object):
         self.elements["container"] = container
 
     def get_clear_text(self, web_element):
+        """
+        Gets the text of the web element
+            :param web_element: The instance of the web element we are getting tect from.
+            :returns: str the text of the web elements
+        """
         return re.sub('\s+', ' ', web_element.text).strip()
 
     def get_element(self, key):
         """
         Get the web-element. 
+
         Note: There is a wait in get_element.
             :param key: The key of the element mentioned in self.elements
+            :returns: element The element we are looking for by key
         """
         element = self.elements[key]
         return self._get_element(element.by, element.select)
 
     def get_elements(self, key):
         """
-        Get the list of web-elements. 
+        Get the list of web-elements.
+
         Note: There is a wait in the method.        
             :param key: The key of the element mentioned in self.elements
+            :returns: list of elements we are searching for by key, or an empty list
         """   
         try:
             self.wait_for(key)
@@ -63,10 +72,12 @@ class BaseComponent(object):
     def get_child_element(self, key):
         """
         Get the web-element located inside the container. 
-        - It is more preferable to use get_child_element over get_element. 
-        - get_element should only be used if the element is out of the container for some reason. For example, in case of some pop-up.
+            - It is more preferable to use get_child_element over get_element. 
+            - get_element should only be used if the element is out of the container for some reason. For example, in case of some pop-up.
+
         Note: There is a wait in the method.        
             :param key: The key of the element mentioned in self.elements
+            :returns: The child element of the element searched by key
         """   
         element = self.elements[key]
         return self._get_child_element(element.by, element.select)
@@ -74,10 +85,12 @@ class BaseComponent(object):
     def get_child_elements(self, key):
         """
         Get the list of web-elements located inside the container. Returns empty list of no elements found.
-        - It is more preferable to use get_child_elements over get_elements. 
-        - get_elements should only be used if the element is out of the container for some reason. For example, in case of some pop-up.
+            - It is more preferable to use get_child_elements over get_elements. 
+            - get_elements should only be used if the element is out of the container for some reason. For example, in case of some pop-up.
+
         Note: There is a wait in the method.
             :param key: The key of the element mentioned in self.elements
+            :returns: list The child elements of the element searched by key
         """
         try:
             self.wait_for(key)
@@ -90,15 +103,18 @@ class BaseComponent(object):
         """
         get the locator of the element in a tuple form.
             :param key: The key of the element mentioned in self.elements
+            :returns: Tuple of the locator
         """
         return self.elements[key].by, self.elements[key].select
 
     def wait_for(self, key, msg=None, timeout=None):
         """
         if key in element, Wait for an web element to be visible. Raises TimeoutException if the element not found.
-        if key is a condition, wait for the condition to be true. 
+        if key is a condition, wait for the condition to be true.
+
             :param key: The key of the element mentioned in self.elements
             :param msg: The error-msg which should be mentioned in the TimeoutException
+            :param timeout: The amount of time specified to wait for the wait function
         """
         if timeout:
             wait = WebDriverWait(self.browser, timeout)
@@ -168,6 +184,7 @@ class BaseComponent(object):
             Access the element by doing self.textbox directly. 
         - It also has implicit wait while finding the element.  
           :param key: The key of the element mentioned in self.elements
+          :returns: The webelement we are accessing
         """
         try:
             return self.get_element(key)
@@ -178,8 +195,9 @@ class BaseComponent(object):
     def _get_element(self, by, select):
         """
         Find the element from the page.
-            :param by: The type of the selenium locator  
+            :param by: The type of the selenium locator
             :param select: The selector text of type mentioned in by.
+            :returns: The webelement we are accessing
         """
         msg = "by={} select={} Element not found in the page".format(by, select)
         return self.wait.until(EC.presence_of_element_located((by, select)), msg)
@@ -189,6 +207,7 @@ class BaseComponent(object):
         Find the list of elements from the page.
             :param by: The type of the selenium locator  
             :param select: The selector text of type mentioned in by.
+            :returns: List of elements from the page
         """
         return self.browser.find_elements(by, select)
 
@@ -198,6 +217,7 @@ class BaseComponent(object):
         Find the element from the container.
             :param by: The type of the selenium locator  
             :param select: The selector text of type mentioned in by.
+            :returns: child element from the container
         """
         return self.container.find_element(by, select)
 
@@ -206,6 +226,7 @@ class BaseComponent(object):
         Find the list of elements from the container.
             :param by: The type of the selenium locator  
             :param select: The selector text of type mentioned in by.
+            :returns: List of child elements from the page
         """
         return self.container.find_elements(by, select)
 

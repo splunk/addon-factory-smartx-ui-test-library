@@ -12,8 +12,8 @@ class Toggle(BaseControl):
     """
     def __init__(self, browser, container):
         """
-        :param browser: The selenium webdriver
-        :param container: The locator of the container where the control is located in. 
+            :param browser: The selenium webdriver
+            :param container: The locator of the container where the control is located in. 
         """
         super(Toggle, self).__init__(browser, container)
         self.elements.update({
@@ -23,6 +23,11 @@ class Toggle(BaseControl):
 
 
     def select(self, value):
+        """
+        Selects the toggle specified
+            :param value: the value to select
+            :return: Bool if successful in selection, else raises an error
+        """
         for each in self.get_elements('toggle_btn'):
             if each.text.strip().lower() == value.lower():
                 each.click()
@@ -31,4 +36,8 @@ class Toggle(BaseControl):
             raise ValueError("{} not found".format(value))
     
     def get_value(self):
+        """
+        Returns the value of the toggle element
+            :return: Str the text for the toggle element
+        """
         return self.selected.text.strip()
