@@ -29,6 +29,11 @@ class SeleniumHelper(object):
     """
     The helper class provides the Remote Browser
     """
+    sauce_username=None
+    sauce_access_key=None
+    sauce_tunnel_id=None
+    sauce_tunnel_parent=None
+    jenkins_build=None
 
     def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), headless=False, test_case=None):
         self.splunk_web_url = splunk_web_url
@@ -87,18 +92,21 @@ class SeleniumHelper(object):
                 self.update_saucelab_job(False)
             raise
 
-    def init_sauce_env_variables(self):
+    @classmethod
+    def init_sauce_env_variables(cls):
         # Read Environment variables to fetch saucelab credentials
-        self.sauce_username = os.environ.get('SAUCE_USERNAME')
-        self.sauce_access_key = os.environ.get('SAUCE_PASSWORD')
-        self.sauce_tunnel_id = os.environ.get('SAUCE_TUNNEL_ID') or 'sauce-ha-tunnel'
-        self.sauce_tunnel_parent = os.environ.get('SAUCE_TUNNEL_PARENT') or 'qtidev'
-        if self.sauce_tunnel_parent in ["null", "none"]:
-            self.sauce_tunnel_parent = None
+        if cls.sauce_username and cls.sauce_access_key:
+            return
+        cls.sauce_username = os.environ.get('SAUCE_USERNAME')
+        cls.sauce_access_key = os.environ.get('SAUCE_PASSWORD')
+        cls.sauce_tunnel_id = os.environ.get('SAUCE_TUNNEL_ID') or 'sauce-ha-tunnel'
+        cls.sauce_tunnel_parent = os.environ.get('SAUCE_TUNNEL_PARENT') or 'qtidev'
+        if cls.sauce_tunnel_parent in ["null", "none"]:
+            cls.sauce_tunnel_parent = None
 
-        self.jenkins_build = os.environ.get('JOB_NAME') or os.environ.get('JENKINS_JOB_ID') or "Local Run"
-        print("Using Saucelabs tunnel: {}".format(self.sauce_tunnel_id))
-        if not self.sauce_username or not self.sauce_access_key: 
+        cls.jenkins_build = os.environ.get('JOB_NAME') or os.environ.get('JENKINS_JOB_ID') or "Local Run"
+        print("\nUsing Saucelabs tunnel: {}".format(cls.sauce_tunnel_id))
+        if not cls.sauce_username or not cls.sauce_access_key: 
             raise Exception(
                     "SauceLabs Credentials not found in the environment."
                     " Please make sure SAUCE_USERNAME and SAUCE_PASSWORD is set."
@@ -222,7 +230,7 @@ class SeleniumHelper(object):
                         data=data, 
                         auth=(self.sauce_username, self.sauce_access_key))
         response = response.json()
-        print("SauceLabs job_id={}".format(response.get("id")))
+        print("\nSauceLabs job_id={}".format(response.get("id")))
         print("SauceLabs Video_url={}".format(response.get("video_url")))
 
 class RestHelper(object):
