@@ -19,24 +19,31 @@ class LearnMore(BaseControl):
         super(LearnMore, self).__init__(browser, container)
 
     @contextmanager
-    def open_link(self):
+    def open_link(self, open_new_tab=True):
         '''
         Redirects the browser object to the link provided by the container and returns the URL
         '''
+        page_url = self.browser.current_url
         self.container.click()
-        self.wait_for_tab()
         # For Safari window_handles works opposite as compared to Firefox and Chrome 
         # In Safari window_handles[1] represents the current window.
         # And in other browsers window_handels[0] represents the current window.
-        if self.browser.name == "Safari":
+        if open_new_tab:
+            self.wait_for_tab()
+            if self.browser.name == "Safari":
+                self.browser.switch_to.window(self.browser.window_handles[0])
+            else:
+                self.browser.switch_to.window(self.browser.window_handles[1])
+            self.wait_for_header()
+            current_url = self.browser.current_url
+            yield current_url
+            self.browser.close()
             self.browser.switch_to.window(self.browser.window_handles[0])
         else:
-            self.browser.switch_to.window(self.browser.window_handles[1])
-        self.wait_for_header()
-        current_url = self.browser.current_url
-        yield current_url
-        self.browser.close()
-        self.browser.switch_to.window(self.browser.window_handles[0])
+            self.wait_for_url_change(page_url)
+            self.wait_for_header()
+            current_url = self.browser.current_url
+            yield current_url
 
     def get_current_url(self):
         return self.browser.current_url
@@ -56,3 +63,11 @@ class LearnMore(BaseControl):
         def _wait_for_header(driver):
             return driver.find_element_by_tag_name("header")
         self.wait_for(_wait_for_header, msg="Redirect page didn't open")
+
+    def wait_for_url_change(self, page_url):
+        """
+        Wait for url to be change 
+        """
+        def _wait_for_url_change(driver):
+            return self.browser.current_url != page_url
+        self.wait_for(_wait_for_url_change, msg="Redirect page didn't open")
