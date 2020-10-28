@@ -19,6 +19,7 @@ import time
 import traceback
 import logging
 import os
+import re
 # requests.urllib3.disable_warnings()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -88,16 +89,17 @@ class SeleniumHelper(object):
 
     def init_sauce_env_variables(self):
         # Read Environment variables to fetch saucelab credentials
-        try:
-            self.sauce_username = os.environ['SAUCE_USERNAME']
-            self.sauce_access_key = os.environ['SAUCE_PASSWORD']
-            try:
-                # If the execution is in local env with Saucelabs but without Jenkins
-                self.jenkins_build = os.environ['JENKINS_JOB_ID']
-            except:
-                self.jenkins_build = "Local Run"
-        except:
-            raise Exception("SauceLabs Credentials not found in the environment. Please recheck Jenkins withCredentials block.")
+        self.sauce_username = os.environ.get('SAUCE_USERNAME')
+        self.sauce_access_key = os.environ.get('SAUCE_PASSWORD')
+        self.sauce_tunnel_id = os.environ.get('SAUCE_TUNNEL_ID') or 'sauce-ha-tunnel'
+        self.sauce_tunnel_parent = os.environ.get('SAUCE_TUNNEL_PARENT', 'qtidev')
+        self.jenkins_build = os.environ.get('JOB_NAME') or os.environ.get('JENKINS_JOB_ID') or "Local Run"
+        logger.warning("Using Saucelabs tunnel: {}".format(self.sauce_tunnel_id))
+        if not self.sauce_username or not self.sauce_access_key: 
+            raise Exception(
+                    "SauceLabs Credentials not found in the environment."
+                    " Please make sure SAUCE_USERNAME and SAUCE_PASSWORD is set."
+                )
 
     def get_sauce_opts(self):
         # Get saucelab default options
@@ -114,9 +116,11 @@ class SeleniumHelper(object):
             'maxDuration': 1800,
             'commandTimeout': 300,
             'idleTimeout': 1000,
-            'tunnelIdentifier': 'sauce-ha-tunnel',
-            'parenttunnel':'qtidev'
+            'tunnelIdentifier': self.sauce_tunnel_id,
         }
+        if self.sauce_tunnel_parent:
+            sauce_options["parenttunnel"] = self.sauce_tunnel_parent
+
         return sauce_options
 
     def get_sauce_ie_opts(self):
