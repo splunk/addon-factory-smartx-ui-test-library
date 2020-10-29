@@ -51,7 +51,7 @@ class ActionDropdown(BaseComponent):
                 each_action.click()
                 break
             else:
-                value_list.append(each_action)
+                value_list.append(self.get_clear_text(each_action))
         else:
             self.add_action.click()
             raise ValueError("{} not found in Alert Action list. Founded list: {}".format(action_name, value_list))
