@@ -134,7 +134,7 @@ class SeleniumHelper(object):
 
         return sauce_options
 
-    def get_sauce_ie_opts(self):
+    def get_sauce_ie_opts(self, browser_version):
         sauce_options = {
             'build': self.jenkins_build,
             'name': self.test_case,
@@ -153,7 +153,7 @@ class SeleniumHelper(object):
         ie_opts = {
             'platformName': 'Windows 10',
             'browserName': 'internet explorer',
-            'browserversion': '11.285',
+            'browserversion': browser_version,
             'iedriverVersion': "3.141.0",
             'sauce:options': sauce_options 
         }

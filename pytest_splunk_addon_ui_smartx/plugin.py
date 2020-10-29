@@ -69,7 +69,7 @@ def pytest_addoption(parser):
     group.addoption(
         "--setup-retry-count", 
         action="store_true", 
-        default="1",
+        default="3",
         help="The number of times the browser should try to connect to the SeleniumBrowser"
     )
 
@@ -111,7 +111,7 @@ def ucc_smartx_configs(request):
         retry_count = int(request.config.getoption("--setup-retry-count"))
         LOGGER.debug("--setup-retry-count={}".format(retry_count))
     else:
-        retry_count = 1
+        retry_count = 3
 
     if request.config.getoption("--headless"):
         headless_run = True
@@ -185,7 +185,10 @@ def ucc_smartx_rest_helper(ucc_smartx_configs, splunk, splunk_rest_uri):
     return rest_helper
 
 @pytest.fixture(scope="function", autouse=True)
-def ucc_smartx_screenshot_helper(request):
+def ucc_smartx_selenium_wrapper(request):
+    """
+    Calls ucc_smartx_selenium_helper fixture
+    """
     if "ucc_smartx_selenium_helper" in request.fixturenames:
         request.node.selenium_helper = request.getfixturevalue("ucc_smartx_selenium_helper")
 
