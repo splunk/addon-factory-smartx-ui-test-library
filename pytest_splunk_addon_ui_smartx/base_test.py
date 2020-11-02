@@ -197,7 +197,7 @@ class SeleniumHelper(object):
         return firefox_opts
 
     def get_local_edge_opts(self, headless_run):
-        edge_opts = webdriver.FirefoxOptions()
+        edge_opts = webdriver.EdgeOptions()
         edge_opts.log.level = "trace"
         if headless_run:
             edge_opts.add_argument('--headless')
