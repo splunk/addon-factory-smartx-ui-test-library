@@ -64,6 +64,17 @@ class SeleniumHelper(object):
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
                     desired_capabilities = self.get_sauce_chrome_opts(browser_version))
 
+            elif browser == "edge":
+                if debug:
+                    self.browser = webdriver.Edge(
+                        edge_options=self.get_local_edge_opts(headless), 
+                        service_args=["--verbose", "--log-path=selenium.log"]
+                    )
+                else:
+                    self.browser = webdriver.Remote(
+                    command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
+                    desired_capabilities = self.get_sauce_edge_opts(browser_version))
+
             elif browser == "IE":
                 if debug:
                     self.browser = webdriver.Ie(capabilities=self.get_local_ie_opts())
@@ -185,6 +196,14 @@ class SeleniumHelper(object):
             firefox_opts.add_argument("--window-size=1280,768")
         return firefox_opts
 
+    def get_local_edge_opts(self, headless_run):
+        edge_opts = webdriver.FirefoxOptions()
+        edge_opts.log.level = "trace"
+        if headless_run:
+            edge_opts.add_argument('--headless')
+            edge_opts.add_argument("--window-size=1280,768")
+        return edge_opts
+
     def get_sauce_firefox_opts(self, browser_version):
         firefox_opts = {
             'platformName': 'Windows 10',
@@ -193,6 +212,15 @@ class SeleniumHelper(object):
             'sauce:options': self.get_sauce_opts()
         }
         return firefox_opts
+
+    def get_sauce_edge_opts(self, browser_version):
+        edge_opts = {
+            'platformName': 'Windows 10',
+            'browserName': 'edge',
+            'browserVersion': browser_version,
+            'sauce:options': self.get_sauce_opts()
+        }
+        return edge_opts
 
     def get_sauce_chrome_opts(self, browser_version):
         chrome_opts = {

@@ -46,7 +46,7 @@ def pytest_addoption(parser):
     group.addoption(
         "--browser", 
         action="store", 
-        help=( "The browser on which the test should run. supported_values: (firefox, chrome, safari)." 
+        help=( "The browser on which the test should run. supported_values: (firefox, chrome, edge, safari)." 
         " You can also provide browser version if the tests are running on Saucelabs. "
         "ex, <browser>:<version>. default version is latest. For safari, the default is version 12.")
     )
