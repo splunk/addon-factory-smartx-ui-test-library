@@ -190,7 +190,9 @@ class SeleniumHelper(object):
             'platformName': 'Windows 10',
             'browserName': 'firefox',
             'browserVersion': browser_version,
-            'sauce:options': self.get_sauce_opts()
+            'sauce:options': self.get_sauce_opts(),
+            'acceptInsecureCerts': True,
+            'acceptSslCerts': True
         }
         return firefox_opts
 
