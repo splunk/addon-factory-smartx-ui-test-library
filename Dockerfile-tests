@@ -7,7 +7,7 @@
 #You should have received a copy of the CC0 legalcode along with this
 #work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 FROM circleci/python:3.7-browsers
-RUN mkdir -p /home/circleci/work/tests
+RUN mkdir -p /home/circleci/work/tests/ui
 RUN mkdir -p /home/circleci/work/test-results/functional
 
 COPY dist /home/circleci/work/dist
@@ -18,7 +18,7 @@ RUN pip install pytest-expect
 COPY tests/entrypoint.sh /
 COPY tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /home/circleci/work/.pytest.expect
 RUN ls /home/circleci/work/
-COPY tests/deps/splunk-add-on-for-ucc-example/tests/ui /home/circleci/work/tests
+COPY tests/deps/splunk-add-on-for-ucc-example/tests/ui /home/circleci/work/tests/ui
 
 RUN cd /home/circleci/work/tests && ls
 RUN cd ../..
