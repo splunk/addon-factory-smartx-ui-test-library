@@ -37,6 +37,7 @@ class Message(BaseControl):
         Cancel the error message 
             :return: Bool if successful
         """
+        self.wait_to_be_clickable("msg_close")
         self.msg_close.click()
         return True
 
