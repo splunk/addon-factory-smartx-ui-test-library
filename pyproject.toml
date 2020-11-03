@@ -33,6 +33,7 @@ selenium = "*"
 webdriver-manager = "*"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
+msedge-selenium-tools = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.2"

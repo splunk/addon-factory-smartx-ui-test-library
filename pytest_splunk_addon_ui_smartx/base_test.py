@@ -11,6 +11,8 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from msedge.selenium_tools import Edge, EdgeOptions, EdgeService
+from msedge.selenium_tools.remote_connection import EdgeRemoteConnection
 from .pages.login import LoginPage
 from .utils import backend_retry
 import pytest
@@ -66,14 +68,18 @@ class SeleniumHelper(object):
 
             elif browser == "edge":
                 if debug:
-                    self.browser = webdriver.Edge(
-                        edge_options=self.get_local_edge_opts(headless), 
+                    self.browser = Edge(
+                        options=self.get_local_edge_opts(headless),
                         service_args=["--verbose", "--log-path=selenium.log"]
                     )
                 else:
+                    command_executor = EdgeRemoteConnection('https://ondemand.saucelabs.com:443/wd/hub')
+                    options = EdgeOptions()
+                    options.use_chromium = True
                     self.browser = webdriver.Remote(
-                    command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
-                    desired_capabilities = self.get_sauce_edge_opts(browser_version))
+                        command_executor=command_executor,
+                        options=options,
+                        desired_capabilities = self.get_sauce_edge_opts(browser_version))
 
             elif browser == "IE":
                 if debug:
@@ -197,28 +203,33 @@ class SeleniumHelper(object):
         return firefox_opts
 
     def get_local_edge_opts(self, headless_run):
-        edge_opts = webdriver.EdgeOptions()
-        edge_opts.log.level = "trace"
+        options = EdgeOptions()
+        options.use_chromium = True
+        options.add_argument('--ignore-ssl-errors=yes')
+        options.add_argument('--ignore-certificate-errors')
         if headless_run:
-            edge_opts.add_argument('--headless')
-            edge_opts.add_argument("--window-size=1280,768")
-        return edge_opts
+            options.add_argument('--headless')
+            options.add_argument("--window-size=1280,768")
+        return options
 
     def get_sauce_firefox_opts(self, browser_version):
         firefox_opts = {
             'platformName': 'Windows 10',
             'browserName': 'firefox',
             'browserVersion': browser_version,
-            'sauce:options': self.get_sauce_opts()
+            'sauce:options': self.get_sauce_opts(),
+            'acceptInsecureCerts': True,
+            'acceptSslCerts': True
         }
         return firefox_opts
 
     def get_sauce_edge_opts(self, browser_version):
         edge_opts = {
             'platformName': 'Windows 10',
-            'browserName': 'edge',
             'browserVersion': browser_version,
-            'sauce:options': self.get_sauce_opts()
+            'sauce:options': self.get_sauce_opts(),
+            'acceptInsecureCerts': True,
+            'acceptSslCerts': True
         }
         return edge_opts
 
