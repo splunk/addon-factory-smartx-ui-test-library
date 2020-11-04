@@ -378,6 +378,17 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "msedge-selenium-tools"
+version = "3.141.2"
+description = "An updated EdgeDriver implementation for Selenium 3 with newly-added support for Microsoft Edge (Chromium)."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+selenium = "3.141"
+
+[[package]]
 name = "packaging"
 version = "20.4"
 description = "Core utilities for Python packages"
@@ -1112,6 +1123,10 @@ markupsafe = [
 more-itertools = [
     {file = "more-itertools-8.5.0.tar.gz", hash = "sha256:6f83822ae94818eae2612063a5101a7311e68ae8002005b5e05f03fd74a86a20"},
     {file = "more_itertools-8.5.0-py3-none-any.whl", hash = "sha256:9b30f12df9393f0d28af9210ff8efe48d10c94f73e5daf886f10c4b0b0b4f03c"},
+]
+msedge-selenium-tools = [
+    {file = "msedge-selenium-tools-3.141.2.tar.gz", hash = "sha256:b6677f55341a9f41128e233288edec39947a4c758f62db81cb996f9a7299c95b"},
+    {file = "msedge_selenium_tools-3.141.2-py3-none-any.whl", hash = "sha256:69f6c11fc9b325283cf3dcbff6b63c2cf4c12366423e43969a46d19016bc4ea8"},
 ]
 packaging = [
     {file = "packaging-20.4-py2.py3-none-any.whl", hash = "sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181"},

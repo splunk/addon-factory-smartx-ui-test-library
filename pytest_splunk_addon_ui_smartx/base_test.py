@@ -11,6 +11,8 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from msedge.selenium_tools import Edge, EdgeOptions
+from msedge.selenium_tools.remote_connection import EdgeRemoteConnection
 from .pages.login import LoginPage
 from .utils import backend_retry
 import pytest
@@ -19,6 +21,7 @@ import time
 import traceback
 import logging
 import os
+import sys
 import re
 # requests.urllib3.disable_warnings()
 logger = logging.getLogger(__name__)
@@ -63,6 +66,22 @@ class SeleniumHelper(object):
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
                     desired_capabilities = self.get_sauce_chrome_opts(browser_version))
+
+            elif browser == "edge":
+                if debug:
+                    self.browser = Edge(
+                        executable_path = "msedgedriver",
+                        desired_capabilities = self.get_local_edge_opts(headless),
+                        service_args = ["--verbose", "--log-path=selenium.log"],
+                    )
+                else:
+                    command_executor = EdgeRemoteConnection('https://ondemand.saucelabs.com:443/wd/hub')
+                    options = EdgeOptions()
+                    options.use_chromium = True
+                    self.browser = webdriver.Remote(
+                        command_executor=command_executor,
+                        options=options,
+                        desired_capabilities = self.get_sauce_edge_opts(browser_version))
 
             elif browser == "IE":
                 if debug:
@@ -185,6 +204,23 @@ class SeleniumHelper(object):
             firefox_opts.add_argument("--window-size=1280,768")
         return firefox_opts
 
+    def get_local_edge_opts(self, headless_run):
+        if sys.platform.startswith('darwin'):
+            platform = 'MAC'
+        elif sys.platform.startswith('win') or sys.platform.startswith('cygwin'):
+            platform = "WINDOWS"
+        else:
+            platform = "LINUX"
+        DesiredCapabilities = {
+            'platform': platform, 
+            'browserName': 'MicrosoftEdge', 
+            'ms:edgeOptions': {'extensions': [], 'args': ['--ignore-ssl-errors=yes', '--ignore-certificate-errors']}, 
+            'ms:edgeChromium': True}
+        if headless_run:
+            DesiredCapabilities['ms:edgeOptions']["args"].append('--headless')
+            DesiredCapabilities['ms:edgeOptions']["args"].append("--window-size=1280,768")
+        return DesiredCapabilities
+
     def get_sauce_firefox_opts(self, browser_version):
         firefox_opts = {
             'platformName': 'Windows 10',
@@ -195,6 +231,16 @@ class SeleniumHelper(object):
             'acceptSslCerts': True
         }
         return firefox_opts
+
+    def get_sauce_edge_opts(self, browser_version):
+        edge_opts = {
+            'platformName': 'Windows 10',
+            'browserVersion': browser_version,
+            'sauce:options': self.get_sauce_opts(),
+            'acceptInsecureCerts': True,
+            'acceptSslCerts': True
+        }
+        return edge_opts
 
     def get_sauce_chrome_opts(self, browser_version):
         chrome_opts = {
