@@ -419,7 +419,7 @@ class Table(BaseComponent):
 
     def check_alert_sign(self, row, column="account"):
         """ 
-        This function check if account warning while account is not configured in the input
+        This function check account warning present in the table while account is not configured in input
         :param row: Str The row that we want to enable st the status to as enabled or disabled
         :param column: column header of the table
         """
