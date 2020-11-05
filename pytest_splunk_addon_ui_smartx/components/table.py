@@ -55,7 +55,8 @@ class Table(BaseComponent):
             "more_info_row": Selector(select=container.select + " tr.expanded + tr"),
             "more_info_key": Selector(select="dt"),
             "more_info_value":Selector(select="dd"),
-            "switch_to_page": Selector(select=container.select + " .pull-right li a")
+            "switch_to_page": Selector(select=container.select + " .pull-right li a"),
+            "alert_sign": Selector(select=container.select + " td.col-{column} .alert"),
         })
         self.wait_for_seconds = wait_for_seconds
 
