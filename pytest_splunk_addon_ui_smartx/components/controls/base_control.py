@@ -23,6 +23,17 @@ class BaseControl(BaseComponent):
         self.elements.update({
             "label_text": Selector(select=container.select + " .control-label")
         })
+        self.elements.update({
+            "tooltip_icon": Selector(select=container.select + " .tooltip-link")
+        })
+        self.elements.update({
+            "tooltip_text": Selector(select=".tooltip-inner")
+        })
+    
+    def get_tooltip_text(self):
+        self.hover_over_element("tooltip_icon")
+        self.wait_for("tooltip_text")
+        return self.get_clear_text(self.tooltip_text)
 
     def get_help_text(self):
         return self.get_clear_text(self.help_text)
