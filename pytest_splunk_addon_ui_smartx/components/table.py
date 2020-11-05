@@ -418,19 +418,19 @@ class Table(BaseComponent):
         else:
             raise ValueError("{} not found".format(page_next))
 
-    def check_alert_sign(self, row, column="account"):
+    def check_alert_sign(self, row_name, column_name="account"):
         """ 
         This function check account warning present in the table while account is not configured in input
         :param row: Str The row that we want to enable st the status to as enabled or disabled
         :param column: column header of the table
         """
-        column_selector = column.lower().replace(" ","_").lower()
-        column_selector = self.header_mapping.get(column_selector, column)
+        column_selector = column_name.lower().replace(" ","_")
+        column_selector = self.header_mapping.get(column_selector, column_name)
         
         col = copy.deepcopy(self.elements["alert_sign"])
         col = col._replace(select=col.select.format(column=column_selector))
         
-        _row = self._get_row(row)
+        _row = self._get_row(row_name)
         try:
             _row.find_element(*list(col._asdict().values()))
             return True
