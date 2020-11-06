@@ -55,7 +55,8 @@ class Table(BaseComponent):
             "more_info_row": Selector(select=container.select + " tr.expanded + tr"),
             "more_info_key": Selector(select="dt"),
             "more_info_value":Selector(select="dd"),
-            "switch_to_page": Selector(select=container.select + " .pull-right li a")
+            "switch_to_page": Selector(select=container.select + " .pull-right li a"),
+            "alert_sign": Selector(select=container.select + " td.col-{column} .alert"),
         })
         self.wait_for_seconds = wait_for_seconds
 
@@ -416,3 +417,22 @@ class Table(BaseComponent):
                 return True
         else:
             raise ValueError("{} not found".format(page_next))
+
+    def check_alert_sign(self, row_name, column_name="account"):
+        """ 
+        This function check account warning present in the table while account is not configured in input
+            :param row_name: the name of the row
+            :param column_name: the header name of the column
+        """
+        column_selector = column_name.lower().replace(" ","_")
+        column_selector = self.header_mapping.get(column_selector, column_name)
+        
+        col = copy.deepcopy(self.elements["alert_sign"])
+        col = col._replace(select=col.select.format(column=column_selector))
+        
+        _row = self._get_row(row_name)
+        try:
+            _row.find_element(*list(col._asdict().values()))
+            return True
+        except exceptions.NoSuchElementException:
+            return False
