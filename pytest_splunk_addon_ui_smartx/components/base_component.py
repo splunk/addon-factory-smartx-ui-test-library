@@ -7,6 +7,7 @@ from collections import namedtuple
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 import re
 
@@ -191,6 +192,12 @@ class BaseComponent(object):
         except KeyError:
             raise
 
+    def hover_over_element(self, key):
+        """
+        Hover over an element, such as a tooltip, such that other items will appear
+            :param key: The key of the element mentioned in self.elements
+        """
+        hover = ActionChains(self.browser).move_to_element(self.get_element(key)).perform()
 
     def _get_element(self, by, select):
         """
