@@ -7,11 +7,21 @@ from collections import namedtuple
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.action_chains import ActionChains as action_chains
 from selenium.webdriver.support import expected_conditions as EC
 import re
 
 DEFAULT_TIMEOUT = 20
+
+class ActionChains(action_chains):
+    """
+    Purpose:
+    It is a workaround by wrapping ActionChains class so that key_action.pause is not used in Safari browser.
+    """
+    def __init__(self, browser):
+        super(ActionChains, self).__init__(browser)
+        if browser.name in ('Safari', 'Safari Technology Preview'):
+            self.w3c_actions.key_action.pause = lambda *a, **k: None
 
 class BaseComponent(object):
     """
