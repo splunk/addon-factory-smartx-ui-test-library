@@ -40,7 +40,7 @@ class MessageTray(BaseComponent):
         """
         current_msg_count = self.get_msg_count()
         def _wait_for_msg(driver):
-            return self.get_msg_count() > current_msg_count and self.get_icon_attribute(0) == "error"
+            return (self.get_msg_count() > 0 and self.get_icon_attribute(0) == "error") or self.get_msg_count() > current_msg_count
         self.wait_for(_wait_for_msg, timeout=120)
     
     def get_message_list(self):
