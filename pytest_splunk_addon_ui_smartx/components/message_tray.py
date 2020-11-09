@@ -11,7 +11,7 @@ class MessageTray(BaseComponent):
     Component: MessageTray
     Base class of Input & Configuration table
     """
-    def __init__(self, browser, container, mapping=dict()):
+    def __init__(self, browser, mapping=dict()):
         """
             :param browser: The selenium webdriver
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
