@@ -33,6 +33,15 @@ class MessageTray(BaseComponent):
         self.wait_for("message_tray_dropdown")
         self.wait_to_be_clickable("message_tray_dropdown")
         self.message_tray_dropdown.click()
+
+    def wait_for_msg(self):
+        """
+            Wait for error message in message tray
+        """
+        current_msg_count = self.get_msg_count()
+        def _wait_for_msg(driver):
+            return self.get_msg_count() > current_msg_count and self.get_icon_attribute(0) == "error"
+        self.wait_for(_wait_for_msg, timeout=120)
     
     def get_message_list(self):
         """
