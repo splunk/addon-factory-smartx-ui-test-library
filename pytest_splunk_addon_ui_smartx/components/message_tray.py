@@ -17,6 +17,7 @@ class MessageTray(BaseComponent):
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
             :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
+        container = Selector(select="[data-view='views/shared/splunkbar/messages/MenuContents']")
         super(MessageTray, self).__init__(browser, container)
         self.elements.update({
             "message_tray_dropdown": Selector(select="[title='Messages']"),
