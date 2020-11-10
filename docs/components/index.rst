@@ -1,4 +1,4 @@
-base_components
+Components
 =========================
 
 The following is the API Reference for SmartX Components
