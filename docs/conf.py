@@ -33,7 +33,8 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon',]
+    'sphinx.ext.napoleon',
+    'sphinx_panels']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []

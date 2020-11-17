@@ -41,12 +41,12 @@ You can execute the test cases with the following console command:
 
 .. code-block:: console
 
-    pytest -vv --browser={browser} --local --persist-browser --splunk-host={web_url} --splunk-port={mgmt_url} --splunk-user admin --splunk-password {password} --html {reportname.html} --setup-retry-count={retry-count} --headless --splunk-type=external
+    pytest -vv --browser={browser} --local --persist-browser --splunk-host={web_url} --splunk-port={mgmt_url} --splunk-user {username} --splunk-password {password} --html {reportname.html} --setup-retry-count={retry-count} --headless --splunk-type=external
 
 The parameters are as follows:
     * --browser: The browser in which the test will run on. The supported values are: chrome, firefox, safari (Default: firefox)
     * --local: The test will be run on the local browsers, used during development and testing phase (Default: False)
-    * --persist-browser: For local execution, keep a single browser to executed all tests. (Only supported with --local)
+    * --persist-browser: For local execution, keep a single browser to execute all tests. (Only supported with --local)
     * --splunk-host: The Splunk web url
     * --splunk-port: Splunk management port (Default: 8089)
     * --splunk-user: Splunk instance username (Default: admin)
@@ -73,7 +73,7 @@ The Framework could be cloned from here: `SmartX Repo <https://github.com/splunk
 
 .. code-block:: console
 
-    pytest -vv --browser={browser} --web_url={web_url} --mgmt_url={mgmt_url} --username admin --password {password} --local
+    pytest -vv --browser={browser} --splunk-host={web_url} --splunk-port={mgmt_url} --splunk-user {username} --splunk-password {password} --local
 
 General workflow for writing test cases using the Framework
 -----------------------------------------------------------
