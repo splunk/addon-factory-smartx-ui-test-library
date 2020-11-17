@@ -25,9 +25,9 @@ The design of the framework is as follows:
 File structure
 --------------
 The tests should be structured in the following format:
-    * test/ui: Te parent ui-test directory in which we should put all of our SmartX test cases within.
+    * test/ui: The parent ui-test directory in which we should put all of our SmartX test cases within.
     * test/ui/<TA>_UccLib: The specific TA's unique page files that we want to test.
-    * test/ui/test_<page>.py: The test cases for a specific TA page. 
+    * test/ui/test_<test_suite>.py: The test cases for a specific TA page or Input.  
 
 We would install SmartX as a package in a virtual environment.
 The general file structure of pytest_splunk_addon_ui_smartx is as follows:

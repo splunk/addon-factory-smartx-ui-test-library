@@ -12,5 +12,6 @@ Welcome to pytest_splunk_addon_ui_smartx's documentation!
 
    overview
    how_to_use
+   getting_started
    api_reference
 
