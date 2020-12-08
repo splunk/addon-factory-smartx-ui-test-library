@@ -12,7 +12,7 @@ RUN mkdir -p /home/circleci/work/test-results/functional
 
 COPY dist /home/circleci/work/dist
 COPY tests/pytest-ci.ini /home/circleci/work/pytest.ini
-RUN pip install /home/circleci/work/dist/*
+RUN pip install /home/circleci/work/dist/* --use-deprecated=legacy-resolver
 RUN pip install pytest-splunk-addon==1.3.11a1
 RUN pip install pytest-expect
 COPY tests/entrypoint.sh /

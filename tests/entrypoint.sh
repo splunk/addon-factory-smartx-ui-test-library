@@ -6,5 +6,5 @@
 ##
 
 cd /home/circleci/work
-echo Test Args pytest $@ ${TEST_SUITE} --browser=${TEST_BROWSER}
-pytest $@ ${TEST_SUITE} --browser=${TEST_BROWSER}
+echo Test Args pytest $@ ${TEST_SET} ${TEST_SUITE} --browser=${TEST_BROWSER}
+pytest $@ ${TEST_SET} ${TEST_SUITE} --browser=${TEST_BROWSER}
