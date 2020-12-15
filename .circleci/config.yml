@@ -3,16 +3,6 @@ version: 2.1
 orbs:
   go: circleci/go@0.2.0
 commands:
-  build_example_ta:
-    steps:
-    - attach_workspace:
-        at: /tmp/workspace
-    - run:
-        name: Building Example-TA
-        command: |
-          cd tests/deps/splunk-add-on-for-ucc-example
-          sudo ./build.sh
-
   test_smartx:
     parameters:
       test_suite:
@@ -29,13 +19,25 @@ commands:
         default: latest
     steps:
     - run:
+        name: Downloading Example-TA
+        command: |
+          cd tests/deps/splunk-add-on-for-ucc-example
+          mkdir output 
+          cd output
+          pwd
+          curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*tar.gz" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
+          ls
+          tar -xzf *.tar.gz
+          ls
+          rm *.tar.gz
+          ls
+    - run:
         name: Setup for testing
         command: |
           echo "Setup for Testing..."
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results
           cp -r /tmp/workspace/dist dist
-          cp -r /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output tests/deps/splunk-add-on-for-ucc-example/output
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
     - run:
         name: Splunk Testing
@@ -43,9 +45,11 @@ commands:
           export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
           export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
-          export TEST_SET=tests/deps/splunk-add-on-for-ucc-example/tests/ui
+          export TEST_SET=tests/ui
           export TEST_BROWSER="<<parameters.browser>>"
           export TEST_SUITE="-k <<parameters.test_suite>>"
+          export JOB_NAME="CircleCI::$CIRCLE_PROJECT_REPONAME[$CIRCLE_BRANCH][$TEST_BROWSER] #$CIRCLE_BUILD_NUM"
+          export SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
           echo "environment setup..."
           echo $SPLUNK_VERSION
           echo $SPLUNK_APP_ID
@@ -56,13 +60,21 @@ commands:
           echo "Testing..."
           docker-compose -f docker-compose-ci.yml build
 
+          # Saucelab connection
+          docker-compose -f docker-compose-ci.yml up -d sauceconnect 
+
           # Start Splunk
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
 
+          # Normal Inspecting
+          docker-compose -f docker-compose-ci.yml logs sauceconnect
+          docker ps -a
+
           # Run the tests
           test_exit_code=0
           docker-compose -f docker-compose-ci.yml up  --abort-on-container-exit test || test_exit_code=$?
+          
           # Collect Results
           docker container create --name dummy \
                               -v project_results:/home/circleci/work \
@@ -70,6 +82,9 @@ commands:
           docker cp dummy:/home/circleci/work/test-results/test.xml test-results/  || true
           docker cp dummy:/home/circleci/work/assets test-results/assets  || true
           docker cp dummy:/home/circleci/work/report.html test-results/report.html  || true
+          
+          docker-compose -f docker-compose-ci.yml down || true
+          
           echo exit code "$test_exit_code"
           exit "$test_exit_code"
 
@@ -116,41 +131,6 @@ jobs:
           paths:
             - dist
             - output
-  package_example_ta:
-    docker:
-      - image: circleci/python:3.7-node
-    steps:
-      - checkout
-      # - restore_cache:
-      #     keys:
-      #       - example-ta-package-1
-      - run:
-          name: Update Submodules
-          command: |
-            git submodule sync
-            git submodule update --init --recursive
-            git submodule update --remote --merge
-      - run:
-          name: Update Example TA submodules
-          command: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            git submodule sync
-            git submodule update --init --recursive
-            git submodule update --remote --merge
-
-      - run:
-          name: Building Example-TA
-          command: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            sudo ./build.sh
-      # - save_cache:
-      #     key: example-ta-package-1
-      #     paths:
-      #       - tests/deps/splunk-add-on-for-ucc-example/output
-      - persist_to_workspace:
-          root: .
-          paths:
-            - tests/deps/splunk-add-on-for-ucc-example/output
 
   test:
     docker:
@@ -192,7 +172,15 @@ jobs:
             splunk_version: <<parameters.splunk_version>>
             browser: <<parameters.browser>>
             test_suite: <<parameters.test_suite>>
-  publish:
+
+  release:
+    docker:
+      - image: circleci/node:11
+    steps:
+      - checkout
+      - run: npx semantic-release
+
+  publish-pypi:
     docker:
       - image: circleci/python:3.7-node
     steps:
@@ -211,7 +199,7 @@ jobs:
             export PATH=~/.npm-global/bin:$PATH
             poetry install
             poetry run poetry-dynamic-versioning
-            poetry publish --build -u $TWINE_USERNAME -p $TWINE_PASSWORD
+            poetry publish --build -u $PYPI_USERNAME -p $PYPI_TOKEN
       - save_cache:
           key: poetry-cache-{{ checksum "poetry.lock" }}
           paths:
@@ -228,55 +216,18 @@ jobs:
           paths:
             - dist
             - output
-  tag:
-    parameters:
-      semtag:
-        type: string
-    docker:
-      - image: circleci/python:3.7
-    environment:
-      SEMTAG: "<< parameters.semtag >>"
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "14:2e:73:04:b0:3d:21:7d:bb:c5:79:51:f9:52:b2:22"
-      - checkout
-      - run:
-          name: TAG
-          command: |
-            ./semtag ${SEMTAG} -f
 
-  merge-beta-to-master:
-    docker:
-      - image: circleci/python:3.7
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "7c:e9:cc:8d:8e:4d:9c:17:1d:e3:96:23:ce:bd:a4:c3"
-      - checkout
-      - run:
-          name: Merge
-          command: |
-            git config --global user.email "addonreleasesrv@splunk.com"
-            git config --global user.name "Add on release service"
-            git pull origin master
-            git merge master -m "Merge from master"
-            git checkout master
-            git merge << pipeline.git.revision >>
-            git push
 workflows:
   version: 2
   build_test:
     jobs:
       - build
-      - package_example_ta:
+      - test:
+          context:
+            - gdi-saucelabs
+            - gdi-reportportal
           requires:
             - build
-      - test:
-          requires:
-            - package_example_ta
           matrix:
             parameters:
               splunk_version: ["8.1"]
@@ -288,116 +239,19 @@ workflows:
                 - "test_splunk_ta_example_addon_proxy"
                 - "test_splunk_ta_example_addon_custom"
                 - "test_splunk_ta_example_addon_alert_actions"
-      - approval-tag-alpha:
+      - release:
           requires:
-            - build
-          type: approval
-          filters:
-            branches:
-              only: develop
-      - tag:
-          name: tag-alpha
-          requires:
-            - approval-tag-alpha
-          semtag: a
-  release:
+            - test
+          context:
+            - gdi-github
+
+  publish:
     jobs:
-      - publish:
+      - publish-pypi:
+          context:
+            - gdi-pypi
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /^v\d*\.\d*\.\d*.*$/
-      - approval-tag-beta:
-          requires:
-            - publish
-          type: approval
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-a\..*$/
-      - tag:
-          name: tag-beta
-          semtag: b
-          requires:
-            - approval-tag-beta
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-a\..*$/
-      - approval-merge-beta-to-master:
-          requires:
-            - publish
-          type: approval
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/
-      - merge-beta-to-master:
-          requires:
-            - approval-merge-beta-to-master
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/
-      - approval-tag-final-major:
-          type: approval
-          requires:
-            - merge-beta-to-master
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/
-      - tag:
-          name: tag-final-major
-          semtag: "final -s major"
-          requires:
-            - approval-tag-final-major
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/
-      - approval-tag-final-minor:
-          type: approval
-          requires:
-            - merge-beta-to-master
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/
-      - tag:
-          name: tag-final-minor
-          semtag: "final -s minor"
-          requires:
-            - approval-tag-final-minor
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/
-      - approval-tag-final-patch:
-          type: approval
-          requires:
-            - merge-beta-to-master
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/
-      - tag:
-          name: tag-final-patch
-          semtag: "final -s patch"
-          requires:
-            - approval-tag-final-patch
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*-b\..*$/

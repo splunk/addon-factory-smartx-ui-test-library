@@ -36,6 +36,18 @@ def pytest_configure(config):
         except OSError:
             pass
 
+def pytest_collection_modifyitems(config, items):
+    """
+    Add browser name as prefix in test class name
+    """
+    browser = config.getoption("--browser")
+    if browser:
+        if len(browser.split(':')) == 2:
+            browser, _ = browser.split(':')
+        for item in items:
+            class_name = item.nodeid.split("::")[-2]
+            item._nodeid = item.nodeid.replace(class_name, "{}_{}".format(browser, class_name))
+
 def pytest_addoption(parser):
     """
     Register argparse-style options and ini-style config values, called once at the beginning of a test run.

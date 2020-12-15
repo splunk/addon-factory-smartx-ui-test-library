@@ -22,7 +22,7 @@ class Entity(BaseComponent):
     def __init__(self, browser, container, add_btn=None):
         """
             :param browser: The selenium webdriver
-            :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
+            :param container: Container in which the Entity is located. Of type dictionary: {"by":..., "select":...}
             :param add_btn: The locator of add_button with which the entity will be opened
         """
         self.browser = browser
