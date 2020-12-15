@@ -3,57 +3,6 @@ version: 2.1
 orbs:
   go: circleci/go@0.2.0
 commands:
-  build_example_ta:
-    steps:
-    - attach_workspace:
-        at: /tmp/workspace
-    - run:
-        name: Building Example-TA
-        command: |
-          cd tests/deps/splunk-add-on-for-ucc-example
-          if ! command -v pyenv &> /dev/null
-          then
-              if [ ! -d "~/.pyenv" ]; then
-                  curl https://pyenv.run | bash
-              fi
-              export PATH="$HOME/.pyenv/bin:$PATH"
-              eval "$(pyenv init -)"
-              eval "$(pyenv virtualenv-init -)"
-          fi
-          for line in `cat .python-version`; do pyenv install -s "$line"; done
-          echo "Installing Virtual Environment"
-          pip3 install virtualenv > /dev/null
-          if [ ! -d "./.venv" ]; then
-          python3 -m virtualenv .venv -p python3 > /dev/null
-          fi
-          source .venv/bin/activate
-          pip install pip==20.2
-          echo "Virtual Environment Installed and Activated"
-          echo "Installing Dependencies"
-          pip install -r requirements_dev.txt || true
-          pip install semantic_version==2.6.0
-
-          rm -rf output || true
-          ucc-gen
-          echo "Generating Package"
-          PACKAGE_ID=$(ls output/)
-          BUILD_DIR=output/$PACKAGE_ID
-          cp -r LICENSES $BUILD_DIR
-
-          rm -rf build || true
-          mkdir -p build
-          echo "Build DIR"
-          echo $BUILD_DIR
-          slim generate-manifest $BUILD_DIR --update >/tmp/app.manifest   || true
-          cp  /tmp/app.manifest  $BUILD_DIR/app.manifest
-          mkdir -p build/package/splunkbase
-          mkdir -p build/package/deployment
-          slim package -o build/package/splunkbase $BUILD_DIR 
-
-          mkdir -p build/package/deployment
-          PACKAGE=$(ls build/package/splunkbase/*)
-          slim validate $PACKAGE
-
   test_smartx:
     parameters:
       test_suite:
@@ -70,13 +19,25 @@ commands:
         default: latest
     steps:
     - run:
+        name: Downloading Example-TA
+        command: |
+          cd tests/deps/splunk-add-on-for-ucc-example
+          mkdir output 
+          cd output
+          pwd
+          curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*tar.gz" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
+          ls
+          tar -xzf *.tar.gz
+          ls
+          rm *.tar.gz
+          ls
+    - run:
         name: Setup for testing
         command: |
           echo "Setup for Testing..."
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results
           cp -r /tmp/workspace/dist dist
-          cp -r /tmp/workspace/tests/deps/splunk-add-on-for-ucc-example/output tests/deps/splunk-add-on-for-ucc-example/output
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
     - run:
         name: Splunk Testing
@@ -87,6 +48,8 @@ commands:
           export TEST_SET=tests/ui
           export TEST_BROWSER="<<parameters.browser>>"
           export TEST_SUITE="-k <<parameters.test_suite>>"
+          export JOB_NAME="CircleCI::$CIRCLE_PROJECT_REPONAME[$CIRCLE_BRANCH][$TEST_BROWSER] #$CIRCLE_BUILD_NUM"
+          export SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
           echo "environment setup..."
           echo $SPLUNK_VERSION
           echo $SPLUNK_APP_ID
@@ -97,13 +60,21 @@ commands:
           echo "Testing..."
           docker-compose -f docker-compose-ci.yml build
 
+          # Saucelab connection
+          docker-compose -f docker-compose-ci.yml up -d sauceconnect 
+
           # Start Splunk
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
 
+          # Normal Inspecting
+          docker-compose -f docker-compose-ci.yml logs sauceconnect
+          docker ps -a
+
           # Run the tests
           test_exit_code=0
           docker-compose -f docker-compose-ci.yml up  --abort-on-container-exit test || test_exit_code=$?
+          
           # Collect Results
           docker container create --name dummy \
                               -v project_results:/home/circleci/work \
@@ -111,6 +82,9 @@ commands:
           docker cp dummy:/home/circleci/work/test-results/test.xml test-results/  || true
           docker cp dummy:/home/circleci/work/assets test-results/assets  || true
           docker cp dummy:/home/circleci/work/report.html test-results/report.html  || true
+          
+          docker-compose -f docker-compose-ci.yml down || true
+          
           echo exit code "$test_exit_code"
           exit "$test_exit_code"
 
@@ -157,83 +131,6 @@ jobs:
           paths:
             - dist
             - output
-  package_example_ta:
-    docker:
-      - image: circleci/python:3.7-node
-    steps:
-      - checkout
-      # - restore_cache:
-      #     keys:
-      #       - example-ta-package-1
-      - run:
-          name: Update Submodules
-          command: |
-            git submodule sync
-            git submodule update --init --recursive
-            git submodule update --remote --merge
-      - run:
-          name: Update Example TA submodules
-          command: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            git submodule sync
-            git submodule update --init --recursive
-            git submodule update --remote --merge
-
-      - run:
-          name: Building Example-TA
-          command: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            if ! command -v pyenv &> /dev/null
-            then
-                if [ ! -d "~/.pyenv" ]; then
-                    curl https://pyenv.run | bash
-                fi
-                export PATH="$HOME/.pyenv/bin:$PATH"
-                eval "$(pyenv init -)"
-                eval "$(pyenv virtualenv-init -)"
-            fi
-            for line in `cat .python-version`; do pyenv install -s "$line"; done
-            echo "Installing Virtual Environment"
-            pip3 install virtualenv > /dev/null
-            if [ ! -d "./.venv" ]; then
-            python3 -m virtualenv .venv -p python3 > /dev/null
-            fi
-            source .venv/bin/activate
-            pip install pip==20.2
-            echo "Virtual Environment Installed and Activated"
-            echo "Installing Dependencies"
-            pip install -r requirements_dev.txt || true
-            pip install semantic_version==2.6.0
-
-            rm -rf output || true
-            ucc-gen
-            echo "Generating Package"
-
-            PACKAGE_ID=$(ls output/)
-            BUILD_DIR=output/$PACKAGE_ID
-            cp -r LICENSES $BUILD_DIR
-
-            rm -rf build || true
-            mkdir -p build
-            echo "Build DIR"
-            echo $BUILD_DIR
-            slim generate-manifest $BUILD_DIR --update >/tmp/app.manifest   || true
-            cp  /tmp/app.manifest  $BUILD_DIR/app.manifest
-            mkdir -p build/package/splunkbase
-            mkdir -p build/package/deployment
-            slim package -o build/package/splunkbase $BUILD_DIR 
-
-            mkdir -p build/package/deployment
-            PACKAGE=$(ls build/package/splunkbase/*)
-            slim validate $PACKAGE
-      # - save_cache:
-      #     key: example-ta-package-1
-      #     paths:
-      #       - tests/deps/splunk-add-on-for-ucc-example/output
-      - persist_to_workspace:
-          root: .
-          paths:
-            - tests/deps/splunk-add-on-for-ucc-example/output
 
   test:
     docker:
@@ -325,12 +222,12 @@ workflows:
   build_test:
     jobs:
       - build
-      - package_example_ta:
+      - test:
+          context:
+            - gdi-saucelabs
+            - gdi-reportportal
           requires:
             - build
-      - test:
-          requires:
-            - package_example_ta
           matrix:
             parameters:
               splunk_version: ["8.1"]
