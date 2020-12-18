@@ -310,10 +310,27 @@ class UccTester(object):
     """
 
     def setup_class(self):
-        self.wait = WebDriverWait(None, 20)
+        WAIT_TIMEOUT = 20
+        self.wait = WebDriverWait(None, WAIT_TIMEOUT)
 
     def assert_util(self, left, right, operator="==",left_args={}, right_args={}, msg=None):
-        args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args, 'left_value':None, 'right_value':None}
+        """
+        Try to check the condition for {WAIT_TIMEOUT} seconds.
+        In UI Automation, it is not possible to expect things to work properly just milliseconds after an action.
+        Even in manual testing, we try things after 4-5 seconds and 2-3 times. 
+        This utility method tries to achive the same assertion.
+        To perform certain action multiple time, provide callable functoins with arguments. 
+
+        Params:
+            left (object or callable): LHS of the operator. 
+            right (object or callable): RHS of the operator 
+            operator: Operator. Possible values: (==, !=, <, >, <=, >=, in, not in, is, is not)
+            left_args: If left is callable, pass the parameters of the callable function.
+            right_args: If right is callable, pass the parameters of the callable function.
+            msg: Error message if the condition was not matched even after trying for {WAIT_TIMEOUT} seconds. 
+            
+        """
+        args = {'left': left, 'right': right, 'operator':operator, 'left_args': left_args, 'right_args': right_args, 'left_value':left, 'right_value':right}
         operator_map = {
             "==": lambda left,right: left == right,
             "!=": lambda left,right: left != right,
@@ -327,14 +344,13 @@ class UccTester(object):
             "is not": lambda left,right: left is not right,
         }
         def _assert(browser):
-            if callable(args['left']):
-                args['left_value'] = args['left'](**args['left_args'])
-            else:
-                args['left_value'] = args['left']
-            if callable(args['right']):
-                args['right_value'] = args['right'](**args['right_args'])
-            else:
-                args['right_value'] = args['right']
+            try:
+                if callable(args['left']):
+                    args['left_value'] = args['left'](**args['left_args'])
+                if callable(args['right']):
+                    args['right_value'] = args['right'](**args['right_args'])
+            except TimeoutException as e:
+                raise Exception("Timeout: {}".format(str(e)))
             return operator_map[args['operator']](args['left_value'], args['right_value'])
         try:
             self.wait.until(_assert)

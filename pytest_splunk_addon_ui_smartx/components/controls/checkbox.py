@@ -27,6 +27,7 @@ class Checkbox(BaseControl):
         '''
         Toggles the checkbox value
         '''
+        self.wait_to_be_clickable("checkbox")
         self.checkbox.click()
 
     def check(self):
