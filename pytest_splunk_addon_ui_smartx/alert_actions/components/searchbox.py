@@ -5,9 +5,9 @@
 from selenium.webdriver.common.action_chains import ActionChains
 from .textbox import TextBox
 from ...components.base_component import Selector
+from .action_controls import ActionControls
 
-
-class SearchBox(TextBox):
+class SearchBox(TextBox, ActionControls):
     def __init__(self, browser, container):
         """
             :param browser: The selenium webdriver

@@ -4,8 +4,9 @@
 
 from ...components.controls.textbox import TextBox
 from ...components.base_component import Selector
+from .action_controls import ActionControls
 
-class AlertTextBox(TextBox):
+class AlertTextBox(TextBox, ActionControls):
     def __init__(self, browser, container):
         super(AlertTextBox, self).__init__(browser, container)
         self.elements.update({

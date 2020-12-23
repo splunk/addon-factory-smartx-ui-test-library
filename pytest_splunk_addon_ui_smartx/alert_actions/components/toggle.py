@@ -4,8 +4,9 @@
 
 from ...components.controls.toggle import Toggle
 from ...components.base_component import Selector
+from .action_controls import ActionControls
 
-class AlertToggle(Toggle):
+class AlertToggle(Toggle, ActionControls):
     def __init__(self, browser, container):
         super(AlertToggle, self).__init__(browser, container)
         self.elements.update({

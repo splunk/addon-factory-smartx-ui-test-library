@@ -4,9 +4,10 @@
 
 from ...components.table import Table
 from ...components.base_component import Selector
+from .action_controls import ActionControls
 
 
-class AlertTable(Table):
+class AlertTable(Table, ActionControls):
     def __init__(self, browser):
         container = Selector(select='.grid-placeholder')
         super(AlertTable, self).__init__(browser, container)
