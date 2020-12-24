@@ -157,9 +157,8 @@ class SingleSelect(BaseControl):
             self.input.send_keys(Keys.ESCAPE)
         else:
             for each in self.get_elements('values'):
-                first_element = each
+                self.select(each.text.strip(), open_dropdown=False)
                 break
-            self.select(first_element.text.strip(), open_dropdown=False)
         self.wait_for("internal_container")
         return single_element
 
