@@ -155,8 +155,10 @@ class SingleSelect(BaseControl):
             self.select(selected_val, open_dropdown=False)
         elif self.searchable:
             self.input.send_keys(Keys.ESCAPE)
-        elif first_element:
-            self.select(first_element.text.strip(), open_dropdown=False)
+        else:
+            for each in self.get_elements('values'):
+                self.select(each.text.strip(), open_dropdown=False)
+                break
         self.wait_for("internal_container")
         return single_element
 
