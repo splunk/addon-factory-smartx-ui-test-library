@@ -3,10 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from selenium.common.exceptions import TimeoutException
+from .action_controls import ActionControls
 from ...components.controls.single_select import SingleSelect
 from ...components.base_component import Selector, BaseComponent
 
-class AlertAccountSelect(SingleSelect):
+class AlertAccountSelect(SingleSelect, ActionControls):
     def __init__(self, browser, container):
         super(AlertAccountSelect, self).__init__(browser, container, searchable=False)
         self.elements.update({

@@ -4,7 +4,9 @@
 
 from ...components.controls.checkbox import Checkbox
 from ...components.base_component import Selector
-class AlertCheckbox(Checkbox):
+from .action_controls import ActionControls
+from .action_controls import ActionControls
+class AlertCheckbox(Checkbox, ActionControls):
     def __init__(self, browser, container):
         super(AlertCheckbox, self).__init__(browser, container, searchable=False)
         self.elements.update({

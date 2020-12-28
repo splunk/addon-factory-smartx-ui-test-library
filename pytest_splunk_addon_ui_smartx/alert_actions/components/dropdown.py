@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from ...components.base_component import BaseComponent, Selector
+from .action_controls import ActionControls
 
-
-class ActionDropdown(BaseComponent):
+class ActionDropdown(ActionControls):
 
     def __init__(self, browser, container, mapping=dict()):
         """

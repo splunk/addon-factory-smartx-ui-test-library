@@ -40,6 +40,7 @@ msedge-selenium-tools = "*"
 pytest = ">=5.4, <6.2"
 pytest-splunk-addon = { version = "^1.3", extras = [ "docker" ] }
 poetry-dynamic-versioning = "^0.9"
+cssselect = "*"
 
 [tool.poetry.extras]
 docker = ["lovely-pytest-docker"]

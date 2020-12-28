@@ -6,8 +6,9 @@ from selenium.webdriver.support.ui import Select
 
 from ...components.controls.single_select import SingleSelect
 from ...components.base_component import Selector, BaseComponent
+from .action_controls import ActionControls
 
-class AlertSingleSelect(BaseComponent):
+class AlertSingleSelect(ActionControls):
     def __init__(self, browser, container):
         super(AlertSingleSelect, self).__init__(browser, container)
         self.elements.update({
