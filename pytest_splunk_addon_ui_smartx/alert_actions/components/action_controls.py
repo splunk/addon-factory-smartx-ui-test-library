@@ -19,10 +19,6 @@ class ActionControls(BaseControl):
         super(ActionControls, self).__init__(browser, container)
         select_xpath = CSSSelector(container.select).path
         self.elements.update({
-            "parent": Selector(by=By.XPATH, select=select_xpath + "//ancestor::div[contains(concat(' ', @class, ' '), 'control-group')][1]"),
+            "help_text": Selector(by=By.XPATH, select= select_xpath + "//following::span[contains(@class, 'help-block')][1]"),
+            "label_text": Selector(by=By.XPATH, select= select_xpath + "//preceding::label[contains(@class, 'control-label')][1]")
         })
-        self.elements.update({
-            "help_text": Selector(by=By.XPATH, select= self.elements["parent"].select + "//span[contains(@class, 'help-block')]"),
-            "label_text": Selector(by=By.XPATH, select= self.elements["parent"].select + "//label[contains(@class, 'control-label')]")
-        })
-            
