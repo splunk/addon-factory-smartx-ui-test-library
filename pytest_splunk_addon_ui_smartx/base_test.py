@@ -10,7 +10,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, ElementNotInteractableException
 from msedge.selenium_tools import Edge, EdgeOptions
 from msedge.selenium_tools.remote_connection import EdgeRemoteConnection
 from .pages.login import LoginPage
@@ -54,12 +54,12 @@ class SeleniumHelper(object):
                 else:
                     self.browser = webdriver.Remote(
                     command_executor='https://ondemand.saucelabs.com:443/wd/hub',
-                    desired_capabilities=self.get_sauce_firefox_opts(browser_version)) 
+                    desired_capabilities=self.get_sauce_firefox_opts(browser_version))
 
             elif browser == "chrome":
                 if debug:
                     self.browser = webdriver.Chrome(
-                        chrome_options=self.get_local_chrome_opts(headless), 
+                        chrome_options=self.get_local_chrome_opts(headless),
                         service_args=["--verbose", "--log-path=selenium.log"]
                     )
                 else:
@@ -125,7 +125,7 @@ class SeleniumHelper(object):
 
         cls.jenkins_build = os.environ.get('JOB_NAME') or os.environ.get('JENKINS_JOB_ID') or "Local Run"
         print("\nUsing Saucelabs tunnel: {}".format(cls.sauce_tunnel_id))
-        if not cls.sauce_username or not cls.sauce_access_key: 
+        if not cls.sauce_username or not cls.sauce_access_key:
             raise Exception(
                     "SauceLabs Credentials not found in the environment."
                     " Please make sure SAUCE_USERNAME and SAUCE_PASSWORD is set."
@@ -174,7 +174,7 @@ class SeleniumHelper(object):
             'browserName': 'internet explorer',
             'browserversion': browser_version,
             'iedriverVersion': "3.141.0",
-            'sauce:options': sauce_options 
+            'sauce:options': sauce_options
         }
         return ie_opts
 
@@ -186,7 +186,7 @@ class SeleniumHelper(object):
         capabilities['requireWindowFocus'] = True
         capabilities['nativeEvent'] = False
         return capabilities
-        
+
     def get_local_chrome_opts(self, headless_run):
         chrome_opts = webdriver.ChromeOptions()
         chrome_opts.add_argument('--ignore-ssl-errors=yes')
@@ -212,9 +212,9 @@ class SeleniumHelper(object):
         else:
             platform = "LINUX"
         DesiredCapabilities = {
-            'platform': platform, 
-            'browserName': 'MicrosoftEdge', 
-            'ms:edgeOptions': {'extensions': [], 'args': ['--ignore-ssl-errors=yes', '--ignore-certificate-errors']}, 
+            'platform': platform,
+            'browserName': 'MicrosoftEdge',
+            'ms:edgeOptions': {'extensions': [], 'args': ['--ignore-ssl-errors=yes', '--ignore-certificate-errors']},
             'ms:edgeChromium': True}
         if headless_run:
             DesiredCapabilities['ms:edgeOptions']["args"].append('--headless')
@@ -274,8 +274,8 @@ class SeleniumHelper(object):
     def update_saucelab_job(self, status):
         data = '{"passed": false}' if status else '{"passed": true}'
         response = requests.put('https://saucelabs.com/rest/v1/{}/jobs/{}'.format(
-                        self.sauce_username, self.browser_session), 
-                        data=data, 
+                        self.sauce_username, self.browser_session),
+                        data=data,
                         auth=(self.sauce_username, self.sauce_access_key))
         response = response.json()
         print("\nSauceLabs job_id={}".format(response.get("id")))
@@ -351,11 +351,14 @@ class UccTester(object):
                     args['right_value'] = args['right'](**args['right_args'])
             except TimeoutException as e:
                 raise Exception("Timeout: {}".format(str(e)))
+            except ElementNotInteractableException as e:
+                raise Exception("Element not interactable: {}".format(str(e)))
             return operator_map[args['operator']](args['left_value'], args['right_value'])
         try:
             self.wait.until(_assert)
             condition_failed = False
-        except TimeoutException:
+        except (TimeoutException, ElementNotInteractableException) as e:
+            logger.error("Exception raised: {}".format(str(e)))
             condition_failed = True
         if condition_failed:
             if not msg:

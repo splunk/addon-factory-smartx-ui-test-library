@@ -41,6 +41,7 @@ cssselect = "*"
 pytest = ">=5.4, <6.2"
 pytest-splunk-addon = { version = "^1.3", extras = [ "docker" ] }
 poetry-dynamic-versioning = "^0.9"
+coverage = "^5.5"
 
 [tool.poetry.extras]
 docker = ["lovely-pytest-docker"]
