@@ -214,14 +214,6 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
-      - run:
-          name: Setup Environment
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y python2 python-pip python3 python3.7 python3-pip
-            pip install pip --upgrade
-            sudo apt install npm
-            ls -al package/*
       - snyk/scan:
           additional-arguments: "--all-projects --command=python3 --json-file-output=/root/project/test-results/snyk-scan.json --debug"
           organization: 'Splunk'
