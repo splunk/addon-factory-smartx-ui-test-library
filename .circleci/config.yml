@@ -1,6 +1,7 @@
 #
 version: 2.1
 orbs:
+  snyk: snyk/snyk@0.0.13
   go: circleci/go@0.2.0
 commands:
   test_smartx:
@@ -208,6 +209,29 @@ jobs:
           destination: test-results
       - store_test_results:
           path: test-results
+  snyk:
+    docker: 
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Setup Environment
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python2 python-pip python3 python3.7 python3-pip
+            pip install pip --upgrade
+            sudo apt install npm
+            ls -al package/*
+      - snyk/scan:
+          additional-arguments: "--all-projects --command=python3 --json-file-output=/root/project/test-results/snyk-scan.json --debug"
+          organization: 'Splunk'
+          # target-file: 'pyproject.toml'
+          # fail-on-issues: false
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+      - store_test_results:
+          path: test-results
 
   release:
     docker:
@@ -261,6 +285,12 @@ workflows:
       - semgrep:
           context:
             - gdi-semgrep      
+          filters:
+            branches:
+              only: /.*/
+      - snyk:
+          context:
+            - gdi-snyk     
           filters:
             branches:
               only: /.*/
