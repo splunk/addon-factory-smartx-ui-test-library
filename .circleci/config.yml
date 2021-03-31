@@ -226,6 +226,7 @@ jobs:
           name: Setup Environment
           command: |
             poetry install
+            pip install -r docs/requirements.txt
       - run:
           name: install-snyk
           command: |
@@ -245,7 +246,7 @@ jobs:
           name: snyk auth
           command: snyk auth $SNYK_TOKEN
       - run: # run snyk test - run snyk testa
-            name: snyk test requirements_dev.txt
+            name: snyk test
             command: |
               snyk test  --severity-threshold=low   --all-projects --command=python3 --json-file-output=/root/project/test-results/snyk-scan.json -d  || true
               snyk monitor --all-projects --command=python3
