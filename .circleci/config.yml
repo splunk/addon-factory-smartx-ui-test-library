@@ -212,13 +212,12 @@ jobs:
   snyk:
     docker: 
       - image: circleci/python:3.7
+        user: root
     steps:
       - checkout
       - snyk/scan:
-          additional-arguments: "--all-projects --command=python3 --json-file-output=/root/project/test-results/snyk-scan.json --debug"
-          organization: 'Splunk'
-          # target-file: 'pyproject.toml'
-          # fail-on-issues: false
+          additional-arguments: "--all-projects --command=python3 --json-file-output=/root/project/test-results/snyk-scan.json"
+          fail-on-issues: false
       - store_artifacts:
           path: test-results
           destination: test-results
