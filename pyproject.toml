@@ -47,7 +47,7 @@ coverage = "^5.5"
 docker = ["lovely-pytest-docker"]
 
 [tool.poetry.plugins]
-pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
+pytest11 = { ucc-smartx = "pytest_splunk_addon_ui_smartx.plugin" }
 
 [tool.poetry-dynamic-versioning]
 enable = true
