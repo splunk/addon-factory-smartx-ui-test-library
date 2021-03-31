@@ -225,16 +225,30 @@ jobs:
       - run:
           name: Setup Environment
           command: |
-            sudo apt-get update
-            sudo apt-get install -y python2 python-pip python-virtualenv python3 python3.7 python3-pip python3-virtualenv
-            pip install pip --upgrade
-            sudo apt install npm
-            pip install pip --upgrade
-            pip install -r docs/requirements.txt
             poetry install
-      - snyk/scan:
-          additional-arguments: "--all-projects --command=python3 --json-file-output=/root/project/test-results/snyk-scan.json -d"
-          fail-on-issues: false
+      - run:
+          name: install-snyk
+          command: |
+              #!/bin/bash -eo pipefail
+              if [[ ! -x "/usr/local/bin/snyk" ]]; then
+                if [[ "linux" == "alpine" && "true" == "true" ]]; then
+                  apk add -q --no-progress --no-cache curl wget libstdc++ sudo
+                fi
+                curl -s https://api.github.com/repos/snyk/snyk/releases/latest | grep "browser_download_url" | grep linux | cut -d '"' -f 4 | xargs -n 1 curl -LO
+                sha256sum -c snyk-linux.sha256
+                sudo mv snyk-linux /usr/local/bin/snyk
+                sudo chmod +x /usr/local/bin/snyk
+              fi
+              snyk config set disableSuggestions=true
+              snyk auth $SNYK_TOKEN   
+      - run: # run snyk auth - authenticate snyk use environment variables to add token
+          name: snyk auth
+          command: snyk auth $SNYK_TOKEN
+      - run: # run snyk test - run snyk testa
+            name: snyk test requirements_dev.txt
+            command: |
+              snyk test  --severity-threshold=low   --all-projects --command=python3 --json-file-output=/root/project/test-results/snyk-scan.json -d  || true
+              snyk monitor --all-projects --command=python3
       - store_artifacts:
           path: test-results
           destination: test-results
