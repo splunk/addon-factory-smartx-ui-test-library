@@ -7,6 +7,7 @@ import time
 from .base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 
+SPLUNK_CLOUD_TOS = True
 class Login(BaseComponent):
     """
     Component: Login
@@ -33,16 +34,15 @@ class Login(BaseComponent):
             :param username: Str the username for the splunk instance we want to access
             :param password: Str the password for the splunk instance we want to access
         """
+        global SPLUNK_CLOUD_TOS
         self.username.send_keys(username)
         self.password.send_keys(password)
         self.password.send_keys(u'\ue007')
 
-        if splunk_cloud_agreement:
-            try:
-                self.wait_for("accept_button")
-                self.accept_checkbox.click()
-                self.wait_for("accept_button")
-                self.accept_button.click()
-            except:
-                pass
+        if splunk_cloud_agreement and SPLUNK_CLOUD_TOS:
+            self.wait_to_be_clickable("accept_checkbox")
+            self.accept_checkbox.click()
+            self.wait_for("accept_button")
+            self.accept_button.click()
+            SPLUNK_CLOUD_TOS = False
         self.wait_for("homepage", "Could not log in to the Splunk instance.")
