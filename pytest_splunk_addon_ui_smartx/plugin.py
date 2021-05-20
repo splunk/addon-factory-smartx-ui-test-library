@@ -91,7 +91,13 @@ def pytest_addoption(parser):
         help="Run the test case on headless mode"
     )
 
-SmartConfigs = namedtuple("SmartConfigs", ['driver', 'driver_version', 'local_run', 'retry_count', 'headless_run'])
+    group.addoption(
+        "--accept-splunk-cloud-agreement",
+        action="store_true",
+        help="Accept splunk cloud Terms of Service, when login for first time"
+    )
+
+SmartConfigs = namedtuple("SmartConfigs", ['driver', 'driver_version', 'local_run', 'retry_count', 'headless_run', "splunk_cloud_agreement"])
 
 @pytest.fixture(scope="session")
 def ucc_smartx_configs(request):
@@ -131,10 +137,23 @@ def ucc_smartx_configs(request):
     else:
         headless_run = False
 
+    if request.config.getoption("--accept-splunk-cloud-agreement"):
+        splunk_cloud_agreement = True
+        LOGGER.debug("--splunk_cloud_agreement")
+    else:
+        splunk_cloud_agreement = False
+
     LOGGER.info("Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
         driver=driver, local_run=local_run, headless_run=headless_run
     ))
-    smartx_configs = SmartConfigs(driver=driver, driver_version=driver_version, local_run=local_run, retry_count=retry_count, headless_run=headless_run)
+    smartx_configs = SmartConfigs(
+        driver=driver, 
+        driver_version=driver_version, 
+        local_run=local_run, 
+        retry_count=retry_count, 
+        headless_run=headless_run, 
+        splunk_cloud_agreement=splunk_cloud_agreement
+    )
     return smartx_configs
 
 def get_browser_scope(fixture_name, config):
@@ -154,7 +173,17 @@ def ucc_smartx_selenium_helper(request, ucc_smartx_configs, splunk, splunk_web_u
     for try_number in range(ucc_smartx_configs.retry_count):
         last_exc = Exception()
         try:
-            selenium_helper = SeleniumHelper(ucc_smartx_configs.driver, ucc_smartx_configs.driver_version, splunk_web_uri, splunk_rest_uri, debug=ucc_smartx_configs.local_run, cred=(splunk["username"], splunk["password"]), headless=ucc_smartx_configs.headless_run, test_case=test_case)
+            selenium_helper = SeleniumHelper(
+                ucc_smartx_configs.driver, 
+                ucc_smartx_configs.driver_version, 
+                splunk_web_uri, 
+                splunk_rest_uri, 
+                debug=ucc_smartx_configs.local_run, 
+                cred=(splunk["username"], splunk["password"]), 
+                headless=ucc_smartx_configs.headless_run, 
+                test_case=test_case,
+                splunk_cloud_agreement=ucc_smartx_configs.splunk_cloud_agreement
+            )
             break
         except Exception as e:
             last_exc = e

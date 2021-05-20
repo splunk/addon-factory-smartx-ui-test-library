@@ -22,10 +22,12 @@ class Login(BaseComponent):
         self.elements = {
             "username": Selector(by=By.ID, select="username"),
             "password": Selector(by=By.ID, select="password"),
-            "homepage": Selector(select='a[data-action="home"]')
+            "homepage": Selector(select='a[data-action="home"]'),
+            "accept_checkbox": Selector(by=By.ID, select="accept"),
+            "accept_button": Selector(select=" .accept-tos-button.btn.btn-primary")
         }
 
-    def login(self, username, password):
+    def login(self, username, password, splunk_cloud_agreement):
         """
         Login into the Splunk instance
             :param username: Str the username for the splunk instance we want to access
@@ -34,4 +36,13 @@ class Login(BaseComponent):
         self.username.send_keys(username)
         self.password.send_keys(password)
         self.password.send_keys(u'\ue007')
+
+        if splunk_cloud_agreement:
+            try:
+                self.wait_for("accept_button")
+                self.accept_checkbox.click()
+                self.wait_for("accept_button")
+                self.accept_button.click()
+            except:
+                pass
         self.wait_for("homepage", "Could not log in to the Splunk instance.")

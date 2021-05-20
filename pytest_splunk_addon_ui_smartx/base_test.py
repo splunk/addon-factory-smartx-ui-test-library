@@ -38,11 +38,12 @@ class SeleniumHelper(object):
     sauce_tunnel_parent=None
     jenkins_build=None
 
-    def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), headless=False, test_case=None):
+    def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), headless=False, test_case=None, splunk_cloud_agreement=False):
         self.splunk_web_url = splunk_web_url
         self.splunk_mgmt_url = splunk_mgmt_url
         self.cred = cred
         self.test_case = test_case
+        self.splunk_cloud_agreement = splunk_cloud_agreement
         if not debug:
             # Using Saucelabs
             self.init_sauce_env_variables()
@@ -266,7 +267,7 @@ class SeleniumHelper(object):
     def login_to_splunk(self, *cred):
         try:
             login_page = LoginPage(self)
-            login_page.login.login(*cred)
+            login_page.login.login(*cred, splunk_cloud_agreement=self.splunk_cloud_agreement)
         except:
             self.browser.save_screenshot(os.path.join(PNG_PATH, "login_error.png"))
             raise
