@@ -25,7 +25,7 @@ import sys
 import re
 # requests.urllib3.disable_warnings()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 PNG_PATH = "assets"
 
 class SeleniumHelper(object):
