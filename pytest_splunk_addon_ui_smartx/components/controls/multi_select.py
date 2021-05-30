@@ -24,13 +24,11 @@ class MultiSelect(BaseControl):
         super(MultiSelect, self).__init__(browser, container)
 
         self.elements.update({
-            "internal_container": Selector(select=container.select + " div.select2-container"),
-            "dropdown": Selector(select=container.select + " .select2-choices"),
-            "selected": Selector(select=container.select + " .select2-search-choice"),
-            "deselect": Selector(select=container.select + " .select2-search-choice a"),
-            "input": Selector(select=container.select +  " .select2-input"                ),
-            "hidden_values": Selector(select=container.select + " .select2-offscreen option"                ),
-            "values": Selector(select='.select2-drop-active[style*="display: block;"] li.select2-result-selectable')
+            "internal_container": Selector(select=container.select + ' [role="listbox"]'),
+            "dropdown": Selector(select=container.select + ' [role="listbox"]'),
+            "selected": Selector(select=container.select + ' button[data-test="selected-option"][role="option"]'),
+            "deselect": Selector(select=container.select + ' [data-test="crossmark"]'),
+            "input": Selector(select=container.select +  ' [data-test="textbox"]'),
         })
 
     def search(self, value):
@@ -61,9 +59,14 @@ class MultiSelect(BaseControl):
         """
         try:
             self.input.click()
+            popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+
         except:
             raise Exception("dropdown not found")
 
+        self.elements.update({
+            "values": Selector(select=popoverid + ' [data-test="option"]')
+        })
         for each in self.get_elements('values'):
             if each.text.strip().lower() == value.lower():
                 each.click()
@@ -107,8 +110,14 @@ class MultiSelect(BaseControl):
         """
         self.wait_for("internal_container")
         list_of_values = []
-        for each in self.get_child_elements('hidden_values'):
-            list_of_values.append(each.get_attribute('textContent'))
+
+        self.input.click()
+        popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+        self.elements.update({
+            "values": Selector(select=popoverid + ' [data-test="option"] [data-test="label"]')
+        })
+        for each in self.get_elements('values'):
+            list_of_values.append(each.text.strip())
         return list_of_values
         
     def get_list_count(self):
@@ -122,6 +131,11 @@ class MultiSelect(BaseControl):
         Get list of values which are visible. Used while filtering 
             :returns: List of visible options within the multi-select dropdown
         """
+        self.input.click()
+        popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+        self.elements.update({
+        "values": Selector(select=popoverid + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]')
+        })
         for each in self.get_elements('values'):
             yield each.get_attribute('textContent')
 

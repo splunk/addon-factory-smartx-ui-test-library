@@ -16,19 +16,17 @@ class Checkbox(BaseControl):
     def __init__(self, browser, container, searchable=True):
         super(Checkbox, self).__init__(browser, container)
         self.elements.update({
-            "internal_container": Selector(select=container.select + " div.select2-container"),
-            "checkbox": Selector(select=container.select + ' .checkbox'),
-            "checkbox_btn": Selector(select=container.select + " .checkbox a.btn"),
-            "checkbox_enabled": Selector(select=container.select + ' .checkbox a.btn .icon-check')
+            "internal_container": Selector(select=container.select + ' [data-test="switch"]'),
+            "checkbox": Selector(select=container.select + ' [data-test="switch"]'),
+            "checkbox_btn": Selector(select=container.select + ' [data-test="button"][role="checkbox"]'),
         })
 
-    
     def toggle(self):
         '''
         Toggles the checkbox value
         '''
         self.wait_to_be_clickable("checkbox")
-        self.checkbox.click()
+        self.checkbox_btn.click()
 
     def check(self):
         '''
@@ -59,10 +57,8 @@ class Checkbox(BaseControl):
         Returns True if the checkbox is already checked, otherwise False
             :return: Bool True if checked, False if unchecked
         '''
-        element = self.get_element("checkbox_enabled")
-        a = element.value_of_css_property("display")
-        if a =="inline-block":
+        is_selected = self.checkbox.get_attribute("data-test-selected")
+        if is_selected == "true":
             return True
         else:
             return False
-    

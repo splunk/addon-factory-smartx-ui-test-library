@@ -27,18 +27,18 @@ class ExampleTAInputEntity(Entity):
             :param browser: The selenium webdriver
             :param container: The container in which the entity is located in
         """
-        add_btn = Button(browser, Selector(by=By.ID, select="addInputBtn"))
-        entity_container = Selector(select= ".modal-content")
+        add_btn = Button(browser, Selector(by=By.ID, select='addInputBtn'))
+        entity_container = Selector(select='[data-test="modal"]')
         super(ExampleTAInputEntity, self).__init__(browser, entity_container, add_btn=add_btn)
         # Controls
-        self.name = TextBox(browser, Selector(select=".name"))
-        self.interval = TextBox(browser, Selector(select=".interval"))
-        self.index = SingleSelect(browser, Selector(select= ".index"))
-        self.object = TextBox(browser, Selector(select=".object"))
-        self.object_fields = TextBox(browser, Selector(select=".object_fields"))
-        self.title = BaseComponent(browser, Selector(select= "h4.modal-title"))
-        self.use_existing_input = Toggle(browser, Selector(select= ".use_existing_checkpoint"))
-        self.help_link = LearnMore(browser, Selector(select=" #accountDefaultTooltip a"))
+        self.name = TextBox(browser, Selector(select='[data-test="control-group"][data-name="name"]'))
+        self.interval = TextBox(browser, Selector(select='[data-test="control-group"][data-name="interval"]'))
+        self.index = SingleSelect(browser, Selector(select= '[data-test="control-group"][data-name="index"]'))
+        self.object = TextBox(browser, Selector(select='[data-test="control-group"][data-name="object"]'))
+        self.object_fields = TextBox(browser, Selector(select='[data-test="control-group"][data-name="object_fields"]'))
+        self.title = BaseComponent(browser, Selector(select= '[data-test="title"]'))
+        self.use_existing_input = Toggle(browser, Selector(select= '[data-test="control-group"][data-name="use_existing_checkpoint"]'))
+        self.help_link = LearnMore(browser, Selector(select='[data-test="control-group"] [data-test="link"]'))
 
 class ExampleTALogEntity(Entity):
     """
@@ -49,16 +49,16 @@ class ExampleTALogEntity(Entity):
             :param browser: The selenium webdriver
             :param container: The container in which the entity is located in
         """
-        add_btn = Button(browser, Selector(by=By.ID, select="addInputBtn"))
-        entity_container = Selector(select= ".modal-content")
+        add_btn = Button(browser, Selector(by=By.ID, select='[id="addInputBtn"]'))
+        entity_container = Selector(select='[data-test="modal"]')
         super(ExampleTALogEntity, self).__init__(browser, entity_container, add_btn=add_btn)
         # Controls
-        self.name = TextBox(browser, Selector(select=".name"))
-        self.interval = TextBox(browser, Selector(select=".interval"))
-        self.index = SingleSelect(browser, Selector(select= ".index"))
-        self.title = BaseComponent(browser, Selector(select= "h4.modal-title"))
-        self.use_existing_input = Toggle(browser, Selector(select= ".use_existing_checkpoint"))
-        self.help_link = LearnMore(browser, Selector(select=" #accountDefaultTooltip a"))
+        self.name = TextBox(browser, Selector(select='[data-test="control-group"][data-name="name"]'))
+        self.interval = TextBox(browser, Selector(select='[data-test="control-group"][data-name="interval"]'))
+        self.index = SingleSelect(browser, Selector(select='[data-test="control-group"][data-name="index"]'))
+        self.title = BaseComponent(browser, Selector(select='[data-test="title"]'))
+        self.use_existing_input = Toggle(browser, Selector(select='[data-test="control-group"][data-name="use_existing_checkpoint"]'))
+        self.help_link = LearnMore(browser, Selector(select='[data-test="control-group"] [data-test="link"]'))
 
 
 class Inputs(Page):
@@ -72,16 +72,16 @@ class Inputs(Page):
         """
         super(Inputs, self).__init__(ucc_smartx_selenium_helper, ucc_smartx_rest_helper, open_page=True)
 
-        input_container = Selector(select= "div.inputsContainer")
+        input_container = Selector(select='div[role="main"]')
         if ucc_smartx_selenium_helper:
-            self.title = Message(ucc_smartx_selenium_helper.browser, Selector(by=By.CLASS_NAME, select="tool-title"))
-            self.description = Message(ucc_smartx_selenium_helper.browser, Selector(by=By.CLASS_NAME, select="tool-description"))
+            self.title = Message(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="column"] .pageTitle'))
+            self.description = Message(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="column"] .pageSubtitle'))
             self.table = InputTable(ucc_smartx_selenium_helper.browser, input_container, mapping={"account_name": "account", "status": "disabled"})
-            self.create_new_input = Dropdown(ucc_smartx_selenium_helper.browser, Selector(select=".add-button"))
+            self.create_new_input = Dropdown(ucc_smartx_selenium_helper.browser, Selector(by=By.ID, select='addInputBtn'))
             self.ExampleTALogEntity = ExampleTALogEntity(ucc_smartx_selenium_helper.browser, input_container)
             self.ExampleTAInputEntity = ExampleTAInputEntity(ucc_smartx_selenium_helper.browser, input_container)
-            self.pagination = Dropdown(ucc_smartx_selenium_helper.browser, Selector(select="control btn-group shared-controls-syntheticselectcontrol control-default"))
-            self.type_filter = Dropdown(ucc_smartx_selenium_helper.browser, Selector(select=" .type-filter"))
+            self.pagination = Dropdown(ucc_smartx_selenium_helper.browser, Selector(select='.dropdownPage'))    # Selector for dropdown for selecting number of records shown in a single page
+            self.type_filter = Dropdown(ucc_smartx_selenium_helper.browser, Selector(select='.dropdownInput'))  # Selector for dropdown for showing records of perticular input type.
             self.message_tray = MessageTray(ucc_smartx_selenium_helper.browser)
 
         if ucc_smartx_rest_helper:

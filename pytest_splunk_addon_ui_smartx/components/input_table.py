@@ -23,12 +23,15 @@ class InputTable(Table):
         """
         super(InputTable, self).__init__(browser, container, mapping)
 
-        self.elements.update({
-            "switch_button_status":  Selector(select=" td.col-disabled .disabled"),
-            "status_toggle":  Selector(select=" .switch-button .round"),
-            "switch_to_page":  Selector(select=container.select + " .pull-right li a"),
-            "input_status": Selector(select=container.select + " div.switch-label")
-        })
+        self.elements.update(
+            {
+                "switch_button_status": Selector(select='[data-disabled="true"]'),
+                "status_toggle": Selector(select='button[data-test="button"][role="switch"]'),
+                "switch_to_page": Selector(select=container.select + ' [data-test-page]'),
+                "input_status": Selector(select=container.select + ' [data-test="cell"][data-column="disabled"]'),
+            }
+        )
+        self.container = container
 
 
     def input_status_toggle(self, name, enable):
@@ -39,22 +42,22 @@ class InputTable(Table):
             :return: Bool whether or not enabling or disabling the field was successful, If the field was already in the state we wanted it in, then it will return an exception
         """
         _row = self._get_row(name)
-        input_status = _row.find_element(*list(self.elements["input_status"]._asdict().values()))
-        status = input_status.text.strip().lower()
+        self.elements.update({
+            "input_status": Selector(select='[data-test="status"]'),
+        })
+        status = self.input_status.text.strip().lower()
         if enable:
             if status == "enabled":
-                raise Exception("The input is already {}".format(input_status.text.strip()))
+                raise Exception("The input is already {}".format(self.input_status.text.strip()))
             elif status == "disabled":
-                status_button = _row.find_element(*list(self.elements["status_toggle"]._asdict().values()))
-                status_button.click()
+                self.status_toggle.click()
                 self.wait_until("switch_button_status")
                 return True
         else:
             if status == "disabled":
-                raise Exception("The input is already {}".format(input_status.text.strip()))
-            elif input_status.text.strip().lower() == "enabled":
-                status_button = _row.find_element(*list(self.elements["status_toggle"]._asdict().values()))
-                status_button.click()
+                raise Exception("The input is already {}".format(self.input_status.text.strip()))
+            elif status == "enabled":
+                self.status_toggle.click()
                 self.wait_until("switch_button_status")
                 return True
             

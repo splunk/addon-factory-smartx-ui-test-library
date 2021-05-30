@@ -14,39 +14,48 @@ class SingleSelect(BaseControl):
     Select Javascript framework: select2
     A dropdown which can select only one value
     """
-    def __init__(self, browser, container, searchable=True):
+    def __init__(self, browser, container, searchable=True, allow_new_values=False):
         """
             :param browser: The selenium webdriver
             :param container: The locator of the container where the control is located in. 
+            :param searchable: Boolean indicating if the dropdown provides filter or not.
+            :param allow_new_values: Boolean indicating if the dropdown allows for user entered custom values excluding predefined list.
         """
-
         super(SingleSelect, self).__init__(browser, container)
         self.searchable = searchable
+        # Component is ComboBox in case of True
+        self.allow_new_values = allow_new_values
+        self.container = container
         self.elements.update({
-            "internal_container": Selector(select=container.select + " div.select2-container"),
-            "dropdown": Selector(select=container.select + " .select2-choice"),
-            "selected": Selector(select=container.select + " .select2-choice:not(.select2-default)"),
-            "values": Selector(select='.select2-drop-active[style*="display: block;"] .select2-result-selectable'),
-            "cancel_selected":Selector(select=container.select + ' .select2-search-choice-close')
-            # To update
-        })
-
-        if searchable:
-            self.elements.update({
-                "input": Selector(select='.select2-with-searchbox.select2-drop-active[style*="display: block;"] .select2-input')
+            "internal_container": Selector(select=container.select + ' .dropdownBox'),
+            "dropdown": Selector(select=container.select + ' .dropdownBox'),
+            "combobox":Selector(select=container.select + ' [data-test="combo-box"]'),
+            "selected":Selector(select=container.select + ' [data-test="textbox"]'),
+            "cancel_selected":Selector(select=container.select + ' [data-test="clear"]'),
             })
 
-    def select(self, value, open_dropdown=True):
+    def select(self, value):
         """
         Selects the value within the select dropdown
             :param value: the value to select
-            :param open_dropdown: Bool Whether to open the the dropwdown or not 
             :return: Bool if successful in selection, else raises an error
         """
-        if open_dropdown:
-            self.wait_to_be_clickable("dropdown")
-            self.dropdown.click()
-        
+        self.wait_to_be_clickable("dropdown")
+        self.dropdown.click()
+
+        if self.allow_new_values:
+            if self.get_value():
+                self.cancel_selected.click()
+            popoverid = '#' + self.combobox.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select=popoverid + ' [data-test="option"]')
+            })
+        else:
+            popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select=popoverid + ' [data-test="option"]')
+            })
+
         for each in self.get_elements('values'):
             if each.text.strip().lower() == value.lower():
                 each.click()
@@ -62,9 +71,19 @@ class SingleSelect(BaseControl):
             :param value: string value to search
             :assert: Asserts whether or not the single select is seachable
         """
-
         assert self.searchable, "Can not search, as the Singleselect is not searchable"
+        self.wait_to_be_clickable("dropdown")
         self.dropdown.click()
+        if self.searchable:
+            if self.allow_new_values:
+                self.elements.update({
+                    "input": Selector(select=self.container.select + ' [data-test="textbox"]')
+                })
+            else:
+                popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+                self.elements.update({
+                        "input": Selector(select= popoverid + ' [data-test="textbox"]')
+                })
 
         #DEBUG: maybe we have to click the select button
         self.input.send_keys(value)
@@ -76,11 +95,25 @@ class SingleSelect(BaseControl):
             :returns: list of values
         """
 
+        if self.searchable:
+            if self.allow_new_values:
+                self.elements.update({
+                    "input": Selector(select=self.container.select + ' [data-test="textbox"]')
+                })
+            else:
+                self.dropdown.click()
+                popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+                self.elements.update({
+                    "input": Selector(select= popoverid + ' [data-test="textbox"]')
+                })
         self.search(value)
-        self.wait_for_search_list()
-        searched_values = list(self._list_visible_values())
-        self.input.send_keys(Keys.ESCAPE)
-        self.wait_for("container")
+        if self.allow_new_values:
+            searched_values = list(self._list_visible_values())
+        else:
+            self.wait_for_search_list()
+            searched_values = list(self._list_visible_values())
+            self.input.send_keys(Keys.ESCAPE)
+            self.wait_for("container")
         return searched_values
 
     def _list_visible_values(self):
@@ -88,6 +121,17 @@ class SingleSelect(BaseControl):
         Gets list of values which are visible. Used while filtering
             :returns: List of the values that are visible
         """
+        self.dropdown.click()
+        if self.allow_new_values:
+            popoverid = '#' + self.combobox.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select=popoverid + ' [data-test="option"]')
+            })
+        else:
+            popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select=popoverid + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]')
+            })
         for each in self.get_elements('values'):
             yield each.get_attribute('textContent')
 
@@ -97,16 +141,31 @@ class SingleSelect(BaseControl):
         Gets the selected value
             :return: The selected value's text, or returns false if unsuccessful
         """
-        try:
-            self.wait_for_text("selected")
-            return self.selected.text.strip()
-        except:
-            return False
-      
+        if self.allow_new_values:
+            # ComboBox do not support label
+            return self.selected.get_attribute("value")
+        else:
+            if self.dropdown.get_attribute("data-test-value"):
+                return self.dropdown.get_attribute("label")
+            else:
+                return False
+
     def get_placeholder_value(self):
         """
         get placeholder value from the single select
         """
+        if self.searchable:
+            if self.allow_new_values:
+                self.elements.update({
+                    "input": Selector(select=self.container.select + ' [data-test="textbox"]')
+                })
+            else:
+                self.dropdown.click()
+                popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+                self.elements.update({
+                    "input": Selector(select= popoverid + ' [data-test="textbox"]')
+                })
+
         return self.input.get_attribute('placeholder').strip()
 
     def cancel_selected_value(self):
@@ -115,6 +174,7 @@ class SingleSelect(BaseControl):
             :return: Bool whether or not canceling the selected item was successful, else raises a error
         '''
         try:
+            self.dropdown.click()
             self.wait_to_be_clickable("cancel_selected")
             self.cancel_selected.click()
             return True
@@ -130,16 +190,36 @@ class SingleSelect(BaseControl):
         self.dropdown.click()
         first_element = None
         list_of_values = []
+
+        if self.allow_new_values:
+            if self.seachable:
+                self.elements.update({
+                    "input": Selector(select=self.container.select + ' [data-test="textbox"]')
+                })
+            popoverid = '#' + self.combobox.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select=popoverid + ' [data-test="option"]')
+            })
+        else:
+            if self.searchable:
+                popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+                self.elements.update({
+                        "input": Selector(select=popoverid + ' [data-test="textbox"]')
+                    })
+            popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select=popoverid + ' [data-test="option"]')
+            })
         for each in self.get_elements('values'):
             if not first_element:
                 first_element = each
             list_of_values.append(each.text.strip())
         if selected_val:
-            self.select(selected_val, open_dropdown=False)
+            self.select(selected_val)
         elif self.searchable:
             self.input.send_keys(Keys.ESCAPE)
         elif first_element:
-            self.select(first_element.text.strip(), open_dropdown=False)
+            self.select(first_element.text.strip())
         self.wait_for("internal_container")
         return list_of_values
 
@@ -148,17 +228,38 @@ class SingleSelect(BaseControl):
         Return one value from Single Select 
         """
         selected_val = self.get_value()
-        self.dropdown.click()
         first_element = None
-        single_element = self.get_element('values')
+
+        self.wait_to_be_clickable("dropdown")
+        self.dropdown.click()
+        if self.allow_new_values:
+            if self.searchable:
+                self.elements.update({
+                    "input": Selector(select=self.container.select + ' [data-test="textbox"]')
+                })
+            popoverid = '#' + self.combobox.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select=popoverid + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]')
+            })
+        else:
+            if self.searchable:
+                popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+                self.elements.update({
+                    "input": Selector(select=popoverid + ' [data-test="textbox"]')
+                })
+            popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+            self.elements.update({
+                "values":Selector(select= popoverid + ' [data-test="option"]')
+            })
+
+        single_element = self.get_element("values")
+
         if selected_val:
-            self.select(selected_val, open_dropdown=False)
+            self.select(selected_val)
         elif self.searchable:
             self.input.send_keys(Keys.ESCAPE)
         else:
-            for each in self.get_elements('values'):
-                self.select(each.text.strip(), open_dropdown=False)
-                break
+            self.select(single_element.text.strip())
         self.wait_for("internal_container")
         return single_element
 
@@ -189,4 +290,15 @@ class SingleSelect(BaseControl):
         '''
         Returns True if the Textbox is editable, False otherwise
         '''
+        if self.searchable:
+            if self.allow_new_values:
+                self.elements.update({
+                    "input": Selector(select=self.container.select + ' [data-test="textbox"]')
+                })
+            else:
+                self.dropdown.click()
+                popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
+                self.elements.update({
+                    "input": Selector(select= popoverid + ' [data-test="textbox"]')
+                })
         return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))

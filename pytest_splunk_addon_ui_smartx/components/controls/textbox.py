@@ -1,9 +1,12 @@
 # SPDX-FileCopyrightText: 2020 2020
 #
 # SPDX-License-Identifier: Apache-2.0
-
 from .base_control import BaseControl
 from ..base_component import Selector
+from selenium.webdriver.common.keys import Keys
+import platform
+
+os_base = platform.system()
 
 class TextBox(BaseControl):
     """
@@ -17,15 +20,20 @@ class TextBox(BaseControl):
         """
         super(TextBox, self).__init__(browser, container)
         self.encrypted = encrypted
-        self.elements.update({
-            "input": Selector(select=container.select + " input")
-        })
+        self.container = container
+        self.elements.update(
+            {"input": Selector(select=container.select + ' [data-test="textbox"]')}
+        )
 
     def set_value(self, value):
         """
         set value of the textbox
         """
-        self.input.clear()
+        if os_base == 'Darwin':
+            self.input.send_keys(Keys.COMMAND, 'a')
+        else:
+            self.input.send_keys(Keys.CONTROL, 'a')
+        self.input.send_keys(Keys.DELETE)
         self.input.send_keys(value)
 
     def get_value(self):
@@ -46,6 +54,9 @@ class TextBox(BaseControl):
         Returns True if the Textbox is editable, False otherwise
             :return: Bool whether or not the textbox is editable
         '''
+        self.elements.update(
+            {"input": Selector(select=self.container.select + ' [data-test="disabled-textbox"]')}
+        )
         return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))
 
 
