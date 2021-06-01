@@ -195,18 +195,16 @@ class SingleSelect(BaseControl):
                     "input": Selector(select=self.container.select + ' [data-test="textbox"]')
                 })
             popoverid = '#' + self.combobox.get_attribute("data-test-popover-id")
-            self.elements.update({
-                "values":Selector(select=popoverid + ' [data-test="option"]')
-            })
         else:
             popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
             if self.searchable:
                 self.elements.update({
                         "input": Selector(select=popoverid + ' [data-test="textbox"]')
                     })
-            self.elements.update({
-                "values":Selector(select=popoverid + ' [data-test="option"]')
-            })
+        self.elements.update({
+            "values":Selector(select=popoverid + ' [data-test="option"]')
+        })
+        
         for each in self.get_elements('values'):
             if not first_element:
                 first_element = each
