@@ -24,7 +24,7 @@ class Entity(BaseComponent):
             :param browser: The selenium webdriver
             :param container: Container in which the Entity is located. Of type dictionary: {"by":..., "select":...}
             :param add_btn: The locator of add_button with which the entity will be opened
-            :param is_single_page:
+            :param is_single_page: Boolean indicating whether the selected tab is single entity form or not like proxy and logging.
         """
         self.browser = browser
         super(Entity, self).__init__(browser, container)

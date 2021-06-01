@@ -47,14 +47,11 @@ class SingleSelect(BaseControl):
             if self.get_value():
                 self.cancel_selected.click()
             popoverid = '#' + self.combobox.get_attribute("data-test-popover-id")
-            self.elements.update({
-                "values":Selector(select=popoverid + ' [data-test="option"]')
-            })
         else:
             popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
-            self.elements.update({
-                "values":Selector(select=popoverid + ' [data-test="option"]')
-            })
+        self.elements.update({
+            "values": Selector(select=popoverid + ' [data-test="option"]')
+        })
 
         for each in self.get_elements('values'):
             if each.text.strip().lower() == value.lower():
@@ -82,7 +79,7 @@ class SingleSelect(BaseControl):
             else:
                 popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
                 self.elements.update({
-                        "input": Selector(select= popoverid + ' [data-test="textbox"]')
+                    "input": Selector(select= popoverid + ' [data-test="textbox"]')
                 })
 
         #DEBUG: maybe we have to click the select button
@@ -145,7 +142,8 @@ class SingleSelect(BaseControl):
             # ComboBox do not support label
             return self.selected.get_attribute("value")
         else:
-            if self.dropdown.get_attribute("data-test-value"):
+            if (self.dropdown.get_attribute("data-test-loading") == "false"
+                    and self.dropdown.get_attribute("data-test-value")):
                 return self.dropdown.get_attribute("label")
             else:
                 return False
@@ -192,7 +190,7 @@ class SingleSelect(BaseControl):
         list_of_values = []
 
         if self.allow_new_values:
-            if self.seachable:
+            if self.searchable:
                 self.elements.update({
                     "input": Selector(select=self.container.select + ' [data-test="textbox"]')
                 })
@@ -201,12 +199,11 @@ class SingleSelect(BaseControl):
                 "values":Selector(select=popoverid + ' [data-test="option"]')
             })
         else:
+            popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
             if self.searchable:
-                popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
                 self.elements.update({
                         "input": Selector(select=popoverid + ' [data-test="textbox"]')
                     })
-            popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
             self.elements.update({
                 "values":Selector(select=popoverid + ' [data-test="option"]')
             })
