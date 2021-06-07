@@ -7,10 +7,10 @@ from selenium.webdriver.common.by import By
 
 from ..backend_confs import SingleBackendConf
 from ..components.entity import Entity
-from ..components.base_component import Selector
+from .components.alert_base_component import Selector
 
 from .components.button import Button
-from .components.textbox import TextBox
+from .components.textbox import AlertTextBox
 from .components.searchbox import SearchBox
 from .components.dropdown import ActionDropdown
 
@@ -32,8 +32,8 @@ class AlertEntity(Entity):
             self.splunk_web_url = ucc_smartx_selenium_helper.splunk_web_url
 
             # Controls 
-            self.name = TextBox(ucc_smartx_selenium_helper.browser, Selector(select="div[data-name=name]"))
-            self.description = TextBox(ucc_smartx_selenium_helper.browser, Selector(select="div[data-name=description]"))
+            self.name = AlertTextBox(ucc_smartx_selenium_helper.browser, Selector(select="div[data-name=name]"))
+            self.description = AlertTextBox(ucc_smartx_selenium_helper.browser, Selector(select="div[data-name=description]"))
             self.search = SearchBox(ucc_smartx_selenium_helper.browser, Selector(select=".search-bar-input"))
             self.add_action_dropdown = ActionDropdown(ucc_smartx_selenium_helper.browser, Selector(select=".add-action-btn"))
             self.add_alert = Button(ucc_smartx_selenium_helper.browser, Selector(select=".new-alert-button"))

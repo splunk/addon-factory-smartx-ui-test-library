@@ -189,10 +189,13 @@ class Table(BaseComponent):
             for each_col in headers:
                 each_col = each_col.lower()
                 if each_col == 'actions':
-                    if self.edit != None and self.clone != None and self.delete != None:
-                        table[row_name][each_col] = "Edit | Clone | Delete"
-                    else:
-                        table[row_name][each_col] = ""
+                    table[row_name][each_col] = ""
+                    if self.edit != None:
+                        table[row_name][each_col] = "Edit"
+                    if self.clone != None:
+                        table[row_name][each_col] += " | Clone"
+                    if self.delete != None:
+                        table[row_name][each_col] += " | Delete"
                     continue
                 if each_col == 'status':
                     table[row_name][each_col] = self.status_cell.text   # try removing .text
@@ -229,9 +232,15 @@ class Table(BaseComponent):
             :param name: The name of the row
             :return: Generator List The list of actions available within a certain row of the table
         """
-        _row = self._get_row(name)
-        _row.find_element(*list(self.elements["action_values"]._asdict().values()))
-        return [self.get_clear_text(each_element) for each_element in self.get_elements("action_values")]
+        value_list = []
+        if self.edit != None:
+            value_list.append("Edit")
+        if self.clone != None:
+            value_list.append("Clone")
+        if self.delete != None:
+            value_list.append("Delete")
+
+        return value_list
 
     def edit_row(self, name):
         """
@@ -277,7 +286,7 @@ class Table(BaseComponent):
                 return self.get_clear_text(self.delete_prompt)  
             else:
                 self.delete_btn.click()
-                self.wait_for("app_listings")
+                self.wait_until("delete_btn")
             
     def set_filter(self, filter_query):
         """

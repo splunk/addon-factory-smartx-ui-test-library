@@ -74,13 +74,15 @@ class Dropdown(BaseComponent):
         else:
             raise ValueError("{} not found in select list".format(value))
 
-    def select_input_type(self, value):
+    def select_input_type(self, value, open_dropdown=True):
         """
         Selects the input type option that the user specifies in value
             :param value: The value in which we want to select
+            :param open_dropdown: Whether or not the dropdown should be opened
             :return: Returns True if successful, otherwise raises an error
         """
-        self.type_dropdown.click()
+        if open_dropdown:
+            self.type_dropdown.click()
         popoverid = '#' + self.type_dropdown.get_attribute("data-test-popover-id")
         self.elements.update({
             "type_filter_list": Selector(select=popoverid + ' [data-test="label"]'),

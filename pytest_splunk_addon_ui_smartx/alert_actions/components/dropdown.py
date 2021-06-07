@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from ...components.base_component import BaseComponent, Selector
+from .alert_base_component import AlertBaseComponent, Selector
 from .action_controls import ActionControls
 
 class ActionDropdown(ActionControls):

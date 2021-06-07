@@ -34,14 +34,16 @@ class SingleSelect(BaseControl):
             "cancel_selected":Selector(select=container.select + ' [data-test="clear"]'),
             })
 
-    def select(self, value):
+    def select(self, value, open_dropdown=True):
         """
         Selects the value within the select dropdown
             :param value: the value to select
+            :param open_dropdown: Whether or not the dropdown should be opened
             :return: Bool if successful in selection, else raises an error
         """
-        self.wait_to_be_clickable("dropdown")
-        self.dropdown.click()
+        if open_dropdown: 
+            self.wait_to_be_clickable("dropdown")
+            self.dropdown.click()
 
         if self.allow_new_values:
             if self.get_value():
@@ -210,11 +212,12 @@ class SingleSelect(BaseControl):
                 first_element = each
             list_of_values.append(each.text.strip())
         if selected_val:
-            self.select(selected_val)
+            # as the dropdown is already open we dont try to open it
+            self.select(selected_val, open_dropdown=False)
         elif self.searchable:
             self.input.send_keys(Keys.ESCAPE)
         elif first_element:
-            self.select(first_element.text.strip())
+            self.select(first_element.text.strip(), open_dropdown=False)
         self.wait_for("internal_container")
         return list_of_values
 
@@ -250,11 +253,12 @@ class SingleSelect(BaseControl):
         single_element = self.get_element("values")
 
         if selected_val:
-            self.select(selected_val)
+            # as the dropdown is already open we dont try to open it
+            self.select(selected_val, open_dropdown=False)
         elif self.searchable:
             self.input.send_keys(Keys.ESCAPE)
         else:
-            self.select(single_element.text.strip())
+            self.select(single_element.text.strip(), open_dropdown=False)
         self.wait_for("internal_container")
         return single_element
 
