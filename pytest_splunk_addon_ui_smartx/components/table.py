@@ -52,7 +52,7 @@ class Table(BaseComponent):
             "filter": Selector(select=container.select + ' [data-test="textbox"]'),
             "filter_clear": Selector(select=container.select + ' [data-test="clear"]'),
             "more_info": Selector(select=container.select + ' [data-test="expand"]'),
-            "more_info_row": Selector(select=container.select + ' [data-test="row"] [colspan="6"]'),
+            "more_info_row": Selector(select=container.select + ' [data-expansion-row="true"]'),
             "more_info_key": Selector(select='[data-test="term"]'),
             "more_info_value":Selector(select='[data-test="description"]'),
             "switch_to_page": Selector(select=container.select + ' button[data-test-page]'),
@@ -212,6 +212,8 @@ class Table(BaseComponent):
             :return: str The value within the cell that we are looking for
         """
         _row = self._get_row(name)
+        if column.lower() == 'status':
+            return _row.find_element_by_css_selector('[data-test="status"]').text
         return self._get_column_value(_row, column)
     
     def get_column_values(self, column):
@@ -233,11 +235,12 @@ class Table(BaseComponent):
             :return: Generator List The list of actions available within a certain row of the table
         """
         value_list = []
-        if self.edit != None:
+        _row = self._get_row(name)
+        if _row.find_element(*list(self.elements["edit"]._asdict().values())) != None:
             value_list.append("Edit")
-        if self.clone != None:
+        if _row.find_element(*list(self.elements["clone"]._asdict().values())) != None:
             value_list.append("Clone")
-        if self.delete != None:
+        if _row.find_element(*list(self.elements["delete"]._asdict().values())) != None:
             value_list.append("Delete")
 
         return value_list

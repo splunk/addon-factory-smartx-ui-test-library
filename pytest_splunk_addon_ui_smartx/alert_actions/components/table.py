@@ -23,7 +23,28 @@ class AlertTable(ActionControls):
             "header": Selector(select=container.select + " th"),
             "col": Selector(select=container.select + " td.cell-{column}"),
             "app_listings": Selector(select=container.select + " tbody"),
+            "action_values": Selector(select=container.select + " td.col-actions a"),
+            "col-number": Selector(select=container.select + " td:nth-child({col_number})"),
+            "edit": Selector(select="a.edit"),
+            "clone": Selector(select="a.clone"),
+            "delete": Selector(select="a.delete"),
+            "delete_prompt": Selector(select=".modal-dialog div.delete-prompt"),
+            "delete_btn": Selector(select=".modal-dialog .submit-btn"),
+            "delete_cancel": Selector(select=".modal-dialog .cancel-btn"),
+            "delete_close": Selector(select=".modal-dialog button.close"),
+            "delete_loading": Selector(select=".modal-dialog .msg-loading"),
+            "waitspinner": Selector(select=container.select + " div.shared-waitspinner"),
+            "count": Selector(select=container.select +" .shared-collectioncount"),
+            "filter": Selector(select=container.select + " input.search-query"),
+            "filter_clear": Selector(select=container.select + " a.control-clear"),
+            "more_info": Selector(select=container.select + " td.expands"),
+            "more_info_row": Selector(select=container.select + " tr.expanded + tr"),
+            "more_info_key": Selector(select="dt"),
+            "more_info_value":Selector(select="dd"),
+            "switch_to_page": Selector(select=container.select + " .pull-right li a"),
+            "alert_sign": Selector(select=container.select + " td.col-{column} .alert"),
         })
+        self.wait_for_seconds = wait_for_seconds
 
     def get_count_title(self):
         """

@@ -54,8 +54,12 @@ class Entity(BaseComponent):
         """
         return self.msg_error.get_msg()
 
-    def close_error(self):
-        return self.msg_error.close_msg()
+    def is_error_closed(self):
+        try:
+            self.msg_error.get_msg()
+            return False
+        except:    
+            return True
 
     def save(self, expect_error=False, expect_warning=False):
         """

@@ -24,10 +24,7 @@ class Message(BaseControl):
         super(Message, self).__init__(browser, container)  
         self.elements.update({
             "msg_text": Selector(select=container.select + '[data-test="message"]'),
-            "input": Selector(select='[data-test="control-group"] [data-test="textbox"]')
         })
-
-
 
     def get_msg(self):
         '''
@@ -35,21 +32,6 @@ class Message(BaseControl):
             :return: Str error message
         '''
         return self.msg_text.text.strip()
-
-    def close_msg(self):
-        """
-        Cancel the error message 
-            :return: Bool if successful
-        """
-        text_value = self.get_value()
-        self.input.send_keys("a")
-        if os_base == 'Darwin':
-            self.input.send_keys(Keys.COMMAND, 'a')
-        else:
-            self.input.send_keys(Keys.CONTROL, 'a')
-        self.input.send_keys(Keys.DELETE)
-        self.input.send_keys(text_value)
-        return True
 
     def wait_loading(self):
         """
@@ -69,11 +51,3 @@ class Message(BaseControl):
             :return: Str The text message after appearing
         """
         return self.container.text.strip()
-
-    def get_value(self):
-        """
-        get value from the textbox
-            :return: Str The current value of the textbox
-        """
-        return self.input.get_attribute('value').strip()
-        

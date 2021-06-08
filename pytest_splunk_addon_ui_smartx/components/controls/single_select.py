@@ -33,6 +33,8 @@ class SingleSelect(BaseControl):
             "selected":Selector(select=container.select + ' [data-test="textbox"]'),
             "cancel_selected":Selector(select=container.select + ' [data-test="clear"]'),
             })
+        if not self.searchable and self.allow_new_values:
+            raise ValueError("Invalid combination of values for searchable and allow_new_values flags")
 
     def select(self, value, open_dropdown=True):
         """
@@ -211,7 +213,7 @@ class SingleSelect(BaseControl):
             if not first_element:
                 first_element = each
             list_of_values.append(each.text.strip())
-        if selected_val:
+        if selected_val and not self.allow_new_values:
             # as the dropdown is already open we dont try to open it
             self.select(selected_val, open_dropdown=False)
         elif self.searchable:
@@ -252,7 +254,7 @@ class SingleSelect(BaseControl):
 
         single_element = self.get_element("values")
 
-        if selected_val:
+        if selected_val and not self.allow_new_values:
             # as the dropdown is already open we dont try to open it
             self.select(selected_val, open_dropdown=False)
         elif self.searchable:
