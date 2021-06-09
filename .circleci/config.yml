@@ -27,7 +27,7 @@ commands:
             pwd
             # curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*tar.gz" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
             ls
-            mv ../../pytest-splunk-addon-ui-smartx-1.1.2.post12.dev0+889b402.tar.gz ./
+            mv ../../Splunk_TA_UCCExample-8.0.1-R56b2ace.tar.gz ./
             tar -xzf *.tar.gz
             ls
             rm *.tar.gz
