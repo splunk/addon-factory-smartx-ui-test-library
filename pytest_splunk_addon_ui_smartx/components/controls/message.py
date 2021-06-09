@@ -6,7 +6,11 @@ from __future__ import absolute_import
 from ..base_component import Selector
 from .base_control import BaseControl
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from .button import Button
+import platform
+
+os_base = platform.system()
 
 class Message(BaseControl):
     """
@@ -19,11 +23,8 @@ class Message(BaseControl):
         """
         super(Message, self).__init__(browser, container)  
         self.elements.update({
-            "msg_text": Selector(select=container.select + " .msg-text"),
-            "msg_close": Selector(select=container.select + " .close")
+            "msg_text": Selector(select=container.select + '[data-test="message"]'),
         })
-
-
 
     def get_msg(self):
         '''
@@ -31,15 +32,6 @@ class Message(BaseControl):
             :return: Str error message
         '''
         return self.msg_text.text.strip()
-
-    def close_msg(self):
-        """
-        Cancel the error message 
-            :return: Bool if successful
-        """
-        self.wait_to_be_clickable("msg_close")
-        self.msg_close.click()
-        return True
 
     def wait_loading(self):
         """
@@ -59,4 +51,3 @@ class Message(BaseControl):
             :return: Str The text message after appearing
         """
         return self.container.text.strip()
-        

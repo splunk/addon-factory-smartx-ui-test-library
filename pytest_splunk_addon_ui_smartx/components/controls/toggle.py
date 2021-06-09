@@ -16,11 +16,18 @@ class Toggle(BaseControl):
             :param container: The locator of the container where the control is located in. 
         """
         super(Toggle, self).__init__(browser, container)
-        self.elements.update({
-        "toggle_btn": Selector(select=container.select + " .btn"),
-        "selected": Selector(select=container.select + " .active")
-    })
-
+        self.elements.update(
+            {
+                "toggle_btn": Selector(
+                    select=container.select + ' [data-test="option"] [data-test="label"]'
+                ),
+                "selected": Selector(
+                    select=container.select + ' [data-test="option"][aria-checked="true"] [data-test="label"]'
+                )
+            }
+        )
+        self.browser = browser
+        self.container = container
 
     def select(self, value):
         """
@@ -29,7 +36,7 @@ class Toggle(BaseControl):
             :return: Bool if successful in selection, else raises an error
         """
         for each in self.get_elements('toggle_btn'):
-            if each.text.strip().lower() == value.lower():
+            if each.text.lower() == value.lower():
                 each.click()
                 return True
         else:

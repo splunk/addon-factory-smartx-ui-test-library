@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from selenium.webdriver.common.action_chains import ActionChains
-from .textbox import TextBox
-from ...components.base_component import Selector
+from .textbox import AlertTextBox
+from .alert_base_component import Selector
 from .action_controls import ActionControls
 
-class SearchBox(TextBox, ActionControls):
+class SearchBox(ActionControls):
     def __init__(self, browser, container):
         """
             :param browser: The selenium webdriver

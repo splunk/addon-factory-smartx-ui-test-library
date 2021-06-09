@@ -2,13 +2,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from ...components.base_component import Selector
-from ...components.controls.base_control import BaseControl
+from .alert_base_component import Selector
+from .alert_base_control import AlertBaseControl
 from selenium.webdriver.common.by import By
 from lxml.cssselect import CSSSelector
 
 
-class ActionControls(BaseControl):
+class ActionControls(AlertBaseControl):
 
     def __init__(self, browser, container):
         """

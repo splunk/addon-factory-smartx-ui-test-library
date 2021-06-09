@@ -2,11 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from ..base_component import BaseComponent, Selector
+from .alert_base_component import AlertBaseComponent, Selector
 from selenium.webdriver.common.by import By
 
-
-class BaseControl(BaseComponent):
+class AlertBaseControl(AlertBaseComponent):
     """
     Purpose:
     The base class for the controls present in the entity. It is implemented to simplify accessing of controls.
@@ -17,20 +16,19 @@ class BaseControl(BaseComponent):
             :param browser: The instance of the selenium webdriver 
             :param container: The container in which the component is located at.
         """   
-        super(BaseControl, self).__init__(browser, container)
+        super(AlertBaseControl, self).__init__(browser, container)
         self.elements.update({
-            "help_text": Selector(select=container.select + ' [data-test="help"]')
+            "help_text": Selector(select=container.select + " span.help-block")
         })
         self.elements.update({
-            "label_text": Selector(select=container.select + ' [data-test="label"][id]')
+            "label_text": Selector(select=container.select + " .control-label")
         })
         self.elements.update({
-            "tooltip_icon": Selector(select=container.select + ' [data-test="tooltip"]')
+            "tooltip_icon": Selector(select=container.select + " .tooltip-link")
         })
         self.elements.update({
-            "tooltip_text": Selector(select='[data-test="screen-reader-content"]')
+            "tooltip_text": Selector(select=".tooltip-inner")
         })
-        self.browser = browser
     
     def get_tooltip_text(self):
         self.hover_over_element("tooltip_icon")
@@ -44,8 +42,4 @@ class BaseControl(BaseComponent):
         """
         get field label value
         """
-        GET_PARENT_ELEMENT = ("if(arguments[0].hasChildNodes()){var r='';var C=arguments[0].childNodes;"
-                              "for(var n=0;n<C.length;n++){if(C[n].nodeType==Node.TEXT_NODE){r+=' '+C[n].nodeValue}}"
-                              "return r.trim()}else{return arguments[0].innerText}")
-        parent_text = self.browser.execute_script(GET_PARENT_ELEMENT, self.label_text)
-        return parent_text
+        return self.get_clear_text(self.label_text)

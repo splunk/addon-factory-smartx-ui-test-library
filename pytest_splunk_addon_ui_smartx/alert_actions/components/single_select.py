@@ -3,9 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from selenium.webdriver.support.ui import Select
-
-from ...components.controls.single_select import SingleSelect
-from ...components.base_component import Selector, BaseComponent
+from .alert_base_component import AlertBaseComponent, Selector
+from .alert_base_control import AlertBaseControl
 from .action_controls import ActionControls
 
 class AlertSingleSelect(ActionControls):

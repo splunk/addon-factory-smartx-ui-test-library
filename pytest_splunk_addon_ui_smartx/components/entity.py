@@ -19,24 +19,28 @@ class Entity(BaseComponent):
     The instance of the class holds all the controls in the entity and provides the generic interaction that can be done with the entity
     """
     
-    def __init__(self, browser, container, add_btn=None):
+    def __init__(self, browser, container, add_btn=None, is_single_page=False):
         """
             :param browser: The selenium webdriver
             :param container: Container in which the Entity is located. Of type dictionary: {"by":..., "select":...}
             :param add_btn: The locator of add_button with which the entity will be opened
+            :param is_single_page: Boolean indicating whether the selected tab is single entity form or not like proxy and logging.
         """
         self.browser = browser
         super(Entity, self).__init__(browser, container)
         
         # Controls
-        self.save_btn = Button(browser, Selector(select=container.select + " input.submit-btn"))
-        self.loading = Message(browser,  Selector(select=container.select + " .msg-loading"))
-        self.add_btn = add_btn
-        self.msg_error = Message(browser,  Selector(select=" .msg-error"))
-        self.msg_warning = Message(browser,  Selector(select=" .msg-warning"))
-        self.cancel_btn = Button(browser,  Selector(select=container.select + " button.cancel-btn" ))
-        self.close_btn = Button(browser,  Selector(select=container.select + " button.close" ))
-        self.create_new_input = Dropdown(browser,  Selector(select=" .add-button"))
+        self.save_btn = Button(browser, Selector(select=container.select + ' .saveBtn'))
+        self.loading = Message(browser,  Selector(select=container.select + ' button[data-test="wait-spinner"]'))
+        if not is_single_page:
+            self.add_btn = add_btn
+        self.msg_error = Message(browser,  Selector(select='div[data-test-type="error"]'))
+        self.msg_warning = Message(browser,  Selector(select='div[data-test-type="warning"]'))
+        self.msg_markdown = Message(browser,  Selector(select='[data-test="msg-markdown"]'))
+        self.cancel_btn = Button(browser,  Selector(select=container.select + ' [data-test="button"][label="Cancel"]'))
+        self.close_btn = Button(browser,  Selector(select=container.select + ' button[data-test="close"]'))
+        if self.add_btn == None:
+            self.create_new_input = Dropdown(browser,  Selector(by=By.ID, select='addInputBtn'))
         
     def get_warning(self):
         """
@@ -50,8 +54,12 @@ class Entity(BaseComponent):
         """
         return self.msg_error.get_msg()
 
-    def close_error(self):
-        return self.msg_error.close_msg()
+    def is_error_closed(self):
+        try:
+            self.msg_error.get_msg()
+            return False
+        except:    
+            return True
 
     def save(self, expect_error=False, expect_warning=False):
         """

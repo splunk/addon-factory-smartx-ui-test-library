@@ -23,25 +23,24 @@ class Dropdown(BaseComponent):
         """
         super(Dropdown, self).__init__(browser, container)
         self.elements.update({
-            "currunt_value": Selector(select=container.select + " a.dropdown-toggle .link-label"),
-            "pagination_dropdown": Selector(select=" a.dropdown-toggle"),
-            "type_dropdown": Selector(select=container.select + " a.dropdown-toggle"),
-            "page_list": Selector(select=".dropdown-menu.open li a .link-label"),
-            "type_list": Selector(select=".dropdown-menu.open li a"),
-            "add_input": Selector(select=" .add-button"),
-            "type_filter_list":Selector(select=" .open li a")
+            "currunt_value": Selector(select=container.select + ' [data-test="select"] [data-test="label"]'),
+            "pagination_dropdown": Selector(select='button[data-test="select"]'),
+            "type_dropdown": Selector(select=container.select),
+            "add_input": Selector(by=By.ID, select='addInputBtn'),
+            "type_filter_list":Selector(select='button[data-test="option"]')
         })
 
-
-    def select_page_option(self, value, open_dropdown=True):
+    def select_page_option(self, value):
         """
         Selects the page option that the user specifies in value
             :param value: The value in which we want to select
-            :param open_dropdown: Whether or not the dropdown should be opened
             :return: Returns True if successful, otherwise raises an error
         """
-        if open_dropdown:
-            self.pagination_dropdown.click()
+        self.pagination_dropdown.click()
+        popoverid = '#' + self.pagination_dropdown.get_attribute("data-test-popover-id")
+        self.elements.update({
+            "page_list": Selector(select=popoverid + ' [data-test="label"]'),
+        })
         for each in self.get_elements('page_list'):
             if each.text.strip().lower() == value.lower():
                 each.click()
@@ -64,7 +63,11 @@ class Dropdown(BaseComponent):
         """
 
         self.add_input.click()
-        for each in self.get_elements('type_list'):
+        popoverid = '#'+ self.add_input.get_attribute("data-test-popover-id")
+        self.elements.update({
+            "values": Selector(select=popoverid + ' [data-test="item"]:not([data-test-selected="true"]) [data-test="label"]')
+        })
+        for each in self.get_elements('values'):
             if each.text.strip().lower() == value.lower():
                 each.click()
                 return True
@@ -80,6 +83,10 @@ class Dropdown(BaseComponent):
         """
         if open_dropdown:
             self.type_dropdown.click()
+        popoverid = '#' + self.type_dropdown.get_attribute("data-test-popover-id")
+        self.elements.update({
+            "type_filter_list": Selector(select=popoverid + ' [data-test="label"]'),
+        })
         for each in self.get_elements('type_filter_list'):
             if each.text.strip().lower() == value.lower():
                 each.click()
@@ -93,6 +100,10 @@ class Dropdown(BaseComponent):
             :return: Returns Generator list of values 
         """
         self.add_input.click()
+        popoverid = '#' + self.add_input.get_attribute("data-test-popover-id")
+        self.elements.update({
+            "type_list": Selector(select=popoverid + ' [data-test="item"]'),
+        })
         return [each.text.strip() for each in self.get_elements("type_list")]
 
     def get_pagination_list(self):
@@ -101,6 +112,10 @@ class Dropdown(BaseComponent):
             :return: Returns Generator list of values 
         """
         self.pagination_dropdown.click()
+        popoverid = '#' + self.pagination_dropdown.get_attribute("data-test-popover-id")
+        self.elements.update({
+            "page_list": Selector(select=popoverid + ' [data-test="label"]'),
+        })
         return [each.text.strip() for each in self.get_elements("page_list")]
 
     def get_input_type_list(self):
@@ -109,6 +124,10 @@ class Dropdown(BaseComponent):
             :return: Returns Generator list of values 
         """
         self.type_dropdown.click()
+        popoverid = '#' + self.type_dropdown.get_attribute("data-test-popover-id")
+        self.elements.update({
+            "type_filter_list": Selector(select=popoverid + ' [data-test="label"]'),
+        })
         return [each.text.strip() for each in self.get_elements("type_filter_list")]
 
         

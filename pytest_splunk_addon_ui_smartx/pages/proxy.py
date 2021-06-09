@@ -26,17 +26,17 @@ class Proxy(Entity):
         self.ta_conf = ta_conf
         if self.ta_conf == "":
             self.ta_conf = "{}_settings".format(self.ta_name.lower())
-        entity_container = Selector(select="#proxy-tab")
+        entity_container = Selector(select='div[id="proxyTab"]')
         if ucc_smartx_selenium_helper:
             super(Proxy, self).__init__(ucc_smartx_selenium_helper.browser, entity_container)
             self.splunk_web_url = ucc_smartx_selenium_helper.splunk_web_url
-            self.host = TextBox(ucc_smartx_selenium_helper.browser, Selector(select=".proxy_url"))
-            self.port = TextBox(ucc_smartx_selenium_helper.browser, Selector(select=".proxy_port"))
-            self.username = TextBox(ucc_smartx_selenium_helper.browser, Selector(select=".proxy_username"))
-            self.password = TextBox(ucc_smartx_selenium_helper.browser, Selector(select=".proxy_password"), encrypted=True)
-            self.proxy_enable = Checkbox(ucc_smartx_selenium_helper.browser, Selector(select=" .proxy_enabled" ))
-            self.dns_enable = Checkbox(ucc_smartx_selenium_helper.browser, Selector(select=" .proxy_rdns" ))
-            self.type = SingleSelect(ucc_smartx_selenium_helper.browser, Selector(select=".proxy_type"))
+            self.host = TextBox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_url"]'))
+            self.port = TextBox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_port"]'))
+            self.username = TextBox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_username"]'))
+            self.password = TextBox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_password"]'), encrypted=True)
+            self.proxy_enable = Checkbox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_enabled"]'))
+            self.dns_enable = Checkbox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_rdns"]'))
+            self.type = SingleSelect(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_type"]'))
             self.open()
         if ucc_smartx_rest_helper:
             self.splunk_mgmt_url = ucc_smartx_rest_helper.splunk_mgmt_url

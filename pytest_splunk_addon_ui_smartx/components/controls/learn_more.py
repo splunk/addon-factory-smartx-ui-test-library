@@ -5,6 +5,7 @@
 import time
 from contextlib import contextmanager
 from selenium.webdriver.common.by import By
+from ..base_component import Selector
 from .base_control import BaseControl
 
 class LearnMore(BaseControl):
@@ -17,6 +18,9 @@ class LearnMore(BaseControl):
             :param container: The locator of the container where the control is located in. 
         """
         super(LearnMore, self).__init__(browser, container)
+        self.elements.update({
+            "internal_container": Selector(select=container.select + ' [data-test="link"]'),
+        })
 
     @contextmanager
     def open_link(self, open_new_tab=True):
@@ -24,7 +28,7 @@ class LearnMore(BaseControl):
         Redirects the browser object to the link provided by the container and returns the URL
         '''
         page_url = self.browser.current_url
-        self.container.click()
+        self.internal_container.click()
         # For Safari window_handles works opposite as compared to Firefox and Chrome 
         # In Safari window_handles[1] represents the current window.
         # And in other browsers window_handels[0] represents the current window.

@@ -33,30 +33,31 @@ class Table(BaseComponent):
         self.header_mapping = mapping
         
         self.elements.update({
-            "rows": Selector(select=container.select + " tr.apps-table-tablerow"),
-            "header": Selector(select=container.select + " th"),
-            "app_listings": Selector(select=container.select + " tbody.app-listings"),
-            "action_values": Selector(select=container.select + " td.col-actions a"),
-            "col": Selector(select=container.select + " td.col-{column}"),
+            "rows": Selector(select=container.select + ' tbody[data-test="body"] tr[data-test="row"]'),
+            "header": Selector(select=container.select + ' th[data-test="head-cell"]'),
+            "app_listings": Selector(select=container.select + ' tbody[data-test="body"]'),
+            "action_values": Selector(select=container.select + ' [data-test="toggle"]'),
+            "col": Selector(select=container.select + ' [data-test="cell"][data-column="{column}"]'),
             "col-number": Selector(select=container.select + " td:nth-child({col_number})"),
-            "edit": Selector(select="a.edit"),
-            "clone": Selector(select="a.clone"),
-            "delete": Selector(select="a.delete"),
-            "delete_prompt": Selector(select=".modal-dialog div.delete-prompt"),
-            "delete_btn": Selector(select=".modal-dialog .submit-btn"),
-            "delete_cancel": Selector(select=".modal-dialog .cancel-btn"),
-            "delete_close": Selector(select=".modal-dialog button.close"),
-            "delete_loading": Selector(select=".modal-dialog .msg-loading"),
-            "waitspinner": Selector(select=container.select + " div.shared-waitspinner"),
-            "count": Selector(select=container.select +" .shared-collectioncount"),
-            "filter": Selector(select=container.select + " input.search-query"),
-            "filter_clear": Selector(select=container.select + " a.control-clear"),
-            "more_info": Selector(select=container.select + " td.expands"),
-            "more_info_row": Selector(select=container.select + " tr.expanded + tr"),
-            "more_info_key": Selector(select="dt"),
-            "more_info_value":Selector(select="dd"),
-            "switch_to_page": Selector(select=container.select + " .pull-right li a"),
-            "alert_sign": Selector(select=container.select + " td.col-{column} .alert"),
+            "edit": Selector(select='.editBtn'),
+            "clone": Selector(select='.cloneBtn'),
+            "delete": Selector(select='.deleteBtn'),
+            "delete_prompt": Selector(select= '.deletePrompt'), # [data-test="body"]
+            "delete_btn": Selector(select='[data-test="button"][label="Delete"]'),
+            "delete_cancel": Selector(select='[data-test="button"][label="Cancel"]'),
+            "delete_close": Selector(select='[data-test="close"]'),
+            "delete_loading": Selector(select='button[data-test="wait-spinner"]'),
+            "waitspinner": Selector(select=container.select + ' [data-test="wait-spinner"]'),
+            "count": Selector(select=container.select + ' .inputNumber'),
+            "filter": Selector(select=container.select + ' [data-test="textbox"]'),
+            "filter_clear": Selector(select=container.select + ' [data-test="clear"]'),
+            "more_info": Selector(select=container.select + ' [data-test="expand"]'),
+            "more_info_row": Selector(select=container.select + ' [data-expansion-row="true"]'),
+            "more_info_key": Selector(select='[data-test="term"]'),
+            "more_info_value":Selector(select='[data-test="description"]'),
+            "switch_to_page": Selector(select=container.select + ' button[data-test-page]'),
+            "alert_sign": Selector(select=container.select + ' [data-test="alert-icon"]'),
+            "status_cell": Selector(select='[data-test="status"]')
         })
         self.wait_for_seconds = wait_for_seconds
 
@@ -89,16 +90,17 @@ class Table(BaseComponent):
             :returns: a dictionary with the "header" & "ascending" order
         """
         for each_header in self.get_elements("header"):
-            if re.search(r"\basc\b", each_header.get_attribute("class")):
+            if (each_header.get_attribute("data-test-sort-dir") == 'asc'):
                 return {
                     "header": self.get_clear_text(each_header),
                     "ascending": True
                 }
-            elif re.search(r"\bdesc\b", each_header.get_attribute("class")):
+            elif (each_header.get_attribute("data-test-sort-dir") == 'desc'):
                 return {
                     "header": self.get_clear_text(each_header),
                     "ascending": False
                 }
+
 
     def sort_column(self, column, ascending=True):
         """
@@ -107,20 +109,19 @@ class Table(BaseComponent):
             :param ascending: True if the column should be sorted in ascending order, False otherwise
         """
         for each_header in self.get_elements("header"):
-            
             if self.get_clear_text(each_header).lower() == column.lower():
-                if "asc" in each_header.get_attribute("class") and ascending:
+                if "asc" in each_header.get_attribute("data-test-sort-dir") and ascending:
                     # If the column is already in ascending order, do nothing
                     return
-                elif "asc" in each_header.get_attribute("class") and not ascending:
+                elif "asc" in each_header.get_attribute("data-test-sort-dir") and not ascending:
                     # If the column is in ascending order order and we want to have descending order, click on the column-header once
                     each_header.click()
                     self._wait_for_loadspinner()
                     return
-                elif "desc" in each_header.get_attribute("class") and not ascending:
+                elif "desc" in each_header.get_attribute("data-test-sort-dir") and not ascending:
                     # If the column is already in descending order, do nothing
                     return
-                elif "desc" in each_header.get_attribute("class") and ascending:
+                elif "desc" in each_header.get_attribute("data-test-sort-dir") and ascending:
                     # If the column is in descending order order and we want to have ascending order, click on the column-header once
                     each_header.click()
                     self._wait_for_loadspinner()
@@ -187,6 +188,18 @@ class Table(BaseComponent):
             table[row_name] = dict()
             for each_col in headers:
                 each_col = each_col.lower()
+                if each_col == 'actions':
+                    table[row_name][each_col] = ""
+                    if self.edit != None:
+                        table[row_name][each_col] = "Edit"
+                    if self.clone != None:
+                        table[row_name][each_col] += " | Clone"
+                    if self.delete != None:
+                        table[row_name][each_col] += " | Delete"
+                    continue
+                if each_col == 'status':
+                    table[row_name][each_col] = self.status_cell.text   # try removing .text
+                    continue
                 if each_col:
                         table[row_name][each_col] = self._get_column_value(each_row, each_col) 
         return table
@@ -199,6 +212,8 @@ class Table(BaseComponent):
             :return: str The value within the cell that we are looking for
         """
         _row = self._get_row(name)
+        if column.lower() == 'status':
+            return _row.find_element_by_css_selector('[data-test="status"]').text
         return self._get_column_value(_row, column)
     
     def get_column_values(self, column):
@@ -219,9 +234,16 @@ class Table(BaseComponent):
             :param name: The name of the row
             :return: Generator List The list of actions available within a certain row of the table
         """
+        value_list = []
         _row = self._get_row(name)
-        _row.find_element(*list(self.elements["action_values"]._asdict().values()))
-        return [self.get_clear_text(each_element) for each_element in self.get_elements("action_values")]
+        if _row.find_element(*list(self.elements["edit"]._asdict().values())) != None:
+            value_list.append("Edit")
+        if _row.find_element(*list(self.elements["clone"]._asdict().values())) != None:
+            value_list.append("Clone")
+        if _row.find_element(*list(self.elements["delete"]._asdict().values())) != None:
+            value_list.append("Delete")
+
+        return value_list
 
     def edit_row(self, name):
         """
@@ -267,7 +289,7 @@ class Table(BaseComponent):
                 return self.get_clear_text(self.delete_prompt)  
             else:
                 self.delete_btn.click()
-                self.wait_for("app_listings")
+                self.wait_until("delete_btn")
             
     def set_filter(self, filter_query):
         """
