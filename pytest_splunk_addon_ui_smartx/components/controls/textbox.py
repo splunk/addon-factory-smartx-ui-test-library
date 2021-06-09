@@ -22,7 +22,7 @@ class TextBox(BaseControl):
         self.encrypted = encrypted
         self.container = container
         self.elements.update(
-            {"input": Selector(select=container.select + ' [data-test="textbox"]')}
+            {"input": Selector(select=container.select + ' input')}
         )
 
     def set_value(self, value):
@@ -54,10 +54,7 @@ class TextBox(BaseControl):
         Returns True if the Textbox is editable, False otherwise
             :return: Bool whether or not the textbox is editable
         '''
-        self.elements.update(
-            {"input": Selector(select=self.container.select + ' [data-test="disabled-textbox"]')}
-        )
-        return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("readOnly") or self.input.get_attribute("disabled"))
+        return not bool(self.input.get_attribute("readonly") or self.input.get_attribute("disabled"))
 
 
     def clear_text(self):

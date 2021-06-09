@@ -66,15 +66,16 @@ class SingleSelect(BaseControl):
             raise ValueError("{} not found in select list".format(value))
 
 
-    def search(self, value):
+    def search(self, value, open_dropdown=True):
         """
         search with the singleselect input
             :param value: string value to search
             :assert: Asserts whether or not the single select is seachable
         """
         assert self.searchable, "Can not search, as the Singleselect is not searchable"
-        self.wait_to_be_clickable("dropdown")
-        self.dropdown.click()
+        if open_dropdown:
+            self.wait_to_be_clickable("dropdown")
+            self.dropdown.click()
         if self.searchable:
             if self.allow_new_values:
                 self.elements.update({
@@ -107,7 +108,8 @@ class SingleSelect(BaseControl):
                 self.elements.update({
                     "input": Selector(select= popoverid + ' [data-test="textbox"]')
                 })
-        self.search(value)
+        # as the dropdown is already open we dont try to open it
+        self.search(value, open_dropdown=False)
         if self.allow_new_values:
             searched_values = list(self._list_visible_values())
         else:
