@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 class SingleSelect(BaseControl):
     """
     Entity-Component: SingleSelect
-    Select Javascript framework: select2
+
     A dropdown which can select only one value
     """
     def __init__(self, browser, container, searchable=True, allow_new_values=False):
@@ -114,17 +114,19 @@ class SingleSelect(BaseControl):
             searched_values = list(self._list_visible_values())
         else:
             self.wait_for_search_list()
-            searched_values = list(self._list_visible_values())
+            searched_values = list(self._list_visible_values(open_dropdown=False))
             self.input.send_keys(Keys.ESCAPE)
             self.wait_for("container")
         return searched_values
 
-    def _list_visible_values(self):
+    def _list_visible_values(self, open_dropdown=True):
         """
         Gets list of values which are visible. Used while filtering
+            :param open_dropdown: Whether or not the dropdown should be opened
             :returns: List of the values that are visible
         """
-        self.dropdown.click()
+        if open_dropdown:
+            self.dropdown.click()
         if self.allow_new_values:
             popoverid = '#' + self.combobox.get_attribute("data-test-popover-id")
             self.elements.update({
@@ -286,7 +288,7 @@ class SingleSelect(BaseControl):
         Wait for SingleSelect search to populate
         """
         def _wait_for_search_list(driver):
-            return len(list(self._list_visible_values())) > 0
+            return len(list(self._list_visible_values(open_dropdown=False))) > 0
         self.wait_for(_wait_for_search_list, msg="No values found in SingleSelect search")
 
     def is_editable(self):
