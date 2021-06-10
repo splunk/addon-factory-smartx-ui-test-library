@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 class SingleSelect(BaseControl):
     """
     Entity-Component: SingleSelect
-    Select Javascript framework: select2
+
     A dropdown which can select only one value
     """
     def __init__(self, browser, container, searchable=True, allow_new_values=False):
