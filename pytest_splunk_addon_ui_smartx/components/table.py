@@ -289,7 +289,7 @@ class Table(BaseComponent):
                 return self.get_clear_text(self.delete_prompt)  
             else:
                 self.delete_btn.click()
-                self.wait_until("delete_btn")
+                self.wait_until("waitspinner")
             
     def set_filter(self, filter_query):
         """
