@@ -198,7 +198,7 @@ class Table(BaseComponent):
                         table[row_name][each_col] += " | Delete"
                     continue
                 if each_col == 'status':
-                    table[row_name][each_col] = self.status_cell.text   # try removing .text
+                    table[row_name][each_col] = each_row.find_element_by_css_selector('[data-test="status"]').text
                     continue
                 if each_col:
                         table[row_name][each_col] = self._get_column_value(each_row, each_col) 
