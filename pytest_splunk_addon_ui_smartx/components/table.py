@@ -8,6 +8,7 @@ from builtins import str
 from builtins import zip
 from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from contextlib import contextmanager
@@ -31,6 +32,7 @@ class Table(BaseComponent):
         
         super(Table, self).__init__(browser, container)
         self.header_mapping = mapping
+        self.browser = browser
         
         self.elements.update({
             "rows": Selector(select=container.select + ' tbody[data-test="body"] tr[data-test="row"]'),
@@ -80,7 +82,15 @@ class Table(BaseComponent):
         Get list of headers from the table
             :return: Generator for Str list The headers in the table
         """
-        return [self.get_clear_text(each) for each in self.get_elements("header")]
+        headers = []
+        GET_PARENT_ELEMENT = ("var parent = arguments[0].firstChild.firstChild;if(parent.hasChildNodes()){var r='';var C=parent.childNodes;"
+                              "for(var n=0;n<C.length;n++){if(C[n].nodeType==Node.TEXT_NODE){r+=' '+C[n].nodeValue}}"
+                              "return r.trim()}else{return parent.innerText}")
+        for each in self.get_elements("header"):
+            parent_text = self.browser.execute_script(GET_PARENT_ELEMENT, each)
+            headers.append(parent_text)
+        
+        return headers
 
     def get_sort_order(self):
         """
@@ -288,6 +298,10 @@ class Table(BaseComponent):
                 self.wait_for_text("delete_prompt")
                 return self.get_clear_text(self.delete_prompt)  
             else:
+                # SUI-2712
+                action = webdriver.ActionChains(self.browser)
+                action.move_by_offset(0, 0)
+                action.perform()
                 self.delete_btn.click()
                 self.wait_until("waitspinner")
             
