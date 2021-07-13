@@ -298,10 +298,6 @@ class Table(BaseComponent):
                 self.wait_for_text("delete_prompt")
                 return self.get_clear_text(self.delete_prompt)  
             else:
-                # SUI-2712
-                action = webdriver.ActionChains(self.browser)
-                action.move_by_offset(0, 0)
-                action.perform()
                 self.delete_btn.click()
                 self.wait_until("waitspinner")
             

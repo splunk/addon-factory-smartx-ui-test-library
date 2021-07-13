@@ -52,7 +52,7 @@ class BaseComponent(object):
             :param web_element: The instance of the web element we are getting tect from.
             :returns: str the text of the web elements
         """
-        return re.sub('\s+', ' ', web_element.text).strip()
+        return re.sub('\s+', ' ', web_element.get_attribute("innerText")).strip()
 
     def get_element(self, key):
         """
