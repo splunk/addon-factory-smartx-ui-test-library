@@ -21,6 +21,7 @@ class TextBox(BaseControl):
         super(TextBox, self).__init__(browser, container)
         self.encrypted = encrypted
         self.container = container
+        self.browser = browser
         self.elements.update(
             {"input": Selector(select=container.select + ' input')}
         )
@@ -29,7 +30,11 @@ class TextBox(BaseControl):
         """
         set value of the textbox
         """
-        if os_base == 'Darwin':
+        # first condition added for safari browser
+        if self.browser.capabilities["browserName"] == "Safari":
+            self.input.send_keys(Keys.COMMAND)
+            self.input.send_keys('a')
+        elif os_base == 'Darwin':
             self.input.send_keys(Keys.COMMAND, 'a')
         else:
             self.input.send_keys(Keys.CONTROL, 'a')
