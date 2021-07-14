@@ -27,6 +27,14 @@ import re
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 PNG_PATH = "assets"
+PROXYURL = "54.186.151.113:3128"
+
+PROXY = {
+    'proxyType': 'MANUAL',
+    'httpProxy': PROXYURL,
+    'ftpProxy': PROXYURL,
+    'sslProxy': PROXYURL,
+    'noProxy':'localhost'}
 
 class SeleniumHelper(object):
     """
@@ -228,7 +236,8 @@ class SeleniumHelper(object):
             'browserVersion': browser_version,
             'sauce:options': self.get_sauce_opts(),
             'acceptInsecureCerts': True,
-            'acceptSslCerts': True
+            'acceptSslCerts': True,
+            'proxy':PROXY
         }
         return firefox_opts
 
@@ -238,7 +247,8 @@ class SeleniumHelper(object):
             'browserVersion': browser_version,
             'sauce:options': self.get_sauce_opts(),
             'acceptInsecureCerts': True,
-            'acceptSslCerts': True
+            'acceptSslCerts': True,
+            'proxy':PROXY
         }
         return edge_opts
 
@@ -248,7 +258,8 @@ class SeleniumHelper(object):
             'browserName': 'chrome',
             'browserVersion': browser_version,
             'goog:chromeOptions': {'w3c': True,'args':['ignore-certificate-errors','ignore-ssl-errors=yes']},
-            'sauce:options': self.get_sauce_opts()
+            'sauce:options': self.get_sauce_opts(),
+            'proxy':PROXY
         }
         return chrome_opts
 
@@ -259,7 +270,8 @@ class SeleniumHelper(object):
             'platformName': 'macOS 10.14',
             'browserName': 'safari',
             'browserVersion': browser_version,
-            'sauce:options': sauce_opts
+            'sauce:options': sauce_opts,
+            'proxy':PROXY
         }
         return safari_opts
 
