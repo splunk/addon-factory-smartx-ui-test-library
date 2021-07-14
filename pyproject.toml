@@ -27,7 +27,7 @@ configparser = "*"
 future = "~0.18"
 lovely-pytest-docker = {version = ">=0.1.0", optional = true}
 pytest-html = "*"
-pytest-splunk-addon = "1.6.1"
+pytest-splunk-addon = "1.7.0"
 urllib3 = "1.21.1"
 selenium = "*"
 webdriver-manager = "*"
