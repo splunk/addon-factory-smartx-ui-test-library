@@ -23,25 +23,24 @@ version = "0.0.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-configparser = "*"
-future = "~0.18"
-lovely-pytest-docker = {version = ">=0.1.0", optional = true}
+future = "~=0.18"
 pytest-html = "*"
-pytest-splunk-addon = "1.6.1"
-urllib3 = "1.21.1"
+urllib3 = "~=1.21.1"
 selenium = "*"
 webdriver-manager = "*"
-Sphinx = "*"
-sphinx_rtd_theme = "*"
-sphinx-panels = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
+pytest-splunk-addon="~=1.6"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.3"
 pytest-splunk-addon = { version = "*", extras = [ "docker" ] }
-poetry-dynamic-versioning = "^0.13"
-coverage = "^5.5"
+poetry-dynamic-versioning = "~=0.13"
+coverage = "~=5.5"
+lovely-pytest-docker = {version = ">=0.1.0", optional = true}
+Sphinx = "*"
+sphinx_rtd_theme = "*"
+sphinx-panels = "*"
 
 [tool.poetry.extras]
 docker = ["lovely-pytest-docker"]
