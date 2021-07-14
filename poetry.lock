@@ -180,7 +180,7 @@ testing = ["pre-commit"]
 
 [[package]]
 name = "faker"
-version = "6.6.3"
+version = "8.10.1"
 description = "Faker is a Python package that generates fake data for you."
 category = "main"
 optional = false
@@ -584,14 +584,14 @@ pytest = "*"
 
 [[package]]
 name = "pytest-splunk-addon"
-version = "1.7.0"
+version = "1.7.2"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-faker = ">=4.1,<7.0"
+faker = ">=4.1,<9.0"
 filelock = ">=3.0,<4.0"
 httplib2 = "*"
 jsonschema = ">=3.2,<4.0"
@@ -626,7 +626,7 @@ testing = ["filelock"]
 
 [[package]]
 name = "python-dateutil"
-version = "2.8.1"
+version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
 category = "main"
 optional = false
@@ -926,13 +926,14 @@ python-versions = "*"
 
 [[package]]
 name = "urllib3"
-version = "1.21.1"
+version = "1.26.6"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
 [package.extras]
+brotli = ["brotlipy (>=0.6.0)"]
 secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
@@ -967,7 +968,7 @@ docker = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "a9b40c3e3dee8e7620619379085e8f7c6f0ef0595a92997d1fd844ec71ce06a3"
+content-hash = "516e48e0a9d18603e5eff904deabf43314058f73527f17a75422728185707475"
 
 [metadata.files]
 alabaster = [
@@ -1093,8 +1094,8 @@ execnet = [
     {file = "execnet-1.9.0.tar.gz", hash = "sha256:8f694f3ba9cc92cab508b152dcfe322153975c29bda272e2fd7f3f00f36e47c5"},
 ]
 faker = [
-    {file = "Faker-6.6.3-py3-none-any.whl", hash = "sha256:579348fac4597cf5c998f10e3b840b48d85157413cb501809f98a83eb228e907"},
-    {file = "Faker-6.6.3.tar.gz", hash = "sha256:c2852cadc99a4ebdbf06934e4c15e30f2307d414ead21d15605759602645f152"},
+    {file = "Faker-8.10.1-py3-none-any.whl", hash = "sha256:9ac6b39b9618f55be6b8b45089e624564469a035cc845c69ce990332ce3663f4"},
+    {file = "Faker-8.10.1.tar.gz", hash = "sha256:a665e6e2e9087ec9ad4ebcd2f09acd031b44193ee93401817001b6557c6502b4"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
@@ -1352,16 +1353,16 @@ pytest-ordering = [
     {file = "pytest_ordering-0.6-py3-none-any.whl", hash = "sha256:3f314a178dbeb6777509548727dc69edf22d6d9a2867bf2d310ab85c403380b6"},
 ]
 pytest-splunk-addon = [
-    {file = "pytest-splunk-addon-1.7.0.tar.gz", hash = "sha256:014871a8a183a3abecb80fcb6fa9b2a22edd09a8e64c8bfa571ac3ccea424f33"},
-    {file = "pytest_splunk_addon-1.7.0-py3-none-any.whl", hash = "sha256:d81f9652126e222ff9b1e37fcdd20d7f4c1f27a09445407ea053972535f19167"},
+    {file = "pytest-splunk-addon-1.7.2.tar.gz", hash = "sha256:1a24313b15837acebaae9e0412b67841ebc9c9385455a9e77cf51e14ed8b519c"},
+    {file = "pytest_splunk_addon-1.7.2-py3-none-any.whl", hash = "sha256:ec2eeddc1200f0e0eb74e4dd8aea9a3752a3cbbd693930435aee19e55d2f0b8d"},
 ]
 pytest-xdist = [
     {file = "pytest-xdist-2.3.0.tar.gz", hash = "sha256:e8ecde2f85d88fbcadb7d28cb33da0fa29bca5cf7d5967fa89fc0e97e5299ea5"},
     {file = "pytest_xdist-2.3.0-py3-none-any.whl", hash = "sha256:ed3d7da961070fce2a01818b51f6888327fb88df4379edeb6b9d990e789d9c8d"},
 ]
 python-dateutil = [
-    {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
-    {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
+    {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
+    {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
 ]
 python-magic = [
     {file = "python-magic-0.4.18.tar.gz", hash = "sha256:b757db2a5289ea3f1ced9e60f072965243ea43a2221430048fd8cacab17be0ce"},
@@ -1487,8 +1488,8 @@ typing-extensions = [
     {file = "typing_extensions-3.10.0.0.tar.gz", hash = "sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342"},
 ]
 urllib3 = [
-    {file = "urllib3-1.21.1-py2.py3-none-any.whl", hash = "sha256:8ed6d5c1ff9d6ba84677310060d6a3a78ca3072ce0684cb3c645023009c114b1"},
-    {file = "urllib3-1.21.1.tar.gz", hash = "sha256:b14486978518ca0901a76ba973d7821047409d7f726f22156b24e83fd71382a5"},
+    {file = "urllib3-1.26.6-py2.py3-none-any.whl", hash = "sha256:39fb8672126159acb139a7718dd10806104dec1e2f0f6c88aab05d17df10c8d4"},
+    {file = "urllib3-1.26.6.tar.gz", hash = "sha256:f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f"},
 ]
 webdriver-manager = [
     {file = "webdriver_manager-3.4.2-py2.py3-none-any.whl", hash = "sha256:50a6e174106542f5335cacc387cec7ada26812babc1aeca61c208a1bab2ac2c5"},
