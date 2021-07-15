@@ -27,7 +27,7 @@ import re
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 PNG_PATH = "assets"
-PROXYURL = "54.186.151.113:3128"
+PROXYURL = "squid-ta-wfe-poc.wfe.splgdi.com:3128"
 
 PROXY = {
     'proxyType': 'MANUAL',
