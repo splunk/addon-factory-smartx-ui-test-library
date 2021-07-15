@@ -32,7 +32,7 @@ PROXYURL = "squid-ta-wfe-poc.wfe.splgdi.com:3128"
 PROXY = {
     'proxyType': 'MANUAL',
     'httpProxy': PROXYURL,
-    'ftpProxy': PROXYURL,
+    # 'ftpProxy': PROXYURL,
     'sslProxy': PROXYURL,
     'noProxy':'localhost'}
 
@@ -271,7 +271,8 @@ class SeleniumHelper(object):
             'browserName': 'safari',
             'browserVersion': browser_version,
             'sauce:options': sauce_opts,
-            'proxy':PROXY
+            'prerun': {'executable':'https://raw.githubusercontent.com/siddharthkhatsuriya-crest/ta-workflow-saucelabs-setup/main/setup-resolve-conf.sh', 'background': False }
+
         }
         return safari_opts
 
