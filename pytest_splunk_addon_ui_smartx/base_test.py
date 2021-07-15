@@ -32,7 +32,7 @@ PROXYURL = "squid-ta-wfe-poc.wfe.splgdi.com:3128"
 PROXY = {
     'proxyType': 'MANUAL',
     'httpProxy': PROXYURL,
-    # 'ftpProxy': PROXYURL,
+    'ftpProxy': PROXYURL,
     'sslProxy': PROXYURL,
     'noProxy':'localhost'}
 
@@ -230,6 +230,7 @@ class SeleniumHelper(object):
         return DesiredCapabilities
 
     def get_sauce_firefox_opts(self, browser_version):
+        PROXY.pop('ftpProxy')
         firefox_opts = {
             'platformName': 'Windows 10',
             'browserName': 'firefox',
