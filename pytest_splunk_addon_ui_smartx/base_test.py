@@ -35,6 +35,11 @@ PROXY = {
     'ftpProxy': PROXYURL,
     'sslProxy': PROXYURL,
     'noProxy':'localhost'}
+FIREFOX_PROXY = {
+    'proxyType': 'MANUAL',
+    'httpProxy': PROXYURL,
+    'sslProxy': PROXYURL,
+    'noProxy':'localhost'}
 
 class SeleniumHelper(object):
     """
@@ -230,7 +235,6 @@ class SeleniumHelper(object):
         return DesiredCapabilities
 
     def get_sauce_firefox_opts(self, browser_version):
-        PROXY.pop('ftpProxy')
         firefox_opts = {
             'platformName': 'Windows 10',
             'browserName': 'firefox',
@@ -238,7 +242,7 @@ class SeleniumHelper(object):
             'sauce:options': self.get_sauce_opts(),
             'acceptInsecureCerts': True,
             'acceptSslCerts': True,
-            'proxy':PROXY
+            'proxy':FIREFOX_PROXY
         }
         return firefox_opts
 
