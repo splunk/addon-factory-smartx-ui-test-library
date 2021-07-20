@@ -43,6 +43,12 @@ class SeleniumHelper(object):
         self.splunk_mgmt_url = splunk_mgmt_url
         self.cred = cred
         self.test_case = test_case
+        self.skip_saucelab_job = False
+        
+        if "grid" in browser:
+            self.skip_saucelab_job = True
+            debug = True 
+
         if not debug:
             # Using Saucelabs
             self.init_sauce_env_variables()
@@ -67,6 +73,28 @@ class SeleniumHelper(object):
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
                     desired_capabilities = self.get_sauce_chrome_opts(browser_version))
 
+            elif browser == "chrome-grid":
+                google_cert_opts = {"goog:chromeOptions": {
+                    "w3c": True,
+                    "args": ["ignore-certificate-errors", "ignore-ssl-errors=yes"],
+                }}
+
+                self.browser = webdriver.Remote(
+                    command_executor="http://selenium-hub:4444/wd/hub",
+
+                    desired_capabilities=self.get_grid_opts(
+                        "chrome", google_cert_opts)
+                )
+            elif browser == "firefox-grid":
+                firefox_cert_opts = {'acceptInsecureCerts': True,
+                                     'acceptSslCerts': True, }
+
+                self.browser = webdriver.Remote(
+                    command_executor="http://selenium-hub:4444/wd/hub",
+
+                    desired_capabilities=self.get_grid_opts(
+                        "firefox", firefox_cert_opts)
+                )
             elif browser == "edge":
                 if debug:
                     self.browser = Edge(
@@ -130,6 +158,15 @@ class SeleniumHelper(object):
                     "SauceLabs Credentials not found in the environment."
                     " Please make sure SAUCE_USERNAME and SAUCE_PASSWORD is set."
                 )
+    def get_grid_opts(self, browser, custom_browser_options):
+        return {
+                        "browserName": browser,
+                        "platformName": "linux",
+                        "se:recordVideo": "true",
+                        "se:timeZone": "US/Pacific",
+                        "se:screenResolution": "1920x1080",
+                        **custom_browser_options
+                    }
 
     def get_sauce_opts(self):
         # Get saucelab default options
@@ -272,6 +309,8 @@ class SeleniumHelper(object):
             raise
 
     def update_saucelab_job(self, status):
+        if self.skip_saucelab_job:
+            return 
         data = '{"passed": false}' if status else '{"passed": true}'
         response = requests.put('https://saucelabs.com/rest/v1/{}/jobs/{}'.format(
                         self.sauce_username, self.browser_session),

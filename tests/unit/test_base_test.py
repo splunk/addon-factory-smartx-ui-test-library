@@ -217,6 +217,32 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
                 },
             },
         ),
+        (
+            "chrome-grid",
+            {
+                "browserName": "chrome",
+                "platformName": "linux",
+                "se:recordVideo": "true",
+                "se:timeZone": "US/Pacific",
+                "se:screenResolution": "1920x1080",
+                "goog:chromeOptions": {
+                    "w3c": True,
+                    "args": ["ignore-certificate-errors", "ignore-ssl-errors=yes"],
+                },
+            },
+        ),
+        (
+            "firefox-grid",
+            {
+                "browserName": "firefox",
+                "platformName": "linux",
+                "se:recordVideo": "true",
+                "se:timeZone": "US/Pacific",
+                "se:screenResolution": "1920x1080",
+                'acceptInsecureCerts': True,
+                'acceptSslCerts': True
+            },
+        ),
     ],
 )
 def test_desired_capabilities_for_saucelabs(browser, expected_config):
