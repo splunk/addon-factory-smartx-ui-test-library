@@ -72,7 +72,8 @@ class SeleniumHelper(object):
                     self.browser = webdriver.Remote(
                     command_executor = 'https://ondemand.saucelabs.com:443/wd/hub',
                     desired_capabilities = self.get_sauce_chrome_opts(browser_version))
-
+            
+            #selenium local stack
             elif browser == "chrome_grid":
                 google_cert_opts = {"goog:chromeOptions": {
                     "w3c": True,
