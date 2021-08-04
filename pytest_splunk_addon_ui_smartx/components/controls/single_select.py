@@ -7,7 +7,7 @@ from ..base_component import Selector
 from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
+from time import sleep 
 class SingleSelect(BaseControl):
     """
     Entity-Component: SingleSelect
@@ -47,6 +47,7 @@ class SingleSelect(BaseControl):
             self.wait_to_be_clickable("dropdown")
             self.dropdown.click()
 
+
         if self.allow_new_values:
             if self.get_value():
                 self.cancel_selected.click()
@@ -61,10 +62,11 @@ class SingleSelect(BaseControl):
             if each.text.strip().lower() == value.lower():
                 each.click()
                 self.wait_for('internal_container')
+                sleep(0.25)
                 return True
         else:
             raise ValueError("{} not found in select list".format(value))
-
+        
 
     def search(self, value, open_dropdown=True):
         """
@@ -179,13 +181,12 @@ class SingleSelect(BaseControl):
         Cancels the currently selected value in the SingleSelect
             :return: Bool whether or not canceling the selected item was successful, else raises a error
         '''
-        try:
-            self.dropdown.click()
-            self.wait_to_be_clickable("cancel_selected")
-            self.cancel_selected.click()
-            return True
-        except:
-            raise ValueError("No selected value")
+        sleep(1)
+        self.dropdown.click()
+        self.wait_to_be_clickable("cancel_selected")
+        self.cancel_selected.click()
+        return True
+
 
     def list_of_values(self):
         """
@@ -193,6 +194,7 @@ class SingleSelect(BaseControl):
             :returns: list of options avaialble within the single select
         """
         selected_val = self.get_value()
+        sleep(1)
         self.dropdown.click()
         first_element = None
         list_of_values = []
