@@ -9,6 +9,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains as action_chains
 from selenium.webdriver.support import expected_conditions as EC
+from time import sleep
 import re
 
 DEFAULT_TIMEOUT = 20
@@ -187,6 +188,8 @@ class BaseComponent(object):
         if not msg:
             msg = "{} element is not clickable".format(key)
         self.wait.until(EC.element_to_be_clickable(self.get_tuple(key)), msg)
+        sleep(1)
+
 
     def __getattr__(self, key):
         """
