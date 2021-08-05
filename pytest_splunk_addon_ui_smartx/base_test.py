@@ -37,13 +37,17 @@ class SeleniumHelper(object):
     sauce_tunnel_id=None
     sauce_tunnel_parent=None
     jenkins_build=None
+    prerun_exe = None
+    proxy_url_config = None
 
-    def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), headless=False, test_case=None):
+    def __init__(self, browser, browser_version, splunk_web_url, splunk_mgmt_url, debug=False, cred=("admin", "Chang3d!"), headless=False, test_case=None, prerun_executable=None,proxy_url=None):
         self.splunk_web_url = splunk_web_url
         self.splunk_mgmt_url = splunk_mgmt_url
         self.cred = cred
         self.test_case = test_case
         self.skip_saucelab_job = False
+        self.prerun_exe = prerun_executable
+        self.proxy_url_config = proxy_url
         
         if "grid" in browser:
             self.skip_saucelab_job = True
@@ -268,6 +272,18 @@ class SeleniumHelper(object):
             'acceptInsecureCerts': True,
             'acceptSslCerts': True
         }
+        if SeleniumHelper.prerun_exe:
+            firefox_opts["prerun"] = {
+                "executable": SeleniumHelper.prerun_exe,
+                "background": False,
+            }
+        if SeleniumHelper.proxy_url_config:
+            firefox_opts["proxy"] = {
+                "proxyType": "MANUAL",
+                "httpProxy": SeleniumHelper.proxy_url_config,
+                "sslProxy": SeleniumHelper.proxy_url_config,
+                "noProxy": "localhost",
+            }
         return firefox_opts
 
     def get_sauce_edge_opts(self, browser_version):
@@ -278,6 +294,18 @@ class SeleniumHelper(object):
             'acceptInsecureCerts': True,
             'acceptSslCerts': True
         }
+        if SeleniumHelper.prerun_exe:
+            edge_opts["prerun"] = dict(
+                executable=SeleniumHelper.prerun_exe, background=False
+            )
+        if SeleniumHelper.proxy_url_config:
+            edge_opts["proxy"] = {
+                "proxyType": "MANUAL",
+                "httpProxy": SeleniumHelper.proxy_url_config,
+                "ftpProxy": SeleniumHelper.proxy_url_config,
+                "sslProxy": SeleniumHelper.proxy_url_config,
+                "noProxy": "localhost",
+            }
         return edge_opts
 
     def get_sauce_chrome_opts(self, browser_version):
@@ -288,6 +316,16 @@ class SeleniumHelper(object):
             'goog:chromeOptions': {'w3c': True,'args':['ignore-certificate-errors','ignore-ssl-errors=yes']},
             'sauce:options': self.get_sauce_opts()
         }
+        if SeleniumHelper.prerun_exe:
+            chrome_opts["prerun"] = SeleniumHelper.prerun_exe
+        if SeleniumHelper.proxy_url_config:
+            chrome_opts["proxy"] = {
+                "proxyType": "MANUAL",
+                "httpProxy": SeleniumHelper.proxy_url_config,
+                "ftpProxy": SeleniumHelper.proxy_url_config,
+                "sslProxy": SeleniumHelper.proxy_url_config,
+                "noProxy": "localhost",
+            }
         return chrome_opts
 
     def get_sauce_safari_opts(self, browser_version):
@@ -299,6 +337,18 @@ class SeleniumHelper(object):
             'browserVersion': browser_version,
             'sauce:options': sauce_opts
         }
+        if SeleniumHelper.prerun_exe:
+            safari_opts["prerun"] = dict(
+                executable=SeleniumHelper.prerun_exe, background=False
+            )
+        if SeleniumHelper.proxy_url_config:
+            safari_opts["proxy"] = {
+                "proxyType": "MANUAL",
+                "httpProxy": SeleniumHelper.proxy_url_config,
+                "ftpProxy": SeleniumHelper.proxy_url_config,
+                "sslProxy": SeleniumHelper.proxy_url_config,
+                "noProxy": "localhost",
+            }
         return safari_opts
 
     def login_to_splunk(self, *cred):

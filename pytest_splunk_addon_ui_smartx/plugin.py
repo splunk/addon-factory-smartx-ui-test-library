@@ -90,6 +90,17 @@ def pytest_addoption(parser):
         action="store_true", 
         help="Run the test case on headless mode"
     )
+    group.addoption(
+        "--prerun-executable", 
+        action="store", 
+        help="PATH for executable use prior to test on Saucelabs"
+    )
+
+    group.addoption(
+        "--proxy-url", 
+        action="store", 
+        help="Proxy configurations on browser ( does not work for safari )"
+    )
 
 SmartConfigs = namedtuple("SmartConfigs", ['driver', 'driver_version', 'local_run', 'retry_count', 'headless_run'])
 
@@ -149,12 +160,23 @@ def get_browser_scope(fixture_name, config):
 
 @pytest.fixture(scope=get_browser_scope)
 def ucc_smartx_selenium_helper(request, ucc_smartx_configs, splunk, splunk_web_uri, splunk_rest_uri):
+    if request.config.getoption("--prerun-executable"):
+        prerun_executable = request.config.getoption("--prerun-executable")
+        LOGGER.debug("--prerun-executable {prerun_executable}")
+    else:
+        prerun_executable = None
+    
+    if request.config.getoption("--proxy-url"):
+        proxy_url = request.config.getoption("--proxy-url")
+        LOGGER.debug("--proxy-ur {proxy_url}")
+    else:
+        proxy_url = None
     # Try to configure selenium & Login to splunk instance
     test_case = "{}_{}".format(ucc_smartx_configs.driver, request.node.nodeid.split("::")[-1])
     for try_number in range(ucc_smartx_configs.retry_count):
         last_exc = Exception()
         try:
-            selenium_helper = SeleniumHelper(ucc_smartx_configs.driver, ucc_smartx_configs.driver_version, splunk_web_uri, splunk_rest_uri, debug=ucc_smartx_configs.local_run, cred=(splunk["username"], splunk["password"]), headless=ucc_smartx_configs.headless_run, test_case=test_case)
+            selenium_helper = SeleniumHelper(ucc_smartx_configs.driver, ucc_smartx_configs.driver_version, splunk_web_uri, splunk_rest_uri, debug=ucc_smartx_configs.local_run, cred=(splunk["username"], splunk["password"]), headless=ucc_smartx_configs.headless_run, test_case=test_case, prerun_executable=prerun_executable, proxy_url=proxy_url)
             break
         except Exception as e:
             last_exc = e
