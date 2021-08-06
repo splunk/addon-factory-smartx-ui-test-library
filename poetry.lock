@@ -352,7 +352,7 @@ six = "*"
 
 [[package]]
 name = "lovely-pytest-docker"
-version = "0.2.0"
+version = "0.2.1"
 description = "Pytest testing utilities with docker containers."
 category = "dev"
 optional = false
@@ -1157,7 +1157,7 @@ langdetect = [
     {file = "langdetect-1.0.7.zip", hash = "sha256:91a170d5f0ade380db809b3ba67f08e95fe6c6c8641f96d67a51ff7e98a9bf30"},
 ]
 lovely-pytest-docker = [
-    {file = "lovely-pytest-docker-0.2.0.tar.gz", hash = "sha256:665d85166fe67777efb1c85cbbdd19dea279c53fd464598adb33257664eca96c"},
+    {file = "lovely-pytest-docker-0.2.1.tar.gz", hash = "sha256:944ecf259c2144e1857e9ff1ac79cfaef88bd6aabf4e99cc16d64783345826f0"},
 ]
 lxml = [
     {file = "lxml-4.6.3-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:df7c53783a46febb0e70f6b05df2ba104610f2fb0d27023409734a3ecbb78fb2"},
