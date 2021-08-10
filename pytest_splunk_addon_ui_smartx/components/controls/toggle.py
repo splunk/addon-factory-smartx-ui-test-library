@@ -4,6 +4,7 @@
 
 from ..base_component import Selector
 from .base_control import BaseControl
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 
 class Toggle(BaseControl):
@@ -37,11 +38,20 @@ class Toggle(BaseControl):
         """
         for each in self.get_elements('toggle_btn'):
             if each.text.lower() == value.lower():
-                each.click()
+                self._wait_to_be_clickable(each)
                 return True
         else:
             raise ValueError("{} not found".format(value))
-    
+
+    def _wait_to_be_clickable(self, element):
+        def try_click(self):
+            try:
+                element.click()
+                return True
+            except:
+                return False
+        WebDriverWait(self.browser,10).until(try_click)
+
     def get_value(self):
         """
         Returns the value of the toggle element
