@@ -42,7 +42,6 @@ class Login(BaseComponent):
         self.username.send_keys(username)
         self.password.send_keys(password)
         self.password.send_keys(u'\ue007')
-
         try:
             if ENTERPRISE_CLOUD_ToS:
                 ENTERPRISE_CLOUD_ToS = False

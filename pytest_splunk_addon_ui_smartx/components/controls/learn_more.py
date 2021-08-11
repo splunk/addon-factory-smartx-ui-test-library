@@ -38,14 +38,13 @@ class LearnMore(BaseControl):
                 self.browser.switch_to.window(self.browser.window_handles[0])
             else:
                 self.browser.switch_to.window(self.browser.window_handles[1])
-            self.wait_for_header()
+                
             current_url = self.browser.current_url
             yield current_url
             self.browser.close()
             self.browser.switch_to.window(self.browser.window_handles[0])
         else:
             self.wait_for_url_change(page_url)
-            self.wait_for_header()
             current_url = self.browser.current_url
             yield current_url
 
@@ -60,13 +59,6 @@ class LearnMore(BaseControl):
             return len(self.browser.window_handles) > 1
         self.wait_for(_wait_for_tab, msg="Redirect page didn't open")
 
-    def wait_for_header(self):
-        """
-        Wait for header 
-        """
-        def _wait_for_header(driver):
-            return driver.find_element_by_tag_name("header")
-        self.wait_for(_wait_for_header, msg="Redirect page didn't open")
 
     def wait_for_url_change(self, page_url):
         """

@@ -62,6 +62,10 @@ commands:
 
             # Saucelab connection
             docker-compose -f docker-compose-ci.yml up -d sauceconnect 
+            
+            # Start selenium grid if needed.
+            if [[ "<<parameters.browser>>" == *"firefox_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d firefox-grid; fi
+            if [[ "<<parameters.browser>>" == *"chrome_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d chrome-grid; fi
 
             # Start Splunk
             docker-compose -f docker-compose-ci.yml up -d splunk
@@ -134,6 +138,7 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.7-node
+    resource_class: small
     parameters:
       splunk_version:
         description: Image version
@@ -271,8 +276,8 @@ workflows:
             - build
           matrix:
             parameters:
-              splunk_version: ["8.1"]
-              browser: ["firefox", "chrome"]
+              splunk_version: ["8.2"]
+              browser: ["chrome", "firefox", "firefox_grid", "chrome_grid"]
               test_suite:
                 - "test_splunk_ta_example_addon_logging"
                 - "test_splunk_ta_example_addon_account"

@@ -58,7 +58,9 @@ class MultiSelect(BaseControl):
             :return: Bool returns true if selection was successful, else raises an exception
         """
         try:
+            time.sleep(1)
             self.input.click()
+            time.sleep(1)
             popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
 
         except:
@@ -83,6 +85,7 @@ class MultiSelect(BaseControl):
         """
         for each in self.get_child_elements('selected'):
             if each.text.strip().lower() == value.lower():
+                time.sleep(1)
                 each.find_element(*list(self.elements["deselect"]._asdict().values())).click()
                 self.wait_for("internal_container")
                 return True
@@ -109,8 +112,8 @@ class MultiSelect(BaseControl):
             :returns: List of options within the multi-select dropdown
         """
         self.wait_for("internal_container")
+        time.sleep(1)
         list_of_values = []
-
         self.input.click()
         popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
         self.elements.update({
