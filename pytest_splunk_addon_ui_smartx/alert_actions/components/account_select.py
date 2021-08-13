@@ -13,8 +13,8 @@ class AlertAccountSelect(ActionControls):
         super(AlertAccountSelect, self).__init__(browser, container)
         self.elements.update({
             "internal_container": Selector(select=container.select + " .splunk-dropdown"),
-            "dropdown": Selector(select=container.select + ' button[data-is-menu="true"]'),
-            "selected": Selector(select=container.select + ' button[data-is-menu="true"] span[data-test="label"]'),
+            "dropdown": Selector(select=container.select + ' button[label="Select..."]'),
+            "selected": Selector(select=container.select + ' button[type="button"] span[data-test="label"]'),
             "values": Selector(select='div[data-test="popover"] button[data-test="option"]'),
             "cancel_selected": Selector(select=container.select + ' button[data-icon-only="true"]')
         })
