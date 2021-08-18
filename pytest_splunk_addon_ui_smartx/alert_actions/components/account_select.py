@@ -16,7 +16,7 @@ class AlertAccountSelect(ActionControls):
             "dropdown": Selector(select=container.select + ' button[label="Select..."]'),
             "selected": Selector(select=container.select + ' button[type="button"] span[data-test="label"]'),
             "values": Selector(select='div[data-test="popover"] button[data-test="option"]'),
-            "cancel_selected": Selector(select=container.select + ' button[data-icon-only="true"]')
+            "cancel_selected": Selector(select=container.select + ' button[aria-label="Clear filter"]')
         })
 
     def wait_for_values(self):
