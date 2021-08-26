@@ -17,7 +17,6 @@ RUN pip install pytest-splunk-addon==1.3.11a1
 RUN pip install pytest-expect
 RUN pip install pytest-rerunfailures
 COPY tests/entrypoint.sh /
-RUN ls /home/circleci/work/
 COPY tests/deps/splunk-add-on-for-ucc-example/tests /home/circleci/work/tests
 COPY tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /home/circleci/work/.pytest.expect
 RUN cd /home/circleci/work/tests && ls
