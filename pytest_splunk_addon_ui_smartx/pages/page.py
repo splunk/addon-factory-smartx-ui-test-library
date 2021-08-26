@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from builtins import object
+from pytest_splunk_addon_ui_smartx.components.popup import Popup
 class Page(object):
     """
     Instance of a Page class holds all the components inside the page. To access the component, just do page.component.action_method()
@@ -17,6 +18,7 @@ class Page(object):
         if ucc_smartx_selenium_helper:
             self.browser = ucc_smartx_selenium_helper.browser
             self.splunk_web_url = ucc_smartx_selenium_helper.splunk_web_url
+            self.popup = Popup(ucc_smartx_selenium_helper.browser)
             if open_page:
                 self.open()
         if ucc_smartx_rest_helper:
