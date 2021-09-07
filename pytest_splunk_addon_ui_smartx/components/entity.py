@@ -38,7 +38,7 @@ class Entity(BaseComponent):
         self.msg_warning = Message(browser,  Selector(select='div[data-test-type="warning"]'))
         self.msg_markdown = Message(browser,  Selector(select='[data-test="msg-markdown"]'))
         self.cancel_btn = Button(browser,  Selector(select=container.select + ' [data-test="button"][label="Cancel"]'))
-        self.close_btn = Button(browser,  Selector(' button[data-test="close"]'))
+        self.close_btn = Button(browser,  Selector(select=container.select + ' button[data-test="close"]'))
         if self.add_btn == None:
             self.create_new_input = Dropdown(browser,  Selector(by=By.ID, select='addInputBtn'))
         
@@ -93,7 +93,6 @@ class Entity(BaseComponent):
         Close the entity 
             :return: True if done properly
         """
-        self.close_btn.wait_to_be_clickable()
         self.close_btn.click()
         self.save_btn.wait_until("container")
         return True
