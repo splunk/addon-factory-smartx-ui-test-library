@@ -93,8 +93,8 @@ class Entity(BaseComponent):
         Close the entity 
             :return: True if done properly
         """
-        self.close_btn.click()
         time.sleep(5)
+        self.close_btn.click()
         self.save_btn.wait_until("container")
         return True
 
