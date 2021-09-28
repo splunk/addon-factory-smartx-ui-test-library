@@ -291,11 +291,45 @@ class SeleniumHelper(object):
         return chrome_opts
 
     def get_sauce_safari_opts(self, browser_version):
+        try:
+            retries = 0
+            while retries < 3:
+                response = requests.get("https://api.us-west-1.saucelabs.com/rest/v1/info/platforms/webdriver", verify=False)
+                if response.status_code != 200:
+                    logger.debug("Error retrieving supported webdrivers for saucelabs, retrying...")
+                    logger.debug("Status Code: " + str(response.status_code))
+                    logger.debug(response.text)
+                    retries += 1
+                    time.sleep(1 * 60)
+                else:
+                    break
+            if response.status_code != 200:
+                raise Exception("Error retrieving supported webdrivers for saucelabs\n Status: {}\nURL: {}".format(response.status_code, response.url))
+            safari_versions = {}
+            for items in response.json():
+                if items["api_name"] == "safari":
+                    if items["short_version"] in safari_versions:
+                        safari_versions[int(items["short_version"])] = max(items["os"], safari_versions[items["short_version"]])
+                    else:
+                        safari_versions[int(items["short_version"])] = items["os"]
+            if browser_version == "latest":
+                browser_version = str(max(safari_versions.keys()))
+                platformName = safari_versions[int(browser_version)]
+            else:
+                if int(browser_version) not in safari_versions:
+                    raise Exception("Failed to obtain Safari version for saucelabs (Requested version: {})\nGot the following Safari versions={}".format(browser_version, safari_versions))
+                else:
+                    platformName = safari_versions[int(browser_version)]
+        except ValueError:
+            raise Exception("Received an incorrect value for safari version (received{})\nSafari Version should be an int or the string 'latest'".format(browser_version))
+        except Exception as e:
+            logger.debug("Supported webdrivers for Saucelab: " + response.text)
+            raise e
         sauce_opts = self.get_sauce_opts()
         sauce_opts["screenResolution"] = "1024x768"
         safari_opts = {
-            'platformName': 'macOS 10.14',
             'browserName': 'safari',
+            'platformName': platformName,
             'browserVersion': browser_version,
             'sauce:options': sauce_opts
         }

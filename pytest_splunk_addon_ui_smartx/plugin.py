@@ -60,7 +60,7 @@ def pytest_addoption(parser):
         action="store", 
         help=( "The browser on which the test should run. supported_values: (firefox, chrome, edge, safari)." 
         " You can also provide browser version if the tests are running on Saucelabs. "
-        "ex, <browser>:<version>. default version is latest. For safari, the default is version 12.")
+        "ex, <browser>:<version>. default version is latest.")
     )
 
     group.addoption(
@@ -108,10 +108,7 @@ def ucc_smartx_configs(request):
     if len(driver.split(':')) == 2:
         driver, driver_version = driver.split(':')
     else:
-        if driver == 'safari':
-            driver_version = '12'
-        else:
-            driver_version = "latest"
+        driver_version = "latest"
         
     if request.config.getoption("--local"):
         local_run = True
