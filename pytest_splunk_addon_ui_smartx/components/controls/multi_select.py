@@ -7,13 +7,15 @@ from ..base_component import Selector
 from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import ElementClickInterceptedException
+
 
 class MultiSelect(BaseControl):
     """
     Entity-Component: Multiselect
 
     Select Javascript framework: select2
-    
+
     A dropdown which can select more than one values
     """
     def __init__(self, browser, container):
@@ -59,7 +61,11 @@ class MultiSelect(BaseControl):
         """
         try:
             time.sleep(1)
-            self.input.click()
+            try:
+                self.input.click()
+            except ElementClickInterceptedException:
+                self.label_text.click()
+                self.input.click()
             time.sleep(1)
             popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
 
