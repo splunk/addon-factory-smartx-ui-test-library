@@ -59,33 +59,33 @@ jobs:
         id: matrix
         uses: splunk/addonfactory-test-matrix-action@v1.1.1
 
-  compliance-dependencies:
-    name: compliance-dependencies
-    runs-on: ubuntu-latest
+  # compliance-dependencies:
+  #   name: compliance-dependencies
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: ort-action
-        uses: splunk/addonfactory-ort-action@v1
-        id: ort-action
-        with:
-          WorkDir: .
-          UsePython3: "3.7"
-      - name: ort-action-artifacts-reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: analysis-reports
-          path: |
-            .ort/reports/*
-        if: always()
-      - name: ort-action-artifacts-analyzer
-        uses: actions/upload-artifact@v2
-        with:
-          name: analysis-analyzer
-          path: |
-            .ort/analyzer/*
-        if: always()
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: ort-action
+  #       uses: splunk/addonfactory-ort-action@v1
+  #       id: ort-action
+  #       with:
+  #         WorkDir: .
+  #         UsePython3: "3.7"
+  #     - name: ort-action-artifacts-reports
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: analysis-reports
+  #         path: |
+  #           .ort/reports/*
+  #       if: always()
+  #     - name: ort-action-artifacts-analyzer
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: analysis-analyzer
+  #         path: |
+  #           .ort/analyzer/*
+  #       if: always()
 
   compliance-copyrights:
     name: compliance-copyrights
