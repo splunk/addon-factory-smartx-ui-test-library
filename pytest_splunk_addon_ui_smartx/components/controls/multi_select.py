@@ -65,6 +65,7 @@ class MultiSelect(BaseControl):
                 self.input.click()
             except ElementClickInterceptedException:
                 self.label_text.click()
+                time.sleep(1)
                 self.input.click()
             time.sleep(1)
             popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
