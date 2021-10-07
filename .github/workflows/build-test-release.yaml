@@ -162,8 +162,6 @@ jobs:
           path: snyk-scan_requirements.sarif
 
   build:
-    needs:
-      - meta
     name: build
     runs-on: ubuntu-latest
     # needs:
@@ -435,17 +433,17 @@ jobs:
     if: always()
     needs:
       - build
-      - meta
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
       matrix:
-        splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
-        sc4s: ${{ fromJson(needs.meta.outputs.matrix_supportedSC4S) }}
+        splunk: ["8.2"]
+        browser: ["chrome, firefox"]
     steps:
       - name: run test
         run: | 
-          echo "${{ matrix.splunk.version }}"
+          echo "${{ matrix.splunk }}"
+          echo "${{ matrix.browser }}"
     # container:
     #   image: ghcr.io/splunk/workflow-engine-base:2.0.3
     # env:
