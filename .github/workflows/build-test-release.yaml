@@ -438,7 +438,7 @@ jobs:
       fail-fast: false
       matrix:
         splunk: ["8.2"]
-        browser: ["chrome, firefox"]
+        browser: ["chrome", "firefox"]
     steps:
       - name: run test
         run: | 
