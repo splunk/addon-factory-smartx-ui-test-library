@@ -429,7 +429,7 @@ jobs:
   #         echo "::set-output name=directory-path::/tmp"
   #         echo "::set-output name=s3-bucket::ta-production-artifacts"
   
-  run-knowledge-tests:
+  run-tests:
     needs:
       - build
       - meta
