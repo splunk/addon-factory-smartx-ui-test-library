@@ -439,11 +439,20 @@ jobs:
       matrix:
         splunk: ["8.2"]
         browser: ["chrome", "firefox"]
+        test_suit: [
+          "test_splunk_ta_example_addon_logging"
+          "test_splunk_ta_example_addon_account"
+          "test_splunk_ta_example_addon_input"
+          "test_splunk_ta_example_addon_proxy"
+          "test_splunk_ta_example_addon_custom"
+          "test_splunk_ta_example_addon_alert_actions"
+        ]
     steps:
       - name: run test
         run: | 
           echo "${{ matrix.splunk }}"
           echo "${{ matrix.browser }}"
+          echo "${{ matrix.test_suit }}"
     # container:
     #   image: ghcr.io/splunk/workflow-engine-base:2.0.3
     # env:
