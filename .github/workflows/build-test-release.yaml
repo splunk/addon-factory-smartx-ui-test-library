@@ -162,6 +162,8 @@ jobs:
           path: snyk-scan_requirements.sarif
 
   build:
+    needs:
+      - meta
     name: build
     runs-on: ubuntu-latest
     # needs:
@@ -435,15 +437,15 @@ jobs:
       - build
       - meta
     runs-on: ubuntu-18.04
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
-    #     sc4s: ${{ fromJson(needs.meta.outputs.matrix_supportedSC4S) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+        sc4s: ${{ fromJson(needs.meta.outputs.matrix_supportedSC4S) }}
     steps:
       - name: run test
         run: | 
-          echo "asdas"
+          echo "${{ matrix.splunk.version }}"
     # container:
     #   image: ghcr.io/splunk/workflow-engine-base:2.0.3
     # env:
