@@ -373,54 +373,54 @@ jobs:
   #       run: |
   #         echo "::set-output name=result::$(echo ${{ fromJSON(steps.meta.outputs.json).tags[0] }})"
 
-  setup:
-    needs:
-      - build
-    runs-on: ubuntu-18.04
-    container:
-      image: ghcr.io/splunk/workflow-engine-base:2.0.3
-    outputs:
-      argo-server: ${{ steps.test-setup.outputs.argo-server }}
-      argo-http1: ${{ steps.test-setup.outputs.argo-http1 }}
-      argo-secure: ${{ steps.test-setup.outputs.argo-secure }}
-      argo-base-href: ${{ steps.test-setup.outputs.argo-base-href }}
-      argo-workflow-tmpl-name: ${{ steps.test-setup.outputs.argo-workflow-tmpl-name }}
-      argo-namespace: ${{ steps.test-setup.outputs.argo-namespace }}
-      addon-name: ${{ steps.test-setup.outputs.addon-name }}
-      job-name: ${{ steps.test-setup.outputs.job-name }}
-      labels: ${{ steps.test-setup.outputs.labels }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+  # setup:
+  #   needs:
+  #     - build
+  #   runs-on: ubuntu-18.04
+  #   container:
+  #     image: ghcr.io/splunk/workflow-engine-base:2.0.3
+  #   outputs:
+  #     argo-server: ${{ steps.test-setup.outputs.argo-server }}
+  #     argo-http1: ${{ steps.test-setup.outputs.argo-http1 }}
+  #     argo-secure: ${{ steps.test-setup.outputs.argo-secure }}
+  #     argo-base-href: ${{ steps.test-setup.outputs.argo-base-href }}
+  #     argo-workflow-tmpl-name: ${{ steps.test-setup.outputs.argo-workflow-tmpl-name }}
+  #     argo-namespace: ${{ steps.test-setup.outputs.argo-namespace }}
+  #     addon-name: ${{ steps.test-setup.outputs.addon-name }}
+  #     job-name: ${{ steps.test-setup.outputs.job-name }}
+  #     labels: ${{ steps.test-setup.outputs.labels }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: recursive
 
-      - name: setup for test
-        id: test-setup
-        shell: bash
-        run: |
-          echo "::set-output name=argo-server::argo.wfe.splgdi.com:443"
-          echo "::set-output name=argo-http1::true"
-          echo "::set-output name=argo-secure::true"
-          echo "::set-output name=argo-base-href::\'\'"
-          echo "::set-output name=argo-namespace::workflows"
-          echo "::set-output name=argo-workflow-tmpl-name::ta-workflow"
+  #     - name: setup for test
+  #       id: test-setup
+  #       shell: bash
+  #       run: |
+  #         echo "::set-output name=argo-server::argo.wfe.splgdi.com:443"
+  #         echo "::set-output name=argo-http1::true"
+  #         echo "::set-output name=argo-secure::true"
+  #         echo "::set-output name=argo-base-href::\'\'"
+  #         echo "::set-output name=argo-namespace::workflows"
+  #         echo "::set-output name=argo-workflow-tmpl-name::ta-workflow"
 
-          ADDON_NAME=$(crudini --get package/default/app.conf id name | tr '[:lower:]' '[:upper:]')
-          if [[ ! -z $(echo ${ADDON_NAME} | awk -F 'SPLUNK_TA_' '{print $2}') ]];
-          then
-              ADDON_NAME=$(echo ${ADDON_NAME} | awk -F 'SPLUNK_TA_' '{print $2}')
-          elif [[ ! -z $(echo ${ADDON_NAME} | awk -F '_FOR_SPLUNK' '{print $1}') ]];
-          then
-              ADDON_NAME=$(echo ${ADDON_NAME} | awk -F '_FOR_SPLUNK' '{print $1}')
-          fi
-          echo "::set-output name=addon-name::$(echo "$ADDON_NAME")"
+  #         ADDON_NAME=$(crudini --get package/default/app.conf id name | tr '[:lower:]' '[:upper:]')
+  #         if [[ ! -z $(echo ${ADDON_NAME} | awk -F 'SPLUNK_TA_' '{print $2}') ]];
+  #         then
+  #             ADDON_NAME=$(echo ${ADDON_NAME} | awk -F 'SPLUNK_TA_' '{print $2}')
+  #         elif [[ ! -z $(echo ${ADDON_NAME} | awk -F '_FOR_SPLUNK' '{print $1}') ]];
+  #         then
+  #             ADDON_NAME=$(echo ${ADDON_NAME} | awk -F '_FOR_SPLUNK' '{print $1}')
+  #         fi
+  #         echo "::set-output name=addon-name::$(echo "$ADDON_NAME")"
 
-          JOB_NAME=`echo $ADDON_NAME | tail -c 16`-`echo ${GITHUB_SHA} | tail -c 8`-TEST-TYPE-${GITHUB_RUN_ID}
-          JOB_NAME=`echo $JOB_NAME | sed "s/[_.]/-/g"`
-          echo "::set-output name=job-name::$(echo wf-$JOB_NAME)"
+  #         JOB_NAME=`echo $ADDON_NAME | tail -c 16`-`echo ${GITHUB_SHA} | tail -c 8`-TEST-TYPE-${GITHUB_RUN_ID}
+  #         JOB_NAME=`echo $JOB_NAME | sed "s/[_.]/-/g"`
+  #         echo "::set-output name=job-name::$(echo wf-$JOB_NAME)"
 
-          LABELS="addon-name=${ADDON_NAME}"
-          echo "::set-output name=labels::$(echo $LABELS)"
+  #         LABELS="addon-name=${ADDON_NAME}"
+  #         echo "::set-output name=labels::$(echo $LABELS)"
 
 
 
