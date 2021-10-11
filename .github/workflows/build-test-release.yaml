@@ -397,7 +397,7 @@ jobs:
         with:
           submodules: recursive
       - name: Update Example TA submodules
-        command: |
+        run: |
           cd tests/deps/splunk-add-on-for-ucc-example
           git submodule sync
           git submodule update --init --recursive
