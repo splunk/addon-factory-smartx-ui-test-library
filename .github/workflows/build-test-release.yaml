@@ -396,12 +396,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      # - name: Update Example TA submodules
-      #   run: |
-      #     cd tests/deps/splunk-add-on-for-ucc-example
-      #     git submodule sync
-      #     git submodule update --init --recursive
-      #     git submodule update --remote --merge
 
       - name: setup for test
         id: test-setup
@@ -431,10 +425,7 @@ jobs:
           LABELS="addon-name=${ADDON_NAME}"
           echo "::set-output name=labels::$(echo $LABELS)"
 
-          ADDON_UPLOAD_PATH="s3://ta-production-artifacts/ta-apps/${{ needs.build.outputs.buildname }}"
-          echo "::set-output name=addon-upload-path::$(echo $ADDON_UPLOAD_PATH)"
-          echo "::set-output name=directory-path::/tmp"
-          echo "::set-output name=s3-bucket::ta-production-artifacts"
+
 
   run-tests:
     if: always()
