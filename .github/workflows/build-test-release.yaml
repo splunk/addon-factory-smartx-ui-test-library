@@ -389,9 +389,6 @@ jobs:
       addon-name: ${{ steps.test-setup.outputs.addon-name }}
       job-name: ${{ steps.test-setup.outputs.job-name }}
       labels: ${{ steps.test-setup.outputs.labels }}
-      addon-upload-path: ${{ steps.test-setup.outputs.addon-upload-path }}
-      directory-path: ${{ steps.test-setup.outputs.directory-path }}
-      s3-bucket: ${{ steps.test-setup.outputs.s3-bucket }}
     steps:
       - uses: actions/checkout@v2
         with:
