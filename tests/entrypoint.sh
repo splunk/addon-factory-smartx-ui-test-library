@@ -5,7 +5,7 @@
 ##
 ##
 
-cd /home/circleci/work
+cd /work
 RERUN_COUNT=${RERUN_COUNT:-1}
 
 # Wait for SauceConnect
