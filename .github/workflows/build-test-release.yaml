@@ -296,8 +296,6 @@ jobs:
     if: always()
     needs:
       - pre-commit
-      - semgrep
-      - snyk
       - build
       - review_secrets
       - run-ui-tests
