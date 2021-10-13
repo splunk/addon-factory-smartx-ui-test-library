@@ -210,14 +210,6 @@ jobs:
           path: dist/
       - name: update submodule
         run: |
-            ls -al
-            ls -al dist/
-            git submodule sync
-            git submodule update --init --recursive
-            git submodule update --remote --merge
-      - name: Update Example TA submodules
-        run: |
-            cd tests/deps/splunk-add-on-for-ucc-example
             git submodule sync
             git submodule update --init --recursive
             git submodule update --remote --merge
@@ -259,7 +251,6 @@ jobs:
           echo $TEST_SET
           echo $TEST_BROWSER
           echo $TEST_SUITE
-          echo $TEST_SUITE
           echo "Testing..."
           docker-compose -f docker-compose-ci.yml build
           # Saucelab connection
@@ -297,7 +288,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: splunk ${{ matrix.splunk.version }} ${{ env.TEST_TYPE }} test report
+          name: test-report-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
           path: "test-results/*.xml"
           reporter: java-junit
 
