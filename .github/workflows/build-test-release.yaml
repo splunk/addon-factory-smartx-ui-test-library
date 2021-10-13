@@ -242,7 +242,7 @@ jobs:
           export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
           export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
           export SAUCE_TUNNEL_ID="${{ secrets.SAUCE_TUNNEL_ID }}"
-          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}] #$GITHUB_RUN_ID"
+          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}] #$GITHUB_RUN_NUMBER"
           export SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
           echo "environment setup..."
           echo $SPLUNK_VERSION
