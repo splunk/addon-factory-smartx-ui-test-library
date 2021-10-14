@@ -1,3 +1,18 @@
+#
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 #Splunk Connect for Syslog (SC4S) by Splunk, Inc.
 #
 #To the extent possible under law, the person who associated CC0 with
@@ -6,23 +21,33 @@
 #
 #You should have received a copy of the CC0 legalcode along with this
 #work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
-FROM circleci/python:3.7-browsers
-RUN mkdir -p /home/circleci/work/tests
-RUN mkdir -p /home/circleci/work/test-results/functional
+FROM ubuntu:latest
+RUN mkdir -p /work/tests
+RUN mkdir -p /work/test-results/functional
 
-COPY dist /home/circleci/work/dist
-COPY tests/pytest-ci.ini /home/circleci/work/pytest.ini
-RUN pip install /home/circleci/work/dist/* --use-deprecated=legacy-resolver
+
+RUN export DEBIAN_FRONTEND=noninteractive ;\
+    apt-get update ;\
+    apt-get install -y --no-install-recommends apt-utils ;\
+    apt-get install -y locales ;\
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 ;\
+    apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git python-is-python3 python3-distutils python3-pip
+
+ENV LANG en_US.utf8
+
+COPY dist /work/dist
+COPY tests/pytest-ci.ini /work/pytest.ini
+RUN pip install /work/dist/* 
 RUN pip install pytest-splunk-addon==1.3.11a1
 RUN pip install pytest-expect
 RUN pip install pytest-rerunfailures
 COPY tests/entrypoint.sh /
-COPY tests/deps/splunk-add-on-for-ucc-example/tests /home/circleci/work/tests
-COPY tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /home/circleci/work/.pytest.expect
-RUN cd /home/circleci/work/tests && ls
+COPY tests/deps/splunk-add-on-for-ucc-example/tests /work/tests
+COPY tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /work/.pytest.expect
+RUN cd /work/tests && ls
 RUN cd ../..
-COPY tests/deps/splunk-add-on-for-ucc-example/package /home/circleci/work/package
-RUN sudo chown -R circleci /home/circleci/
+COPY tests/deps/splunk-add-on-for-ucc-example/package /work/package
 
-USER circleci
-ENTRYPOINT  /entrypoint.sh
+WORKDIR /work
+
+ENTRYPOINT "/entrypoint.sh"

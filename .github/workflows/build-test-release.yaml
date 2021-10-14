@@ -1,0 +1,347 @@
+
+name: build-test-release
+on:
+  push:
+    branches:
+      - "main"
+      - "develop"
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  compliance-dependencies:
+    name: Compliance Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: ort-action
+        uses: splunk/addonfactory-ort-action@v1
+        id: ort-action
+        with:
+          WorkDir: .
+          UsePython3: "3.7"        
+      - name: ort-action-artifacts-reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: analysis-reports
+          path: |
+            .ort/reports/*
+        if: always()
+      - name: ort-action-artifacts-analyzer
+        uses: actions/upload-artifact@v2
+        with:
+          name: analysis-analyzer
+          path: |
+            .ort/analyzer/*
+        if: always()
+
+  compliance-copyrights:
+    name: Compliance Copyright Headers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Check License Header
+        uses: apache/skywalking-eyes@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.7"
+      - name: Install actionlint
+        run: |
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/v1.6.3/scripts/download-actionlint.bash)
+      - uses: pre-commit/action@v2.0.3
+
+  review_secrets:
+    name: security-detect-secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: false
+          fetch-depth: "0"
+      - name: Trufflehog Actions Scan
+        uses: edplato/trufflehog-actions-scan@v0.9j-beta
+        with:
+          scanArguments: "--max_dept 50 -x .github/workflows/exclude-patterns.txt"
+
+  semgrep:
+    runs-on: ubuntu-latest
+    name: security-sast-semgrep
+    steps:
+      - uses: actions/checkout@v2
+      - name: Semgrep
+        id: semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          publishDeployment: ${{ secrets.SEMGREP_DEPLOYMENT_ID }}
+          publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
+
+  snyk:
+    name: security-vuln-snyk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v2.1.3
+        with:
+          go-version: "1.13"
+      - name: Snyk monitor
+        run: snyk test --sarif-file-output=snyk-scan_requirements.sarif --all-projects --print-deps --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        if: always() 
+        with:
+          name: snyk-results
+          path: snyk-scan_requirements.sarif
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    needs:
+      - compliance-dependencies
+      - compliance-copyrights
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: Install tools
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+      - name: Build Package
+        id: uccgen
+        run: |
+          source $HOME/.poetry/env
+          poetry install
+          poetry run poetry-dynamic-versioning
+          poetry build
+      - name: artifact-splunk-unpacked
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: dist/*
+        if: always()
+
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+          curl https://pyenv.run | bash
+          export PATH="~/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          pyenv install 3.7.8
+          pyenv local 3.7.8
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          source ~/.poetry/env
+      - name: Test with pytest
+        run: |
+          export PATH="~/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          source ~/.poetry/env
+          poetry install
+          poetry run coverage run --source=./pytest_splunk_addon_ui_smartx -m pytest -v tests/unit
+          poetry run coverage json
+      - name: Archive test coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-unit-tests
+          path: coverage.json
+
+  run-ui-tests:
+    if: always()
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        splunk: ["8.2"]
+        browser: ["chrome", "firefox", "firefox_grid", "chrome_grid"]
+        test_suit: [
+          "test_splunk_ta_example_addon_logging",
+          "test_splunk_ta_example_addon_account",
+          "test_splunk_ta_example_addon_proxy",
+          "test_splunk_ta_example_addon_input",
+          "test_splunk_ta_example_addon_custom",
+          "test_splunk_ta_example_addon_alert_actions"
+        ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: actions/download-artifact@v2
+        with:
+          name: package
+          path: dist/
+      - name: update submodule
+        run: |
+            git submodule sync
+            git submodule update --init --recursive
+            git submodule update --remote --merge
+      - name: Downloading Example-TA
+        run: |
+            cd tests/deps/splunk-add-on-for-ucc-example
+            mkdir output 
+            cd output
+            pwd
+            curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*.spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
+            ls
+            tar -xzf *.spl
+            ls
+            rm *.spl
+            ls
+      - name: Setup for testing
+        run: |
+          echo "Setup for Testing..."
+          pip install git+https://github.com/pixelb/crudini
+          mkdir test-results
+          cp -r tests/deps/splunk-add-on-for-ucc-example/output output
+      - name: Splunk Testing
+        run: |
+          export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
+          export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
+          export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
+          export TEST_SET=tests/ui
+          export TEST_BROWSER="${{ matrix.browser }}"
+          export TEST_SUITE="-k ${{ matrix.test_suit }}"
+          export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
+          export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
+          export SAUCE_TUNNEL_ID="${{ secrets.SAUCE_TUNNEL_ID }}"
+          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
+          export SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
+          echo "environment setup..."
+          echo $SPLUNK_VERSION
+          echo $SPLUNK_APP_ID
+          echo $SPLUNK_APP_PACKAGE
+          echo $TEST_SET
+          echo $TEST_BROWSER
+          echo $TEST_SUITE
+          echo "Testing..."
+          docker-compose -f docker-compose-ci.yml build
+          # Saucelab connection
+          docker-compose -f docker-compose-ci.yml up -d sauceconnect
+          
+          # Start selenium grid if needed.
+          if [[ "${{ matrix.browser }}" == *"firefox_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d firefox-grid; fi
+          if [[ "${{ matrix.browser }}" == *"chrome_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d chrome-grid; fi
+          # Start Splunk
+          docker-compose -f docker-compose-ci.yml up -d splunk
+          until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
+          # Normal Inspecting
+          docker-compose -f docker-compose-ci.yml logs sauceconnect
+          docker ps -a
+          # Run the tests
+          test_exit_code=0
+          docker-compose -f docker-compose-ci.yml up  --abort-on-container-exit test || test_exit_code=$?
+          # Collect Results
+          docker container create --name dummy \
+                              -v addon-factory-smartx-ui-test-library_results:/work/test-results \
+                              registry.access.redhat.com/ubi7/ubi
+          docker cp dummy:/work/test-results/test.xml test-results/ || true
+          docker cp dummy:/work/test-results/test.xml test-results/  || true
+          docker cp dummy:/work/assets test-results/assets  || true
+          docker cp dummy:/work/test-results/report.html test-results/report.html  || true
+          docker-compose -f docker-compose-ci.yml down || true
+          echo exit code "$test_exit_code"
+          exit "$test_exit_code"
+      - uses: actions/upload-artifact@v2 
+        if: always()
+        with:
+          name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
+          path: test-results/*
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: test-report-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
+          path: "test-results/*.xml"
+          reporter: java-junit
+
+  publish:
+    if: always()
+    needs:
+      - pre-commit
+      - build
+      - review_secrets
+      - run-ui-tests
+      - run-unit-tests
+    runs-on: ubuntu-latest
+    env:
+      NEEDS: ${{ toJson(needs) }}
+    steps:
+      - name: check if tests have passed or skipped
+        if: github.event_name != 'pull_request'
+        id: check
+        shell: bash
+        run: |
+          RUN_PUBLISH=$(echo "$NEEDS" | jq ".[] |  select(  ( .result != \"skipped\" ) and .result != \"success\" ) | length == 0")
+          if [[ $RUN_PUBLISH != *'false'* ]]
+          then
+              echo "::set-output name=run-publish::true"
+          else
+              echo "::set-output name=run-publish::false"
+          fi
+      - name: exit without publish
+        if: ${{ steps.check.outputs.run-publish == 'false' || github.event_name == 'pull_request'}}
+        run: |
+          echo " some test job failed. "
+          exit 1
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: false
+          persist-credentials: false
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2.5.4
+        with:
+          semantic_version: 17
+          extra_plugins: |
+            @semantic-release/exec
+            @semantic-release/git
+            @google/semantic-release-replace-plugin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+  update-semver:
+    name: Move Respository semver tags
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: haya14busa/action-update-semver@v1
