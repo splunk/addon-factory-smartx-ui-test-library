@@ -108,6 +108,30 @@ class SeleniumHelper(object):
                     desired_capabilities=self.get_grid_opts(
                         "firefox", firefox_cert_opts)
                 )
+            #kubernetes selenium    
+            elif browser == "chrome_k8s":
+                google_cert_opts = {"goog:chromeOptions": {
+                    "w3c": True,
+                    "args": ["ignore-certificate-errors", "ignore-ssl-errors=yes"],
+                }}
+
+                self.browser = webdriver.Remote(
+                    command_executor="http://selenium-hub.selenium.svc.cluster.local:4444/wd/hub",
+
+                    desired_capabilities=self.get_grid_opts(
+                        "chrome", google_cert_opts)
+                )
+            elif browser == "firefox_k8s":
+                firefox_cert_opts = {'acceptInsecureCerts': True,
+                                     'acceptSslCerts': True, }
+
+                self.browser = webdriver.Remote(
+                    command_executor="http://selenium-hub.selenium.svc.cluster.local:4444/wd/hub",
+
+                    desired_capabilities=self.get_grid_opts(
+                        "firefox", firefox_cert_opts)
+                )    
+
             elif browser == "edge":
                 if debug:
                     self.browser = Edge(
