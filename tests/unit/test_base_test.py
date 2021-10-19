@@ -95,6 +95,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
                 **default_args_for_selenium_helper,
                 "browser": browser,
                 "debug": debug,
+                "browser_version": 11,
             }
         )
 
@@ -106,7 +107,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
             "edge",
             {
                 "platformName": "Windows 10",
-                "browserVersion": "88",
+                "browserVersion": 11,
                 "sauce:options": {
                     "screenResolution": "1280x768",
                     "seleniumVersion": "3.141.0",
@@ -129,7 +130,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
             {
                 "platformName": "Windows 10",
                 "browserName": "internet explorer",
-                "browserversion": "88",
+                "browserversion": 11,
                 "iedriverVersion": "3.141.0",
                 "sauce:options": {
                     "build": "JOB_NAME",
@@ -153,7 +154,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
             {
                 "platformName": "Windows 10",
                 "browserName": "firefox",
-                "browserVersion": "88",
+                "browserVersion": 11,
                 "sauce:options": {
                     "screenResolution": "1280x768",
                     "seleniumVersion": "3.141.0",
@@ -176,7 +177,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
             {
                 "platformName": "Windows 10",
                 "browserName": "chrome",
-                "browserVersion": "88",
+                "browserVersion": 11,
                 "goog:chromeOptions": {
                     "w3c": True,
                     "args": ["ignore-certificate-errors", "ignore-ssl-errors=yes"],
@@ -199,9 +200,9 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
         (
             "safari",
             {
-                "platformName": "macOS 10.14",
                 "browserName": "safari",
-                "browserVersion": "88",
+                "platformName": "Mac 10.12",
+                "browserVersion": 11,
                 "sauce:options": {
                     "screenResolution": "1024x768",
                     "seleniumVersion": "3.141.0",
@@ -239,8 +240,8 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
                 "se:recordVideo": "true",
                 "se:timeZone": "US/Pacific",
                 "se:screenResolution": "1920x1080",
-                'acceptInsecureCerts': True,
-                'acceptSslCerts': True
+                "acceptInsecureCerts": True,
+                "acceptSslCerts": True,
             },
         ),
     ],
@@ -251,8 +252,14 @@ def test_desired_capabilities_for_saucelabs(browser, expected_config):
         "os.environ.get", lambda x: x
     ):
         pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper(
-            **{**default_args_for_selenium_helper, "browser": browser, "debug": False}
+            **{
+                **default_args_for_selenium_helper,
+                "browser": browser,
+                "debug": False,
+                "browser_version": 11,
+            }
         )
+    print(webdriver.call_args[1].get("desired_capabilities"))
     assert webdriver.call_args[1].get("desired_capabilities") == expected_config
 
 
