@@ -135,6 +135,7 @@ jobs:
       - name: Build Package
         id: uccgen
         run: |
+          # shellcheck source=/dev/null
           source "$HOME"/.poetry/env
           poetry install
           poetry run poetry-dynamic-versioning
@@ -160,6 +161,7 @@ jobs:
           python-version: 3.7
       - name: Install dependencies
         run: |
+          # shellcheck source=/dev/null
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
           curl https://pyenv.run | bash
           export PATH="$HOME/.pyenv/bin:$PATH"
@@ -170,6 +172,7 @@ jobs:
           source ~/.poetry/env
       - name: Test with pytest
         run: |
+          # shellcheck source=/dev/null
           export PATH="$HOME/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           source ~/.poetry/env
