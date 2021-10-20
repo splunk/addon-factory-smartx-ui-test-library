@@ -19,24 +19,28 @@ from .base_control import BaseControl
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 
+
 class Toggle(BaseControl):
     """
     Entity_Component : Button
     """
+
     def __init__(self, browser, container):
         """
-            :param browser: The selenium webdriver
-            :param container: The locator of the container where the control is located in. 
+        :param browser: The selenium webdriver
+        :param container: The locator of the container where the control is located in.
         """
         super().__init__(browser, container)
         self.elements.update(
             {
                 "toggle_btn": Selector(
-                    select=container.select + ' [data-test="option"] [data-test="label"]'
+                    select=container.select
+                    + ' [data-test="option"] [data-test="label"]'
                 ),
                 "selected": Selector(
-                    select=container.select + ' [data-test="option"][aria-checked="true"] [data-test="label"]'
-                )
+                    select=container.select
+                    + ' [data-test="option"][aria-checked="true"] [data-test="label"]'
+                ),
             }
         )
         self.browser = browser
@@ -48,7 +52,7 @@ class Toggle(BaseControl):
             :param value: the value to select
             :return: Bool if successful in selection, else raises an error
         """
-        for each in self.get_elements('toggle_btn'):
+        for each in self.get_elements("toggle_btn"):
             if each.text.lower() == value.lower():
                 self._wait_to_be_clickable(each)
                 return True
@@ -62,7 +66,8 @@ class Toggle(BaseControl):
                 return True
             except:
                 return False
-        WebDriverWait(self.browser,10).until(try_click)
+
+        WebDriverWait(self.browser, 10).until(try_click)
 
     def get_value(self):
         """

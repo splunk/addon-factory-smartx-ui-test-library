@@ -24,22 +24,25 @@ import re
 
 DEFAULT_TIMEOUT = 20
 
+
 class ActionChains(action_chains):
     """
     Purpose:
     It is a workaround by wrapping ActionChains class so that key_action.pause is not used in Safari browser.
     """
+
     def __init__(self, browser):
         super().__init__(browser)
-        if browser.name in ('Safari', 'Safari Technology Preview'):
+        if browser.name in ("Safari", "Safari Technology Preview"):
             self.w3c_actions.key_action.pause = lambda *a, **k: None
+
 
 class AlertBaseComponent:
     """
     Purpose:
-    The base class for the component. A component is an UI component with which a user interacts with. 
+    The base class for the component. A component is an UI component with which a user interacts with.
     The component class will have all the interaction method which can be done to the component.
-    Implementation: 
+    Implementation:
     - The component will have set of locators. Locators can be of type (ID, CSS_Selector, classname, Name, etc. whichever supported by selenium)
     - Each method will interact with theses locators directly.
     - The component should have a container, so that it does not have multiple confusing instances in a same page.
@@ -48,9 +51,9 @@ class AlertBaseComponent:
 
     def __init__(self, browser, container):
         """
-            :param browser: The instance of the selenium webdriver 
-            :param container: The container in which the component is located at.
-        """   
+        :param browser: The instance of the selenium webdriver
+        :param container: The container in which the component is located at.
+        """
         self.elements = dict()
         self.browser = browser
         self.wait = WebDriverWait(self.browser, DEFAULT_TIMEOUT)
@@ -62,11 +65,11 @@ class AlertBaseComponent:
             :param web_element: The instance of the web element we are getting tect from.
             :returns: str the text of the web elements
         """
-        return re.sub(r'\s+', ' ', web_element.text).strip()
+        return re.sub(r"\s+", " ", web_element.text).strip()
 
     def get_element(self, key):
         """
-        Get the web-element. 
+        Get the web-element.
         Note: There is a wait in get_element.
             :param key: The key of the element mentioned in self.elements
             :returns: element The element we are looking for by key
@@ -77,10 +80,10 @@ class AlertBaseComponent:
     def get_elements(self, key):
         """
         Get the list of web-elements.
-        Note: There is a wait in the method.        
+        Note: There is a wait in the method.
             :param key: The key of the element mentioned in self.elements
             :returns: list of elements we are searching for by key, or an empty list
-        """   
+        """
         try:
             self.wait_for(key)
             element = self.elements[key]
@@ -90,20 +93,20 @@ class AlertBaseComponent:
 
     def get_child_element(self, key):
         """
-        Get the web-element located inside the container. 
-            - It is more preferable to use get_child_element over get_element. 
+        Get the web-element located inside the container.
+            - It is more preferable to use get_child_element over get_element.
             - get_element should only be used if the element is out of the container for some reason. For example, in case of some pop-up.
-        Note: There is a wait in the method.        
+        Note: There is a wait in the method.
             :param key: The key of the element mentioned in self.elements
             :returns: The child element of the element searched by key
-        """   
+        """
         element = self.elements[key]
         return self._get_child_element(element.by, element.select)
 
     def get_child_elements(self, key):
         """
         Get the list of web-elements located inside the container. Returns empty list of no elements found.
-            - It is more preferable to use get_child_elements over get_elements. 
+            - It is more preferable to use get_child_elements over get_elements.
             - get_elements should only be used if the element is out of the container for some reason. For example, in case of some pop-up.
         Note: There is a wait in the method.
             :param key: The key of the element mentioned in self.elements
@@ -142,7 +145,9 @@ class AlertBaseComponent:
             return wait.until(EC.presence_of_element_located(self.get_tuple(key)), msg)
         else:
             if not msg:
-                msg = "{}: Timeout while waiting for the condition to be true".format(key)
+                msg = "{}: Timeout while waiting for the condition to be true".format(
+                    key
+                )
             return wait.until(key, msg)
 
     def wait_for_text(self, key, msg=None):
@@ -153,8 +158,10 @@ class AlertBaseComponent:
         """
         if not msg:
             msg = "Text not present in element {}".format(key)
+
         def _wait_for_text(browser):
             return len(self.get_element(key).text.strip()) > 0
+
         return self.wait_for(_wait_for_text, msg)
 
     def wait_until(self, key, msg=None):
@@ -197,8 +204,8 @@ class AlertBaseComponent:
         """
         Makes the web-elements to be accessible directly.
         - For example self.elements = {"textbox": Selector(by=..., select=...),
-            Access the element by doing self.textbox directly. 
-        - It also has implicit wait while finding the element.  
+            Access the element by doing self.textbox directly.
+        - It also has implicit wait while finding the element.
           :param key: The key of the element mentioned in self.elements
           :returns: The webelement we are accessing
         """
@@ -212,7 +219,9 @@ class AlertBaseComponent:
         Hover over an element, such as a tooltip, such that other items will appear
             :param key: The key of the element mentioned in self.elements
         """
-        hover = ActionChains(self.browser).move_to_element(self.get_element(key)).perform()
+        hover = (
+            ActionChains(self.browser).move_to_element(self.get_element(key)).perform()
+        )
 
     def _get_element(self, by, select):
         """
@@ -227,17 +236,16 @@ class AlertBaseComponent:
     def _get_elements(self, by, select):
         """
         Find the list of elements from the page.
-            :param by: The type of the selenium locator  
+            :param by: The type of the selenium locator
             :param select: The selector text of type mentioned in by.
             :returns: List of elements from the page
         """
         return self.browser.find_elements(by, select)
 
-
     def _get_child_element(self, by, select):
         """
         Find the element from the container.
-            :param by: The type of the selenium locator  
+            :param by: The type of the selenium locator
             :param select: The selector text of type mentioned in by.
             :returns: child element from the container
         """
@@ -246,10 +254,11 @@ class AlertBaseComponent:
     def _get_child_elements(self, by, select):
         """
         Find the list of elements from the container.
-            :param by: The type of the selenium locator  
+            :param by: The type of the selenium locator
             :param select: The selector text of type mentioned in by.
             :returns: List of child elements from the page
         """
         return self.container.find_elements(by, select)
+
 
 Selector = namedtuple("Selector", ["by", "select"], defaults=[By.CSS_SELECTOR, None])

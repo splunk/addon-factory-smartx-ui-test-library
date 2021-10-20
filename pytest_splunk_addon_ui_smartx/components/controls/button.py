@@ -17,14 +17,16 @@
 from .base_control import BaseControl
 from selenium.webdriver.common.by import By
 
+
 class Button(BaseControl):
     """
     Entity_Component : Button
     """
+
     def __init__(self, browser, container):
         """
-            :param browser: The selenium webdriver
-            :param container: The locator of the container where the control is located in. 
+        :param browser: The selenium webdriver
+        :param container: The locator of the container where the control is located in.
         """
         super().__init__(browser, container)
 
@@ -36,4 +38,3 @@ class Button(BaseControl):
 
     def wait_to_be_clickable(self):
         super().wait_to_be_clickable("container")
-    

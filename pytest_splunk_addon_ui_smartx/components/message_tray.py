@@ -17,28 +17,46 @@
 from .base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 
+
 class MessageTray(BaseComponent):
     """
     Component: MessageTray
     Base class of Input & Configuration table
     """
+
     def __init__(self, browser, mapping=dict()):
         """
-            :param browser: The selenium webdriver
-            :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
-            :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
+        :param browser: The selenium webdriver
+        :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
+        :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
-        container = Selector(select="[data-view='views/shared/splunkbar/messages/MenuContents']")
+        container = Selector(
+            select="[data-view='views/shared/splunkbar/messages/MenuContents']"
+        )
         super().__init__(browser, container)
-        self.elements.update({
-            "message_tray_dropdown": Selector(select="[title='Messages']"),
-            "message_row": Selector(select=container.select + " [data-view$='Message']"),
-            "delete_btn": Selector(select=container.select + " [data-action='delete']"),
-            "msg_text": Selector(select=container.select + " [data-role='content']"),
-            "no_msgs": Selector(select=container.select + " [data-role='no-messages']"),
-            "delete_all_btn": Selector(select=container.select + " [title='Delete All']"),
-            "msg_icon": Selector(select= container.select + "  [data-role='icon'] [data-view$='Icon']"),
-        })
+        self.elements.update(
+            {
+                "message_tray_dropdown": Selector(select="[title='Messages']"),
+                "message_row": Selector(
+                    select=container.select + " [data-view$='Message']"
+                ),
+                "delete_btn": Selector(
+                    select=container.select + " [data-action='delete']"
+                ),
+                "msg_text": Selector(
+                    select=container.select + " [data-role='content']"
+                ),
+                "no_msgs": Selector(
+                    select=container.select + " [data-role='no-messages']"
+                ),
+                "delete_all_btn": Selector(
+                    select=container.select + " [title='Delete All']"
+                ),
+                "msg_icon": Selector(
+                    select=container.select + "  [data-role='icon'] [data-view$='Icon']"
+                ),
+            }
+        )
 
     def open(self):
         self.wait_for("message_tray_dropdown")
@@ -47,17 +65,21 @@ class MessageTray(BaseComponent):
 
     def wait_for_msg(self):
         """
-            Wait for error message in message tray
+        Wait for error message in message tray
         """
         current_msg_count = self.get_msg_count()
+
         def _wait_for_msg(driver):
-            return (self.get_msg_count() > 0 and self.get_icon_attribute(0) == "error") or self.get_msg_count() > current_msg_count
+            return (
+                self.get_msg_count() > 0 and self.get_icon_attribute(0) == "error"
+            ) or self.get_msg_count() > current_msg_count
+
         self.wait_for(_wait_for_msg, timeout=120)
-    
+
     def get_message_list(self):
         """
         Returns a generator list for the messages in the message tray
-            :return: Returns Generator list of values 
+            :return: Returns Generator list of values
         """
         return [each.text.strip() for each in self.get_elements("msg_text")]
 
@@ -90,7 +112,9 @@ class MessageTray(BaseComponent):
             :return: Str message
         """
         _row = self._get_row(value)
-        return _row.find_element(*list(self.elements["msg_text"]._asdict().values())).text.strip()
+        return _row.find_element(
+            *list(self.elements["msg_text"]._asdict().values())
+        ).text.strip()
 
     def get_icon_attribute(self, value):
         """
@@ -99,7 +123,11 @@ class MessageTray(BaseComponent):
             :return: The icon attribute value in the msg
         """
         _row = self._get_row(value)
-        return _row.find_element(*list(self.elements["msg_icon"]._asdict().values())).get_attribute("data-icon").strip()
+        return (
+            _row.find_element(*list(self.elements["msg_icon"]._asdict().values()))
+            .get_attribute("data-icon")
+            .strip()
+        )
 
     def _get_rows(self):
         """
@@ -107,11 +135,11 @@ class MessageTray(BaseComponent):
             :return: The list of msgs within the component
         """
         yield from self.get_elements("message_row")
-    
+
     def _get_row(self, value):
         """
         Get the specified message at row.
-        :param name: row name 
+        :param name: row name
             :return: element Gets the row specified within the messageTray, or raises a warning if not found
         """
         rows = list(self._get_rows())

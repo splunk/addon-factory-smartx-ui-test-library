@@ -14,16 +14,19 @@
 # limitations under the License.
 #
 
+
 class Page:
     """
     Instance of a Page class holds all the components inside the page. To access the component, just do page.component.action_method()
     The page class should not have any interaction method for any visible components. It is supposed to hold all the components only.
     """
 
-    def __init__(self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, open_page=True):
+    def __init__(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, open_page=True
+    ):
         """
-            :param ucc_smartx_selenium_helper: The selenium webdriver
-            :param ucc_smartx_rest_helper: Splunk web & management url. {"web": , "mgmt": }
+        :param ucc_smartx_selenium_helper: The selenium webdriver
+        :param ucc_smartx_rest_helper: Splunk web & management url. {"web": , "mgmt": }
         """
         if ucc_smartx_selenium_helper:
             self.browser = ucc_smartx_selenium_helper.browser

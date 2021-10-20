@@ -19,13 +19,15 @@ from .alert_base_component import AlertBaseComponent, Selector
 from .alert_base_control import AlertBaseControl
 from .action_controls import ActionControls
 
+
 class AlertSingleSelect(ActionControls):
     def __init__(self, browser, container):
         super().__init__(browser, container)
-        self.elements.update({
-            "internal_container": Selector(select=container.select),
-        })
-
+        self.elements.update(
+            {
+                "internal_container": Selector(select=container.select),
+            }
+        )
 
     def select(self, value, open_dropdown=True):
         select_obj = Select(self.internal_container)
@@ -34,14 +36,14 @@ class AlertSingleSelect(ActionControls):
 
     def get_value(self):
         """
-            Gets the selected value
+        Gets the selected value
         """
         select_obj = Select(self.internal_container)
         return self.get_clear_text(select_obj.first_selected_option)
 
     def list_of_values(self):
         """
-            Gets the list of value from the Single Select
+        Gets the list of value from the Single Select
         """
         select_obj = Select(self.internal_container)
         value_list = []

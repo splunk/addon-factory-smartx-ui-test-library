@@ -24,16 +24,19 @@ class Tab(BaseComponent):
     Component: Tab
     To change the tab in configuration page
     """
+
     def __init__(self, browser, container=Selector(select='[data-test="tab-bar"]')):
         """
-            :param browser: The selenium webdriver
-            :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
+        :param browser: The selenium webdriver
+        :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
         """
         super().__init__(browser, container)
-        self.elements.update({
-            "tab": Selector(select='[data-test="tab"][data-test-tab-id="{tab}"]'),
-            "container": Selector(select='[data-test="tab-bar"]')
-        })
+        self.elements.update(
+            {
+                "tab": Selector(select='[data-test="tab"][data-test-tab-id="{tab}"]'),
+                "container": Selector(select='[data-test="tab-bar"]'),
+            }
+        )
 
     def open_tab(self, tab):
         """
@@ -41,6 +44,7 @@ class Tab(BaseComponent):
             :param tab: id of the tab
         """
         self.wait_for("container")
-        tab_to_open = self._get_element(self.elements["tab"].by , self.elements["tab"].select.format(tab=tab).strip())
+        tab_to_open = self._get_element(
+            self.elements["tab"].by, self.elements["tab"].select.format(tab=tab).strip()
+        )
         tab_to_open.click()
-

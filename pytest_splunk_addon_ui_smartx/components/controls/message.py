@@ -23,25 +23,29 @@ import platform
 
 os_base = platform.system()
 
+
 class Message(BaseControl):
     """
     Entity-Component: Message
     """
+
     def __init__(self, browser, container):
         """
-            :param browser: The selenium webdriver
-            :param container: The locator of the container where the control is located in. 
+        :param browser: The selenium webdriver
+        :param container: The locator of the container where the control is located in.
         """
-        super().__init__(browser, container)  
-        self.elements.update({
-            "msg_text": Selector(select=container.select + '[data-test="message"]'),
-        })
+        super().__init__(browser, container)
+        self.elements.update(
+            {
+                "msg_text": Selector(select=container.select + '[data-test="message"]'),
+            }
+        )
 
     def get_msg(self):
-        '''
+        """
         Returns the error message
             :return: Str error message
-        '''
+        """
         return self.msg_text.text.strip()
 
     def wait_loading(self):
