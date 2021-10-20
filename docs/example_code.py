@@ -2,15 +2,14 @@ from selenium.webdriver.common.by import By
 
 from pytest_splunk_addon_ui_smartx.backend_confs import ListBackendConf
 from pytest_splunk_addon_ui_smartx.components.base_component import (
-    BaseComponent, Selector)
+    BaseComponent,
+    Selector,
+)
 from pytest_splunk_addon_ui_smartx.components.controls.button import Button
-from pytest_splunk_addon_ui_smartx.components.controls.learn_more import \
-    LearnMore
+from pytest_splunk_addon_ui_smartx.components.controls.learn_more import LearnMore
 from pytest_splunk_addon_ui_smartx.components.controls.message import Message
-from pytest_splunk_addon_ui_smartx.components.controls.multi_select import \
-    MultiSelect
-from pytest_splunk_addon_ui_smartx.components.controls.single_select import \
-    SingleSelect
+from pytest_splunk_addon_ui_smartx.components.controls.multi_select import MultiSelect
+from pytest_splunk_addon_ui_smartx.components.controls.single_select import SingleSelect
 from pytest_splunk_addon_ui_smartx.components.controls.textbox import TextBox
 from pytest_splunk_addon_ui_smartx.components.controls.toggle import Toggle
 from pytest_splunk_addon_ui_smartx.components.dropdown import Dropdown
