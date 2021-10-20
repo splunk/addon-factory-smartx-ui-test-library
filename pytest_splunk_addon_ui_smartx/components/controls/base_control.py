@@ -29,7 +29,7 @@ class BaseControl(BaseComponent):
             :param browser: The instance of the selenium webdriver 
             :param container: The container in which the component is located at.
         """   
-        super(BaseControl, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "help_text": Selector(select=container.select + ' [data-test="help"]')
         })

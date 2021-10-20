@@ -14,10 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from builtins import str
-from builtins import range
-from builtins import object
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
@@ -40,7 +36,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 PNG_PATH = "assets"
 
-class SeleniumHelper(object):
+class SeleniumHelper:
     """
     The helper class provides the Remote Browser
     """
@@ -391,7 +387,7 @@ class SeleniumHelper(object):
         print("\nSauceLabs job_id={}".format(response.get("id")))
         print("SauceLabs Video_url={}".format(response.get("video_url")))
 
-class RestHelper(object):
+class RestHelper:
 
     def __init__(self, splunk_mgmt_url, username ,password):
         self.splunk_mgmt_url = splunk_mgmt_url
@@ -413,7 +409,7 @@ class RestHelper(object):
 
         self.session_key = str(res["sessionKey"])
 
-class UccTester(object):
+class UccTester:
     """
     The default setup and teardown methods can be added here.
     Use in case if some additional configuration should be added to all the test cases

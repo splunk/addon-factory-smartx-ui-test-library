@@ -30,7 +30,7 @@ class TextBox(BaseControl):
             :param browser: The selenium webdriver
             :param container: The locator of the container where the control is located in. 
         """
-        super(TextBox, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.encrypted = encrypted
         self.container = container
         self.browser = browser

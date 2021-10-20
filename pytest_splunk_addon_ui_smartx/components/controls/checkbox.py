@@ -26,7 +26,7 @@ class Checkbox(BaseControl):
     """
 
     def __init__(self, browser, container, searchable=True):
-        super(Checkbox, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "internal_container": Selector(select=container.select + ' [data-test="switch"]'),
             "checkbox": Selector(select=container.select + ' [data-test="switch"]'),

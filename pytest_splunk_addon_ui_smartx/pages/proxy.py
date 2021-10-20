@@ -40,7 +40,7 @@ class Proxy(Entity):
             self.ta_conf = "{}_settings".format(self.ta_name.lower())
         entity_container = Selector(select='div[id="proxyTab"]')
         if ucc_smartx_selenium_helper:
-            super(Proxy, self).__init__(ucc_smartx_selenium_helper.browser, entity_container)
+            super().__init__(ucc_smartx_selenium_helper.browser, entity_container)
             self.splunk_web_url = ucc_smartx_selenium_helper.splunk_web_url
             self.host = TextBox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_url"]'))
             self.port = TextBox(ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="proxy_port"]'))

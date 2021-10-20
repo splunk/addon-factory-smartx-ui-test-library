@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 from .base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -33,7 +32,7 @@ class Dropdown(BaseComponent):
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
             :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
-        super(Dropdown, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "currunt_value": Selector(select=container.select + ' [data-test="select"] [data-test="label"]'),
             "pagination_dropdown": Selector(select='button[data-test="select"]'),
@@ -142,5 +141,4 @@ class Dropdown(BaseComponent):
         })
         return [each.text.strip() for each in self.get_elements("type_filter_list")]
 
-        
         

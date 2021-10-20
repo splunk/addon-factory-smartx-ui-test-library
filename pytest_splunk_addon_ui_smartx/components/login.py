@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 import time
 from .base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
@@ -32,7 +31,7 @@ class Login(BaseComponent):
             :param browser: The selenium webdriver
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
         """
-        super(Login, self).__init__(browser, container)
+        super().__init__(browser, container)
 
         self.elements = {
             "username": Selector(by=By.ID, select="username"),
@@ -53,7 +52,7 @@ class Login(BaseComponent):
 
         self.username.send_keys(username)
         self.password.send_keys(password)
-        self.password.send_keys(u'\ue007')
+        self.password.send_keys('\ue007')
         try:
             if ENTERPRISE_CLOUD_ToS:
                 ENTERPRISE_CLOUD_ToS = False

@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 from .table import Table
 from selenium.webdriver.common.by import By
 from .base_component import Selector
@@ -33,7 +32,7 @@ class InputTable(Table):
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
             :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
-        super(InputTable, self).__init__(browser, container, mapping)
+        super().__init__(browser, container, mapping)
 
         self.elements.update(
             {

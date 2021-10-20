@@ -14,8 +14,7 @@
 # limitations under the License.
 #
 
-from builtins import object
-class Page(object):
+class Page:
     """
     Instance of a Page class holds all the components inside the page. To access the component, just do page.component.action_method()
     The page class should not have any interaction method for any visible components. It is supposed to hold all the components only.

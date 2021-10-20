@@ -22,7 +22,7 @@ from selenium.webdriver.common.keys import Keys
 
 class AlertAccountSelect(ActionControls):
     def __init__(self, browser, container):
-        super(AlertAccountSelect, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "internal_container": Selector(select=container.select + " .splunk-dropdown"),
             "dropdown": Selector(select=container.select + ' button[label="Select..."]'),

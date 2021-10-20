@@ -25,7 +25,7 @@ class ActionDropdown(ActionControls):
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
             :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
-        super(ActionDropdown, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "add_action": Selector(select=container.select + " .dropdown-toggle.btn"),
             "action_name": Selector(select=".unselected-action span:first-of-type"), 

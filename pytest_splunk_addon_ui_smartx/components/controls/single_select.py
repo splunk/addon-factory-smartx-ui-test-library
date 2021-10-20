@@ -33,7 +33,7 @@ class SingleSelect(BaseControl):
             :param searchable: Boolean indicating if the dropdown provides filter or not.
             :param allow_new_values: Boolean indicating if the dropdown allows for user entered custom values excluding predefined list.
         """
-        super(SingleSelect, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.searchable = searchable
         # Component is ComboBox in case of True
         self.allow_new_values = allow_new_values

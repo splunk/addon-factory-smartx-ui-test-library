@@ -38,7 +38,7 @@ class Logging(Entity):
             self.ta_conf = "{}_settings".format(self.ta_name.lower())
 
         if ucc_smartx_selenium_helper:
-            super(Logging, self).__init__(ucc_smartx_selenium_helper.browser, entity_container)
+            super().__init__(ucc_smartx_selenium_helper.browser, entity_container)
             self.splunk_web_url = ucc_smartx_selenium_helper.splunk_web_url
             self.log_level = SingleSelect(
                 ucc_smartx_selenium_helper.browser, Selector(select='[data-test="control-group"][data-name="loglevel"]'))

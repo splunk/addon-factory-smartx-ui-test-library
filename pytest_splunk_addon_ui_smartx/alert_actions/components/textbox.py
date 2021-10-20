@@ -24,7 +24,7 @@ class AlertTextBox(ActionControls):
             :param browser: The selenium webdriver
             :param container: The locator of the container where the control is located in. 
         """
-        super(AlertTextBox, self).__init__(browser, container)
+        super().__init__(browser, container)
         if use_child_input:
             self.elements.update({
                 "input": Selector(select=container.select)

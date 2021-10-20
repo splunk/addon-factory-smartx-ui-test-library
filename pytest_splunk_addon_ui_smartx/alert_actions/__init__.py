@@ -28,7 +28,7 @@ from .components.dropdown import ActionDropdown
 
 class ActionEntity(Entity):
     def __init__(self, browser):
-        super(ActionEntity, self).__init__(browser, Selector(select=".trigger-actions-controls"))
+        super().__init__(browser, Selector(select=".trigger-actions-controls"))
 
 class AlertEntity(Entity):
 
@@ -40,7 +40,7 @@ class AlertEntity(Entity):
         """
         entity_container = Selector(select=".main-section-body")
         if ucc_smartx_selenium_helper:
-            super(AlertEntity, self).__init__(ucc_smartx_selenium_helper.browser, entity_container)
+            super().__init__(ucc_smartx_selenium_helper.browser, entity_container)
             self.splunk_web_url = ucc_smartx_selenium_helper.splunk_web_url
 
             # Controls 

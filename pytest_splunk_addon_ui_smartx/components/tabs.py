@@ -29,7 +29,7 @@ class Tab(BaseComponent):
             :param browser: The selenium webdriver
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
         """
-        super(Tab, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "tab": Selector(select='[data-test="tab"][data-test-tab-id="{tab}"]'),
             "container": Selector(select='[data-test="tab-bar"]')

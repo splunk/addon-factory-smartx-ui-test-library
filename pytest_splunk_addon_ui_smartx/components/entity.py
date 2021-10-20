@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 from ..pages.page import Page
 from selenium.webdriver.common.by import By
 from abc import abstractmethod
@@ -39,7 +38,7 @@ class Entity(BaseComponent):
             :param is_single_page: Boolean indicating whether the selected tab is single entity form or not like proxy and logging.
         """
         self.browser = browser
-        super(Entity, self).__init__(browser, container)
+        super().__init__(browser, container)
         
         # Controls
         self.save_btn = Button(browser, Selector(select=container.select + ' .saveBtn'))

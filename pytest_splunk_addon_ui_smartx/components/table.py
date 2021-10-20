@@ -14,10 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import print_function
-from __future__ import absolute_import
-from builtins import str
-from builtins import zip
 from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
 from selenium import webdriver
@@ -42,7 +38,7 @@ class Table(BaseComponent):
             :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
         
-        super(Table, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.header_mapping = mapping
         self.browser = browser
         
@@ -373,8 +369,7 @@ class Table(BaseComponent):
         Get list of rows
             :return: The list of rows within the table
         """
-        for each_row in self.get_elements("rows"):
-            yield each_row
+        yield from self.get_elements("rows")
 
     def _get_row(self, name):
         """

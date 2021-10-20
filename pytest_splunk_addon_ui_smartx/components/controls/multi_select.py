@@ -32,7 +32,7 @@ class MultiSelect(BaseControl):
             :param browser: The selenium webdriver
             :param container: The locator of the container where the control is located in
         """
-        super(MultiSelect, self).__init__(browser, container)
+        super().__init__(browser, container)
 
         self.elements.update({
             "internal_container": Selector(select=container.select + ' [role="listbox"]'),

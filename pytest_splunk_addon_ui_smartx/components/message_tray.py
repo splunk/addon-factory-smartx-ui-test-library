@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 from .base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
 
@@ -30,7 +29,7 @@ class MessageTray(BaseComponent):
             :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
         container = Selector(select="[data-view='views/shared/splunkbar/messages/MenuContents']")
-        super(MessageTray, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "message_tray_dropdown": Selector(select="[title='Messages']"),
             "message_row": Selector(select=container.select + " [data-view$='Message']"),
@@ -107,8 +106,7 @@ class MessageTray(BaseComponent):
         Get list of msgs
             :return: The list of msgs within the component
         """
-        for each_row in self.get_elements("message_row"):
-            yield each_row
+        yield from self.get_elements("message_row")
     
     def _get_row(self, value):
         """

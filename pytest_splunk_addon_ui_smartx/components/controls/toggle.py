@@ -28,7 +28,7 @@ class Toggle(BaseControl):
             :param browser: The selenium webdriver
             :param container: The locator of the container where the control is located in. 
         """
-        super(Toggle, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update(
             {
                 "toggle_btn": Selector(

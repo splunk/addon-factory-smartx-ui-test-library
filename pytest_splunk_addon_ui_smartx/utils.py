@@ -14,9 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import print_function
-from builtins import str
-from builtins import range
 import json
 
 def get_orca_deployment_urls():
@@ -25,7 +22,7 @@ def get_orca_deployment_urls():
     reason: In windows containers "so1" hostname does not work directly. 
     """
     try:
-        with open("orca_deployment.json", "r") as f:
+        with open("orca_deployment.json") as f:
             data = f.read()
         json_data = json.loads(data)
 

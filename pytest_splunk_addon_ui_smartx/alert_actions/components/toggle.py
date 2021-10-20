@@ -20,7 +20,7 @@ from .action_controls import ActionControls
 
 class AlertToggle(ActionControls):
     def __init__(self, browser, container):
-        super(AlertToggle, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "toggle_btn": Selector(select=container.select),
             "selected": Selector(select=container.select + " .active")

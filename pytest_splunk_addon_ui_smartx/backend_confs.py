@@ -14,16 +14,14 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 from future import standard_library
 standard_library.install_aliases()
-from builtins import object
 from .utils import backend_retry
 import requests
 from requests.auth import HTTPBasicAuth
 import urllib.request, urllib.parse, urllib.error
 
-class BackendConf(object):
+class BackendConf:
     """
     Base Class to fetch configurations from rest endpoint. The classes need management url & session_id of the splunk to fetch the configurations.
     """

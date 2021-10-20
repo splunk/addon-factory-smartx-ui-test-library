@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-from builtins import object
 from collections import namedtuple
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
@@ -31,11 +30,11 @@ class ActionChains(action_chains):
     It is a workaround by wrapping ActionChains class so that key_action.pause is not used in Safari browser.
     """
     def __init__(self, browser):
-        super(ActionChains, self).__init__(browser)
+        super().__init__(browser)
         if browser.name in ('Safari', 'Safari Technology Preview'):
             self.w3c_actions.key_action.pause = lambda *a, **k: None
 
-class AlertBaseComponent(object):
+class AlertBaseComponent:
     """
     Purpose:
     The base class for the component. A component is an UI component with which a user interacts with. 
@@ -63,7 +62,7 @@ class AlertBaseComponent(object):
             :param web_element: The instance of the web element we are getting tect from.
             :returns: str the text of the web elements
         """
-        return re.sub('\s+', ' ', web_element.text).strip()
+        return re.sub(r'\s+', ' ', web_element.text).strip()
 
     def get_element(self, key):
         """

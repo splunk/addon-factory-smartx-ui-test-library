@@ -28,7 +28,7 @@ class ActionControls(AlertBaseControl):
             :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
             :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
-        super(ActionControls, self).__init__(browser, container)
+        super().__init__(browser, container)
         select_xpath = CSSSelector(container.select).path
         self.elements.update({
             "help_text": Selector(by=By.XPATH, select= select_xpath + "//following::span[contains(@class, 'help-block')][1]"),

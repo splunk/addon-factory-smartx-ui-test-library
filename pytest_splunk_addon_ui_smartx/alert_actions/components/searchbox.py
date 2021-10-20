@@ -25,7 +25,7 @@ class SearchBox(ActionControls):
             :param browser: The selenium webdriver
             :param container: The locator of the container where the control is located in. 
         """
-        super(SearchBox, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "text_container": Selector(select=container.select + " .ace_editor"),
             "text_content": Selector(select=container.select + " .ace_content")

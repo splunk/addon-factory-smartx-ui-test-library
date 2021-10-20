@@ -20,7 +20,7 @@ from .action_controls import ActionControls
 
 class AlertCheckbox(ActionControls):
     def __init__(self, browser, container):
-        super(AlertCheckbox, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.elements.update({
             "internal_container": Selector(select=container.select + " div.select2-container"),
             "checkbox": Selector(select=container.select),
@@ -66,4 +66,3 @@ class AlertCheckbox(ActionControls):
             :return: Bool True if checked, False if unchecked
         '''
         return self.checkbox.is_selected()
-       

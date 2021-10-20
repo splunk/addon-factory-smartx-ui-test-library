@@ -17,8 +17,6 @@
 from .alert_base_component import Selector
 from .action_controls import ActionControls
 from .alert_base_control import AlertBaseControl
-from builtins import str
-from builtins import zip
 from contextlib import contextmanager
 import re
 import copy
@@ -28,7 +26,7 @@ from selenium.common import exceptions
 class AlertTable(ActionControls):
     def __init__(self, browser, mapping=dict(),wait_for_seconds = 10):
         container = Selector(select='.grid-placeholder')
-        super(AlertTable, self).__init__(browser, container)
+        super().__init__(browser, container)
         self.header_mapping = mapping
         self.elements.update({
             "rows": Selector(select=container.select + " tr.list-item.savedsearches-gridrow"),
@@ -326,8 +324,7 @@ class AlertTable(ActionControls):
         Get list of rows
             :return: The list of rows within the table
         """
-        for each_row in self.get_elements("rows"):
-            yield each_row
+        yield from self.get_elements("rows")
 
     def _get_row(self, name):
         """
