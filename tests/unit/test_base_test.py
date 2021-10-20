@@ -4,12 +4,14 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import selenium
-from selenium.common.exceptions import (ElementNotInteractableException,
-                                        TimeoutException)
+from selenium.common.exceptions import ElementNotInteractableException, TimeoutException
 
 import pytest_splunk_addon_ui_smartx.base_test
-from pytest_splunk_addon_ui_smartx.base_test import (RestHelper,
-                                                     SeleniumHelper, UccTester)
+from pytest_splunk_addon_ui_smartx.base_test import (
+    RestHelper,
+    SeleniumHelper,
+    UccTester,
+)
 
 
 def test_exception_when_config_sauce_env_missing():
