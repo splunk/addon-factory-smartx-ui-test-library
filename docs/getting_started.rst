@@ -41,9 +41,9 @@ The tests should be structured in the following format, if the folders do not ex
 
 .. dropdown:: Example pytest-ci.ini
 
-    .. literalinclude:: ./example_code.py
+    .. literalinclude:: ./example_pytest.ini
         :language: console
-        :lines: 174-
+        :lines: 1-
 
 
 Test Page Creation
@@ -86,7 +86,7 @@ A Example Page file would look like this:
     
     .. literalinclude:: ./example_code.py
         :language: python3
-        :lines: 1-94
+        :lines: 1-169
 
 Test Cases Creation
 ===================
@@ -115,7 +115,7 @@ For the test cases, you may also want to include informative markers as well so 
 
     .. literalinclude:: ./example_code.py
         :language: python3
-        :lines: 96-101, 121-139
+        :lines: 171-180, 200-225
 
 **Setup Fixtures**
 The test suite could also contain setup fixtures that would be called before tests to setup the Splunk environment. This could range from creating new inputs, to using a different page class to create a related input/Account for the page being tested. It may also be useful to have global variables for the default configurations so that it could be easily edited and reused later.
@@ -125,7 +125,7 @@ An example of a setup fixture:
 
     .. literalinclude:: ./example_code.py
         :language: python3
-        :lines: 141-163
+        :lines: 228-253
 
 **Teardown Fixtures**
 The test suites should also contain teardown fixtures to revert the Splunk instance back to its original state after each test, this way each test is independent of each other and so if one test fails, then another test shouldn't fail in correspondence as to the first test.
@@ -135,7 +135,7 @@ An example of the teardown fixture:
 
     .. literalinclude:: ./example_code.py
         :language: python3
-        :lines: 104-119
+        :lines: 182-197
 
 **Environment Variables**
 You may also want to get environment variables so that you can dynamically setup different test variables easily through the environment instead of having to hardcode them into the test. This may useful in hiding sensitive data such as login credentials.
@@ -145,4 +145,4 @@ An example for getting environment variables is as follows:
 
     .. literalinclude:: ./example_code.py
         :language: python3
-        :lines: 165-172
+        :lines: 256-
