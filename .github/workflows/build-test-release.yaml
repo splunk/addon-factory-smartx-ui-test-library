@@ -135,7 +135,7 @@ jobs:
       - name: Build Package
         id: uccgen
         run: |
-          source $HOME/.poetry/env
+          source "$HOME"/.poetry/env
           poetry install
           poetry run poetry-dynamic-versioning
           poetry build
@@ -162,7 +162,7 @@ jobs:
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
           curl https://pyenv.run | bash
-          export PATH="~/.pyenv/bin:$PATH"
+          export PATH="$HOME/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           pyenv install 3.7.8
           pyenv local 3.7.8
@@ -170,7 +170,7 @@ jobs:
           source ~/.poetry/env
       - name: Test with pytest
         run: |
-          export PATH="~/.pyenv/bin:$PATH"
+          export PATH="$HOME/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           source ~/.poetry/env
           poetry install
@@ -221,9 +221,9 @@ jobs:
             pwd
             curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*.spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
             ls
-            tar -xzf *.spl
+            tar -xzf Splunk_TA.*.spl
             ls
-            rm *.spl
+            rm Splunk_TA.*.spl
             ls
       - name: Setup for testing
         run: |
@@ -233,24 +233,29 @@ jobs:
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
       - name: Splunk Testing
         run: |
-          export SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
-          export SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
-          export SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
+          SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
+          export SPLUNK_VERSION
+          SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
+          export SPLUNK_APP_ID
+          SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
+          export SPLUNK_APP_PACKAGE
           export TEST_SET=tests/ui
           export TEST_BROWSER="${{ matrix.browser }}"
           export TEST_SUITE="-k ${{ matrix.test_suit }}"
           export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
           export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
           export SAUCE_TUNNEL_ID="${{ secrets.SAUCE_TUNNEL_ID }}"
-          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
-          export SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
+          JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
+          export JOB_NAME
+          SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
+          export SAUCE_IDENTIFIER
           echo "environment setup..."
-          echo $SPLUNK_VERSION
-          echo $SPLUNK_APP_ID
-          echo $SPLUNK_APP_PACKAGE
-          echo $TEST_SET
-          echo $TEST_BROWSER
-          echo $TEST_SUITE
+          echo "$SPLUNK_VERSION"
+          echo "$SPLUNK_APP_ID"
+          echo "$SPLUNK_APP_PACKAGE"
+          echo "$TEST_SET"
+          echo "$TEST_BROWSER"
+          echo "$TEST_SUITE"
           echo "Testing..."
           docker-compose -f docker-compose-ci.yml build
           # Saucelab connection
