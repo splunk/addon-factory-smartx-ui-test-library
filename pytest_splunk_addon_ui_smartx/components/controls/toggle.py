@@ -14,10 +14,11 @@
 # limitations under the License.
 #
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+
 from ..base_component import Selector
 from .base_control import BaseControl
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
 
 
 class Toggle(BaseControl):

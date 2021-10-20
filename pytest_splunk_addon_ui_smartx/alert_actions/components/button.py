@@ -15,8 +15,8 @@
 #
 
 from ...components.controls.button import Button
-from .alert_base_control import AlertBaseControl
 from .action_controls import ActionControls
+from .alert_base_control import AlertBaseControl
 
 
 class Button(ActionControls):

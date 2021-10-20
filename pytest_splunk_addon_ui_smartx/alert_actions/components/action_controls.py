@@ -14,10 +14,11 @@
 # limitations under the License.
 #
 
+from lxml.cssselect import CSSSelector
+from selenium.webdriver.common.by import By
+
 from .alert_base_component import Selector
 from .alert_base_control import AlertBaseControl
-from selenium.webdriver.common.by import By
-from lxml.cssselect import CSSSelector
 
 
 class ActionControls(AlertBaseControl):

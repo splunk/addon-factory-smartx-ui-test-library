@@ -17,10 +17,14 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from .utils import backend_retry
+import urllib.error
+import urllib.parse
+import urllib.request
+
 import requests
 from requests.auth import HTTPBasicAuth
-import urllib.request, urllib.parse, urllib.error
+
+from .utils import backend_retry
 
 
 class BackendConf:

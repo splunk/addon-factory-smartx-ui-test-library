@@ -14,13 +14,15 @@
 # limitations under the License.
 #
 
-from ..components.base_component import Selector
-from ..components.tabs import Tab
-from ..components.entity import Entity
-from ..components.controls.single_select import SingleSelect
-from ..backend_confs import SingleBackendConf
-from selenium.webdriver.common.by import By
 import time
+
+from selenium.webdriver.common.by import By
+
+from ..backend_confs import SingleBackendConf
+from ..components.base_component import Selector
+from ..components.controls.single_select import SingleSelect
+from ..components.entity import Entity
+from ..components.tabs import Tab
 
 
 class Logging(Entity):

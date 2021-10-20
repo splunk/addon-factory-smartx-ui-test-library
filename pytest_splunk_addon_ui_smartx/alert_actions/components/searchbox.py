@@ -15,9 +15,10 @@
 #
 
 from selenium.webdriver.common.action_chains import ActionChains
-from .textbox import AlertTextBox
-from .alert_base_component import Selector
+
 from .action_controls import ActionControls
+from .alert_base_component import Selector
+from .textbox import AlertTextBox
 
 
 class SearchBox(ActionControls):

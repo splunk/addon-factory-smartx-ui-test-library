@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
-from .alert_base_component import AlertBaseComponent, Selector
 from selenium.webdriver.common.by import By
+
+from .alert_base_component import AlertBaseComponent, Selector
 
 
 class AlertBaseControl(AlertBaseComponent):

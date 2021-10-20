@@ -14,9 +14,10 @@
 # limitations under the License.
 #
 
-from .page import Page
-from ..components.login import Login
 from selenium.webdriver.common.by import By
+
+from ..components.login import Login
+from .page import Page
 
 
 class LoginPage(Page):

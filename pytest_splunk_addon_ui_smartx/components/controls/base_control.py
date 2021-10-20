@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
-from ..base_component import BaseComponent, Selector
 from selenium.webdriver.common.by import By
+
+from ..base_component import BaseComponent, Selector
 
 
 class BaseControl(BaseComponent):

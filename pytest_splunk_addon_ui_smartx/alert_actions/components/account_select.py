@@ -15,10 +15,11 @@
 #
 
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
+
 from .action_controls import ActionControls
 from .alert_base_component import AlertBaseComponent, Selector
 from .alert_base_control import AlertBaseControl
-from selenium.webdriver.common.keys import Keys
 
 
 class AlertAccountSelect(ActionControls):

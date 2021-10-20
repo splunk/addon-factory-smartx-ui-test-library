@@ -14,11 +14,13 @@
 # limitations under the License.
 #
 import time
-from ..base_component import Selector
-from .base_control import BaseControl
+
+from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import ElementClickInterceptedException
+
+from ..base_component import Selector
+from .base_control import BaseControl
 
 
 class MultiSelect(BaseControl):

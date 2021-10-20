@@ -15,8 +15,10 @@
 #
 
 import time
-from ..components.base_component import BaseComponent, Selector
+
 from selenium.webdriver.common.by import By
+
+from ..components.base_component import BaseComponent, Selector
 
 
 class Tab(BaseComponent):

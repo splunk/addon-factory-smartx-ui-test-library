@@ -14,8 +14,7 @@
 # limitations under the License.
 #
 
-from . import components
-from . import pages
+from . import components, pages
 from .components import controls
 
 __version__ = "0.9"

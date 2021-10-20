@@ -1,4 +1,4 @@
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 
 from pytest_splunk_addon_ui_smartx.utils import get_orca_deployment_urls
 

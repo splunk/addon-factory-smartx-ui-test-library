@@ -15,11 +15,13 @@
 #
 
 import time
-from ..base_component import Selector
-from .base_control import BaseControl
+from time import sleep
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from time import sleep
+
+from ..base_component import Selector
+from .base_control import BaseControl
 
 
 class SingleSelect(BaseControl):

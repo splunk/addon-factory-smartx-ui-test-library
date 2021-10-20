@@ -15,9 +15,11 @@
 #
 
 import time
-from .base_component import BaseComponent, Selector
-from selenium.webdriver.common.by import By
+
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+
+from .base_component import BaseComponent, Selector
 
 ENTERPRISE_CLOUD_ToS = True
 

@@ -15,16 +15,16 @@
 #
 
 import time
+
 from selenium.webdriver.common.by import By
 
 from ..backend_confs import SingleBackendConf
 from ..components.entity import Entity
 from .components.alert_base_component import Selector
-
 from .components.button import Button
-from .components.textbox import AlertTextBox
-from .components.searchbox import SearchBox
 from .components.dropdown import ActionDropdown
+from .components.searchbox import SearchBox
+from .components.textbox import AlertTextBox
 
 
 class ActionEntity(Entity):

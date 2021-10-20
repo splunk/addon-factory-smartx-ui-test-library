@@ -13,10 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .base_control import BaseControl
-from ..base_component import Selector
-from selenium.webdriver.common.keys import Keys
 import platform
+
+from selenium.webdriver.common.keys import Keys
+
+from ..base_component import Selector
+from .base_control import BaseControl
 
 os_base = platform.system()
 

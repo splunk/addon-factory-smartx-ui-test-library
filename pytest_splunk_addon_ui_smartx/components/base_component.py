@@ -14,14 +14,16 @@
 # limitations under the License.
 #
 
-from collections import namedtuple
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains as action_chains
-from selenium.webdriver.support import expected_conditions as EC
-from time import sleep
 import re
+from collections import namedtuple
+from time import sleep
+
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import \
+    ActionChains as action_chains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 DEFAULT_TIMEOUT = 20
 

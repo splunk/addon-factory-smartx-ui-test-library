@@ -13,23 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import logging
 import os
+import traceback
+from collections import namedtuple
+
 import pytest
 from filelock import FileLock
-from collections import namedtuple
-import traceback
-import logging
-from pytest_splunk_addon.splunk import (
-    splunk,
-    splunk_docker,
-    splunk_external,
-    splunk_rest_uri,
-    splunk_web_uri,
-    is_responsive_splunk,
-    is_responsive,
-)
+from pytest_splunk_addon.splunk import (is_responsive, is_responsive_splunk,
+                                        splunk, splunk_docker, splunk_external,
+                                        splunk_rest_uri, splunk_web_uri)
 
-from .base_test import SeleniumHelper, RestHelper
+from .base_test import RestHelper, SeleniumHelper
 
 LOGGER = logging.getLogger("pytest-ucc-smartx")
 PNG_PATH = "assets"

@@ -14,11 +14,13 @@
 # limitations under the License.
 #
 
-from .table import Table
-from selenium.webdriver.common.by import By
-from .base_component import Selector
 import time
+
 from selenium.common import exceptions
+from selenium.webdriver.common.by import By
+
+from .base_component import Selector
+from .table import Table
 
 
 class InputTable(Table):

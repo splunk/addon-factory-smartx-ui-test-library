@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
-from .base_control import BaseControl
 from selenium.webdriver.common.by import By
+
+from .base_control import BaseControl
 
 
 class Button(BaseControl):

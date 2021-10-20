@@ -14,14 +14,16 @@
 # limitations under the License.
 #
 
-from ..pages.page import Page
-from selenium.webdriver.common.by import By
+import time
 from abc import abstractmethod
+
+from selenium.webdriver.common.by import By
+
+from ..pages.page import Page
+from .base_component import BaseComponent, Selector
 from .controls.button import Button
 from .controls.message import Message
-from .base_component import BaseComponent, Selector
 from .dropdown import Dropdown
-import time
 
 
 class Entity(BaseComponent):

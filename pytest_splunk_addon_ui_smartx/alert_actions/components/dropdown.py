@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 
-from .alert_base_component import AlertBaseComponent, Selector
 from .action_controls import ActionControls
+from .alert_base_component import AlertBaseComponent, Selector
 
 
 class ActionDropdown(ActionControls):

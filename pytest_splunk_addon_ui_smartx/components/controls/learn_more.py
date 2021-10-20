@@ -16,7 +16,9 @@
 
 import time
 from contextlib import contextmanager
+
 from selenium.webdriver.common.by import By
+
 from ..base_component import Selector
 from .base_control import BaseControl
 

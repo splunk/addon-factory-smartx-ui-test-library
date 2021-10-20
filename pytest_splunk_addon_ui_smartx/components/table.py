@@ -14,16 +14,18 @@
 # limitations under the License.
 #
 
-from .base_component import BaseComponent, Selector
-from .dropdown import Dropdown
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from contextlib import contextmanager
+import copy
 import re
 import time
-import copy
+from contextlib import contextmanager
+
+from selenium import webdriver
 from selenium.common import exceptions
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+from .base_component import BaseComponent, Selector
+from .dropdown import Dropdown
 
 
 class Table(BaseComponent):

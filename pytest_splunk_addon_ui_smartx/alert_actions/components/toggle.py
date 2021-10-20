@@ -14,9 +14,9 @@
 # limitations under the License.
 #
 
+from .action_controls import ActionControls
 from .alert_base_component import Selector
 from .alert_base_control import AlertBaseControl
-from .action_controls import ActionControls
 
 
 class AlertToggle(ActionControls):

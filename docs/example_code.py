@@ -1,21 +1,24 @@
-from pytest_splunk_addon_ui_smartx.pages.page import Page
-from pytest_splunk_addon_ui_smartx.components.tabs import Tab
+from selenium.webdriver.common.by import By
+
+from pytest_splunk_addon_ui_smartx.backend_confs import ListBackendConf
+from pytest_splunk_addon_ui_smartx.components.base_component import (
+    BaseComponent, Selector)
+from pytest_splunk_addon_ui_smartx.components.controls.button import Button
+from pytest_splunk_addon_ui_smartx.components.controls.learn_more import \
+    LearnMore
+from pytest_splunk_addon_ui_smartx.components.controls.message import Message
+from pytest_splunk_addon_ui_smartx.components.controls.multi_select import \
+    MultiSelect
+from pytest_splunk_addon_ui_smartx.components.controls.single_select import \
+    SingleSelect
+from pytest_splunk_addon_ui_smartx.components.controls.textbox import TextBox
+from pytest_splunk_addon_ui_smartx.components.controls.toggle import Toggle
 from pytest_splunk_addon_ui_smartx.components.dropdown import Dropdown
 from pytest_splunk_addon_ui_smartx.components.entity import Entity
-from pytest_splunk_addon_ui_smartx.components.controls.button import Button
-from pytest_splunk_addon_ui_smartx.components.controls.learn_more import LearnMore
-from pytest_splunk_addon_ui_smartx.components.controls.textbox import TextBox
-from pytest_splunk_addon_ui_smartx.components.controls.single_select import SingleSelect
-from pytest_splunk_addon_ui_smartx.components.controls.multi_select import MultiSelect
-from pytest_splunk_addon_ui_smartx.components.controls.learn_more import LearnMore
 from pytest_splunk_addon_ui_smartx.components.input_table import InputTable
-from pytest_splunk_addon_ui_smartx.components.controls.message import Message
-from pytest_splunk_addon_ui_smartx.components.controls.toggle import Toggle
-from pytest_splunk_addon_ui_smartx.backend_confs import ListBackendConf
-from pytest_splunk_addon_ui_smartx.components.base_component import Selector
-from pytest_splunk_addon_ui_smartx.components.base_component import BaseComponent
 from pytest_splunk_addon_ui_smartx.components.message_tray import MessageTray
-from selenium.webdriver.common.by import By
+from pytest_splunk_addon_ui_smartx.components.tabs import Tab
+from pytest_splunk_addon_ui_smartx.pages.page import Page
 
 
 class ExampleTAInputEntity(Entity):
@@ -93,9 +96,10 @@ class Inputs(Page):
     def _get_input_endpoint(self):
         return '{}/servicesNS/nobody/Splunk_TA_<TA>/configs/conf-inputs'.format(self.splunk_mgmt_url)
 
+import pytest
+
 from pytest_splunk_addon_ui_smartx.base_test import UccTester
 from pytest_splunk_addon_ui_smartx.pages.proxy import Proxy
-import pytest
 
 TA_NAME = "Splunk_TA_<TA_NAME>"
 TA_PROXY_URL = "/servicesNS/nobody/Splunk_TA_<TA_NAME>/Splunk_TA_<TA_NAME>_settings/proxy"

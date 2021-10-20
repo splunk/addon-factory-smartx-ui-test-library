@@ -15,10 +15,12 @@
 #
 
 import time
-from ..base_component import Selector
-from .base_control import BaseControl
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+from ..base_component import Selector
+from .base_control import BaseControl
 
 
 class OAuthSelect(BaseControl):

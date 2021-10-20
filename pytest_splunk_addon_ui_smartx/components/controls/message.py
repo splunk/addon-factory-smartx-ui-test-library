@@ -14,12 +14,14 @@
 # limitations under the License.
 #
 
-from ..base_component import Selector
-from .base_control import BaseControl
+import platform
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+from ..base_component import Selector
+from .base_control import BaseControl
 from .button import Button
-import platform
 
 os_base = platform.system()
 

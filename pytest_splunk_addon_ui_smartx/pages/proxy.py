@@ -14,15 +14,16 @@
 # limitations under the License.
 #
 
-from ..components.base_component import Selector
-from ..components.tabs import Tab
-from ..components.entity import Entity
-from ..components.controls.single_select import SingleSelect
-from ..components.controls.checkbox import Checkbox
-from ..components.controls.button import Button
-from ..components.controls.textbox import TextBox
-from ..backend_confs import SingleBackendConf
 from selenium.webdriver.common.by import By
+
+from ..backend_confs import SingleBackendConf
+from ..components.base_component import Selector
+from ..components.controls.button import Button
+from ..components.controls.checkbox import Checkbox
+from ..components.controls.single_select import SingleSelect
+from ..components.controls.textbox import TextBox
+from ..components.entity import Entity
+from ..components.tabs import Tab
 
 
 class Proxy(Entity):
