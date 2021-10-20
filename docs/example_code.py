@@ -190,7 +190,7 @@ filterwarnings =
 markers =
 	logging: Logging Page UI test cases
 	account: Account page UI test cases
-	proxy: Proxy page UI test cases
+	proxy: proxy page UI test cases
     input: Input page UI test cases
 	forwarder: Tests to be run on Forwarder/Standalone
 	liveenvironment: Tests need live server to successfully execute

@@ -114,8 +114,8 @@ latex_documents = [
     (
         master_doc,
         "pytest_splunk_addon_ui_smartx_doc.tex",
-        u"pytest_splunk_addon_ui_smartx_doc Documentation",
-        u"Splunk, Inc.",
+        "pytest_splunk_addon_ui_smartx_doc Documentation",
+        "Splunk, Inc.",
         "manual",
     ),
 ]
@@ -129,7 +129,7 @@ man_pages = [
     (
         master_doc,
         "pytest_splunk_addon_ui_smartx_doc",
-        u"pytest_splunk_addon_ui_smartx_doc Documentation",
+        "pytest_splunk_addon_ui_smartx_doc Documentation",
         [author],
         1,
     )
@@ -145,7 +145,7 @@ texinfo_documents = [
     (
         master_doc,
         "pytest_splunk_addon_ui_smartx_doc",
-        u"pytest_splunk_addon_ui_smartx_doc Documentation",
+        "pytest_splunk_addon_ui_smartx_doc Documentation",
         author,
         "pytest_splunk_addon_ui_smartx_doc",
         "One line description of project.",

@@ -262,8 +262,8 @@ jobs:
           docker-compose -f docker-compose-ci.yml up -d sauceconnect
           
           # Start selenium grid if needed.
-          if [[ "${{ matrix.browser }}" =~ .*"firefox_grid".* ]]; then docker-compose -f docker-compose-ci.yml up -d firefox-grid; fi
-          if [[ "${{ matrix.browser }}" =~ .*"chrome_grid".* ]]; then docker-compose -f docker-compose-ci.yml up -d chrome-grid; fi
+          if [[ "$TEST_BROWSER" == *"firefox_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d firefox-grid; fi
+          if [[ "$TEST_BROWSER" == *"chrome_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d chrome-grid; fi
           # Start Splunk
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
