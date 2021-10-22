@@ -92,4 +92,4 @@ def test_global_parameters():
     }
     with patch("builtins.open", mock_open(read_data=ORCA_DEPLOYMENT_JSON)) as json_mock:
         assert get_orca_deployment_urls() == expected
-        json_mock.assert_called_with("orca_deployment.json", "r")
+        json_mock.assert_called_with("orca_deployment.json")
