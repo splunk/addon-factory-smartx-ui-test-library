@@ -23,7 +23,7 @@ def get_orca_deployment_urls():
     reason: In windows containers "so1" hostname does not work directly.
     """
     try:
-        with open("orca_deployment.json") as f:
+        with open("orca_deployment.json", "r") as f:
             data = f.read()
         json_data = json.loads(data)
 
