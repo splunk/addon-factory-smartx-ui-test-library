@@ -4,12 +4,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import selenium
-from selenium.common.exceptions import TimeoutException, ElementNotInteractableException
+from selenium.common.exceptions import ElementNotInteractableException, TimeoutException
 
 import pytest_splunk_addon_ui_smartx.base_test
 from pytest_splunk_addon_ui_smartx.base_test import (
-    SeleniumHelper,
     RestHelper,
+    SeleniumHelper,
     UccTester,
 )
 

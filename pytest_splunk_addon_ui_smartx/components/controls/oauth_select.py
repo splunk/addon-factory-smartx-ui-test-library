@@ -15,30 +15,36 @@
 #
 
 import time
-from ..base_component import Selector
-from .base_control import BaseControl
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+from ..base_component import Selector
+from .base_control import BaseControl
+
 
 class OAuthSelect(BaseControl):
     """
     Entity-Component: OAuthSelect
 
     OAuthSelect Javascript framework: OAuthSelect
-    
+
     A dropdown which can select only one value
     """
+
     def __init__(self, browser, container, searchable=True):
         """
-            :param browser: The selenium webdriver
-            :param container: The locator of the container where the control is located in. 
+        :param browser: The selenium webdriver
+        :param container: The locator of the container where the control is located in.
         """
 
-        super(OAuthSelect, self).__init__(browser, container)
-        self.elements.update({
-            "values": Selector(select=container.select + ' [data-test="option"]'),
-            "dropdown": Selector(select=container.select + ' .dropdownBox')
-        })
+        super().__init__(browser, container)
+        self.elements.update(
+            {
+                "values": Selector(select=container.select + ' [data-test="option"]'),
+                "dropdown": Selector(select=container.select + " .dropdownBox"),
+            }
+        )
 
     def select(self, value):
         """
@@ -48,11 +54,16 @@ class OAuthSelect(BaseControl):
         """
 
         self.dropdown.click()
-        popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
-        self.elements.update({
-            "values":Selector(select=popoverid + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]')
-        })
-        for each in self.get_elements('values'):
+        popoverid = "#" + self.dropdown.get_attribute("data-test-popover-id")
+        self.elements.update(
+            {
+                "values": Selector(
+                    select=popoverid
+                    + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]'
+                )
+            }
+        )
+        for each in self.get_elements("values"):
             if each.text.strip().lower() == value.lower():
                 each.click()
                 return True
@@ -68,7 +79,7 @@ class OAuthSelect(BaseControl):
             element = self.get_element("dropdown")
             return element.get_attribute("data-test-value")
         except:
-            return ''
+            return ""
 
     def list_of_values(self):
         """
@@ -79,10 +90,10 @@ class OAuthSelect(BaseControl):
         self.container.click()
         first_element = None
         list_of_values = []
-        popoverid = '#' + self.dropdown.get_attribute("data-test-popover-id")
-        self.elements.update({
-            "values":Selector(select=popoverid + ' [data-test="option"]')
-        })
-        for each in self.get_elements('values'):
+        popoverid = "#" + self.dropdown.get_attribute("data-test-popover-id")
+        self.elements.update(
+            {"values": Selector(select=popoverid + ' [data-test="option"]')}
+        )
+        for each in self.get_elements("values"):
             list_of_values.append(each.text.strip())
-        return list_of_values    
+        return list_of_values

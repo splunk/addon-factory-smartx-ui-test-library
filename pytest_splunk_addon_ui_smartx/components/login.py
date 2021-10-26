@@ -14,32 +14,35 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 import time
-from .base_component import BaseComponent, Selector
-from selenium.webdriver.common.by import By
+
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+
+from .base_component import BaseComponent, Selector
 
 ENTERPRISE_CLOUD_ToS = True
+
 
 class Login(BaseComponent):
     """
     Component: Login
     To login into the Splunk instance
     """
+
     def __init__(self, browser, container=Selector(select="form.loginForm")):
         """
-            :param browser: The selenium webdriver
-            :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
+        :param browser: The selenium webdriver
+        :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
         """
-        super(Login, self).__init__(browser, container)
+        super().__init__(browser, container)
 
         self.elements = {
             "username": Selector(by=By.ID, select="username"),
             "password": Selector(by=By.ID, select="password"),
             "homepage": Selector(select='a[data-action="home"]'),
             "accept_checkbox": Selector(by=By.ID, select="accept"),
-            "accept_button": Selector(select=" .accept-tos-button.btn.btn-primary")
+            "accept_button": Selector(select=" .accept-tos-button.btn.btn-primary"),
         }
 
     def login(self, username, password):
@@ -53,7 +56,7 @@ class Login(BaseComponent):
 
         self.username.send_keys(username)
         self.password.send_keys(password)
-        self.password.send_keys(u'\ue007')
+        self.password.send_keys("\ue007")
         try:
             if ENTERPRISE_CLOUD_ToS:
                 ENTERPRISE_CLOUD_ToS = False

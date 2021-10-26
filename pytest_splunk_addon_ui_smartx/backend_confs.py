@@ -14,24 +14,29 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
 from future import standard_library
+
 standard_library.install_aliases()
-from builtins import object
-from .utils import backend_retry
+import urllib.error
+import urllib.parse
+import urllib.request
+
 import requests
 from requests.auth import HTTPBasicAuth
-import urllib.request, urllib.parse, urllib.error
 
-class BackendConf(object):
+from .utils import backend_retry
+
+
+class BackendConf:
     """
     Base Class to fetch configurations from rest endpoint. The classes need management url & session_id of the splunk to fetch the configurations.
     """
+
     def __init__(self, url, username, password):
         """
-            :param url: management url of the Splunk instance.
-            :param username: username of the Splunk instance
-            :param password: password of the Splunk instance
+        :param url: management url of the Splunk instance.
+        :param username: username of the Splunk instance
+        :param password: password of the Splunk instance
         """
         self.url = url
         self.username = username
@@ -45,9 +50,11 @@ class BackendConf(object):
             :returns: json result of the request
         """
         res = requests.get(url, auth=(self.username, self.password), verify=False)
-        assert res.status_code == 200, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
+        assert res.status_code == 200, "url={}, status_code={}, error_msg={}".format(
+            url, res.status_code, res.text
+        )
         return res.json()
-    
+
     def rest_call_post(self, url, kwargs):
         """
         rest call to the splunk rest-endpoint
@@ -57,8 +64,12 @@ class BackendConf(object):
             :param kwargs: body of request method
             :returns: json result of the request
         """
-        res = requests.post(url, kwargs, auth=(self.username, self.password), verify=False)
-        assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
+        res = requests.post(
+            url, kwargs, auth=(self.username, self.password), verify=False
+        )
+        assert (
+            res.status_code == 200 or res.status_code == 201
+        ), "url={}, status_code={}, error_msg={}".format(url, res.status_code, res.text)
         return res.json()
 
     def rest_call_delete(self, url):
@@ -68,7 +79,9 @@ class BackendConf(object):
             :returns: json result of the request
         """
         res = requests.delete(url, auth=(self.username, self.password), verify=False)
-        assert res.status_code == 200 or res.status_code == 201, "url={}, status_code={}, error_msg={}".format(url,res.status_code, res.text)
+        assert (
+            res.status_code == 200 or res.status_code == 201
+        ), "url={}, status_code={}, error_msg={}".format(url, res.status_code, res.text)
 
     def parse_conf(self, json_res, single_stanza=False):
         """
@@ -81,7 +94,7 @@ class BackendConf(object):
             stanza_name = each_stanzas["name"]
             stanzas_map[stanza_name] = dict()
 
-            for each_param, param_value in list(each_stanzas["content"].items()):                
+            for each_param, param_value in list(each_stanzas["content"].items()):
                 if each_param.startswith("eai:"):
                     continue
                 stanzas_map[stanza_name][each_param] = param_value
@@ -89,6 +102,7 @@ class BackendConf(object):
         if single_stanza:
             return stanzas_map[list(stanzas_map.keys())[0]]
         return stanzas_map
+
 
 class ListBackendConf(BackendConf):
     """
@@ -108,19 +122,20 @@ class ListBackendConf(BackendConf):
         res = self.rest_call(url)
         return self.parse_conf(res)
 
-
     def get_stanza(self, stanza, decrypt=False):
         """
         Get a specific stanza of the configuration.
             :param stanza: stanza to fetch
             :returns: dictionary {param: value, ... }
         """
-        url = "{}/{}?count=0&output_mode=json".format(self.url, urllib.parse.quote_plus(stanza))
+        url = "{}/{}?count=0&output_mode=json".format(
+            self.url, urllib.parse.quote_plus(stanza)
+        )
         if decrypt:
             url = "{}&--cred--=1".format(url)
         res = self.rest_call(url)
         return self.parse_conf(res, single_stanza=True)
-    
+
     def post_stanza(self, url, kwargs):
         """
         Create a specific stanza of the configuration.
@@ -130,7 +145,7 @@ class ListBackendConf(BackendConf):
             :param kwargs: body of request method
             :returns: json result of the request
         """
-        kwargs['output_mode'] = 'json'
+        kwargs["output_mode"] = "json"
         return self.rest_call_post(url, kwargs)
 
     def delete_all_stanzas(self, query=None):
@@ -162,6 +177,7 @@ class ListBackendConf(BackendConf):
         stanza_map = self.get_stanza(stanza, decrypt)
         return stanza_map[param]
 
+
 class SingleBackendConf(BackendConf):
     """
     For the configurations which can only have one stanza. for example, logging.
@@ -186,12 +202,12 @@ class SingleBackendConf(BackendConf):
         """
         stanza_map = self.get_stanza(decrypt)
         return stanza_map[param]
-    
+
     def update_parameters(self, kwargs):
         """
         Updates the values of the stanza in the configuration
             :param kwargs: body of request method
             :returns: json result of the request
         """
-        kwargs['output_mode'] = 'json'
+        kwargs["output_mode"] = "json"
         return self.rest_call_post(self.url, kwargs)

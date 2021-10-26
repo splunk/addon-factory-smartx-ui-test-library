@@ -14,19 +14,22 @@
 # limitations under the License.
 #
 
-from .base_control import BaseControl
 from selenium.webdriver.common.by import By
+
+from .base_control import BaseControl
+
 
 class Button(BaseControl):
     """
     Entity_Component : Button
     """
+
     def __init__(self, browser, container):
         """
-            :param browser: The selenium webdriver
-            :param container: The locator of the container where the control is located in. 
+        :param browser: The selenium webdriver
+        :param container: The locator of the container where the control is located in.
         """
-        super(Button, self).__init__(browser, container)
+        super().__init__(browser, container)
 
     def click(self):
         """
@@ -35,5 +38,4 @@ class Button(BaseControl):
         self.container.click()
 
     def wait_to_be_clickable(self):
-        super(Button, self).wait_to_be_clickable("container")
-    
+        super().wait_to_be_clickable("container")

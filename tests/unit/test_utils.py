@@ -1,4 +1,4 @@
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 
 from pytest_splunk_addon_ui_smartx.utils import get_orca_deployment_urls
 
@@ -92,4 +92,4 @@ def test_global_parameters():
     }
     with patch("builtins.open", mock_open(read_data=ORCA_DEPLOYMENT_JSON)) as json_mock:
         assert get_orca_deployment_urls() == expected
-        json_mock.assert_called_with("orca_deployment.json", "r")
+        json_mock.assert_called_with("orca_deployment.json")

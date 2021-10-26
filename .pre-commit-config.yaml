@@ -4,14 +4,15 @@ repos:
     hooks:
     -   id: pyupgrade
         args: [--py3-plus]
--   repo: https://github.com/psf/black
-    rev: 21.9b0
-    hooks:
-    -   id: black
 -   repo: https://github.com/PyCQA/isort
     rev: 5.9.3
     hooks:
     -   id: isort
+        args: ["--profile", "black"]
+-   repo: https://github.com/psf/black
+    rev: 21.9b0
+    hooks:
+    -   id: black
 -   repo: local
     hooks:
       - id: actionlint
