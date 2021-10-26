@@ -54,7 +54,10 @@ class LearnMore(BaseControl):
         # And in other browsers window_handels[0] represents the current window.
         if open_new_tab:
             self.wait_for_tab()
-            if self.browser.name == "Safari":
+            if (
+                self.browser.name == "Safari"
+                and float(self.browser.capabilities["browserVersion"]) < 14.0
+            ):
                 self.browser.switch_to.window(self.browser.window_handles[0])
             else:
                 self.browser.switch_to.window(self.browser.window_handles[1])
