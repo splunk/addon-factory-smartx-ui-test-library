@@ -332,6 +332,12 @@ jobs:
         with:
           submodules: false
           persist-credentials: false
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.7"
+      - name: Install Poetry
+        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
