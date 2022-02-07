@@ -1,6 +1,6 @@
 import importlib
 from copy import deepcopy
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, ANY
 
 import pytest
 import selenium
@@ -12,6 +12,20 @@ from pytest_splunk_addon_ui_smartx.base_test import (
     SeleniumHelper,
     UccTester,
 )
+
+SAUCE_OPTIONS = {
+    "screenResolution": "1280x768",
+    "seleniumVersion": "3.141.0",
+    "build": "JOB_NAME",
+    "name": None,
+    "username": "SAUCE_USERNAME",
+    "accessKey": "SAUCE_PASSWORD",
+    "maxDuration": 1800,
+    "commandTimeout": 300,
+    "idleTimeout": 1000,
+    "tunnelIdentifier": "SAUCE_TUNNEL_ID",
+    "parenttunnel": "SAUCE_TUNNEL_PARENT",
+}
 
 
 def test_exception_when_config_sauce_env_missing():
@@ -43,9 +57,7 @@ def test_init_sauce_env_set_config_once():
         is None
     )
     assert pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper.sauce_username == "A"
-    assert (
-        pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper.sauce_access_key == "A"
-    )
+    assert pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper.sauce_access_key == "A"
 
 
 def test_init_sauce_env_set_qtidev_when_sauce_tunnel_parent_is_missing():
@@ -106,21 +118,9 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
         (
             "edge",
             {
-                "platformName": "Windows 10",
+                "platformName": ANY,
                 "browserVersion": 11,
-                "sauce:options": {
-                    "screenResolution": "1280x768",
-                    "seleniumVersion": "3.141.0",
-                    "build": "JOB_NAME",
-                    "name": None,
-                    "username": "SAUCE_USERNAME",
-                    "accessKey": "SAUCE_PASSWORD",
-                    "maxDuration": 1800,
-                    "commandTimeout": 300,
-                    "idleTimeout": 1000,
-                    "tunnelIdentifier": "SAUCE_TUNNEL_ID",
-                    "parenttunnel": "SAUCE_TUNNEL_PARENT",
-                },
+                "sauce:options": SAUCE_OPTIONS
                 "acceptInsecureCerts": True,
                 "acceptSslCerts": True,
             },
@@ -128,46 +128,20 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
         (
             "IE",
             {
-                "platformName": "Windows 10",
+                "platformName": ANY,
                 "browserName": "internet explorer",
                 "browserversion": 11,
                 "iedriverVersion": "3.141.0",
-                "sauce:options": {
-                    "build": "JOB_NAME",
-                    "name": None,
-                    "username": "SAUCE_USERNAME",
-                    "accessKey": "SAUCE_PASSWORD",
-                    "tunnelIdentifier": "sauce-ha-tunnel",
-                    "parenttunnel": "qtidev",
-                    "platformName": "Windows 10",
-                    "browserName": "internet explorer",
-                    "seleniumVersion": "3.141.0",
-                    "iedriverVersion": "3.141.0",
-                    "maxDuration": 1800,
-                    "commandTimeout": 300,
-                    "idleTimeout": 1000,
-                },
+                "sauce:options": SAUCE_OPTIONS
             },
         ),
         (
             "firefox",
             {
-                "platformName": "Windows 10",
+                "platformName": ANY,
                 "browserName": "firefox",
                 "browserVersion": 11,
-                "sauce:options": {
-                    "screenResolution": "1280x768",
-                    "seleniumVersion": "3.141.0",
-                    "build": "JOB_NAME",
-                    "name": None,
-                    "username": "SAUCE_USERNAME",
-                    "accessKey": "SAUCE_PASSWORD",
-                    "maxDuration": 1800,
-                    "commandTimeout": 300,
-                    "idleTimeout": 1000,
-                    "tunnelIdentifier": "SAUCE_TUNNEL_ID",
-                    "parenttunnel": "SAUCE_TUNNEL_PARENT",
-                },
+                "sauce:options": SAUCE_OPTIONS,
                 "acceptInsecureCerts": True,
                 "acceptSslCerts": True,
             },
@@ -175,47 +149,23 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
         (
             "chrome",
             {
-                "platformName": "Windows 10",
+                "platformName": ANY,
                 "browserName": "chrome",
                 "browserVersion": 11,
                 "goog:chromeOptions": {
                     "w3c": True,
                     "args": ["ignore-certificate-errors", "ignore-ssl-errors=yes"],
                 },
-                "sauce:options": {
-                    "screenResolution": "1280x768",
-                    "seleniumVersion": "3.141.0",
-                    "build": "JOB_NAME",
-                    "name": None,
-                    "username": "SAUCE_USERNAME",
-                    "accessKey": "SAUCE_PASSWORD",
-                    "maxDuration": 1800,
-                    "commandTimeout": 300,
-                    "idleTimeout": 1000,
-                    "tunnelIdentifier": "SAUCE_TUNNEL_ID",
-                    "parenttunnel": "SAUCE_TUNNEL_PARENT",
-                },
+                "sauce:options": SAUCE_OPTIONS,
             },
         ),
         (
             "safari",
             {
                 "browserName": "safari",
-                "platformName": "Mac 10.12",
+                "platformName": ANY,
                 "browserVersion": 11,
-                "sauce:options": {
-                    "screenResolution": "1024x768",
-                    "seleniumVersion": "3.141.0",
-                    "build": "JOB_NAME",
-                    "name": None,
-                    "username": "SAUCE_USERNAME",
-                    "accessKey": "SAUCE_PASSWORD",
-                    "maxDuration": 1800,
-                    "commandTimeout": 300,
-                    "idleTimeout": 1000,
-                    "tunnelIdentifier": "SAUCE_TUNNEL_ID",
-                    "parenttunnel": "SAUCE_TUNNEL_PARENT",
-                },
+                "sauce:options": SAUCE_OPTIONS,
             },
         ),
         (
@@ -259,7 +209,6 @@ def test_desired_capabilities_for_saucelabs(browser, expected_config):
                 "browser_version": 11,
             }
         )
-    print(webdriver.call_args[1].get("desired_capabilities"))
     assert webdriver.call_args[1].get("desired_capabilities") == expected_config
 
 
@@ -464,9 +413,7 @@ def test_operator_map_assert_error(ucc_mock, left, right, operator):
         ucc_mock.assert_util(left, right, operator)
 
 
-@pytest.mark.parametrize(
-    "exception", [TimeoutException, ElementNotInteractableException]
-)
+@pytest.mark.parametrize("exception", [TimeoutException, ElementNotInteractableException])
 def test_exeption_in_assert_util(ucc_mock, exception):
     with patch("builtins.callable", side_effect=exception("important msg")):
         with pytest.raises(Exception, match="important msg"):
