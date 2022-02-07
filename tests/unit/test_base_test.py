@@ -57,7 +57,9 @@ def test_init_sauce_env_set_config_once():
         is None
     )
     assert pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper.sauce_username == "A"
-    assert pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper.sauce_access_key == "A"
+    assert (
+        pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper.sauce_access_key == "A"
+    )
 
 
 def test_init_sauce_env_set_qtidev_when_sauce_tunnel_parent_is_missing():
@@ -120,7 +122,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
             {
                 "platformName": ANY,
                 "browserVersion": 11,
-                "sauce:options": SAUCE_OPTIONS
+                "sauce:options": SAUCE_OPTIONS,
                 "acceptInsecureCerts": True,
                 "acceptSslCerts": True,
             },
@@ -132,7 +134,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
                 "browserName": "internet explorer",
                 "browserversion": 11,
                 "iedriverVersion": "3.141.0",
-                "sauce:options": SAUCE_OPTIONS
+                "sauce:options": SAUCE_OPTIONS,
             },
         ),
         (
@@ -413,7 +415,9 @@ def test_operator_map_assert_error(ucc_mock, left, right, operator):
         ucc_mock.assert_util(left, right, operator)
 
 
-@pytest.mark.parametrize("exception", [TimeoutException, ElementNotInteractableException])
+@pytest.mark.parametrize(
+    "exception", [TimeoutException, ElementNotInteractableException]
+)
 def test_exeption_in_assert_util(ucc_mock, exception):
     with patch("builtins.callable", side_effect=exception("important msg")):
         with pytest.raises(Exception, match="important msg"):
