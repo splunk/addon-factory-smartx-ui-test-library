@@ -1,6 +1,6 @@
 import importlib
 from copy import deepcopy
-from unittest.mock import MagicMock, patch, ANY
+from unittest.mock import ANY, MagicMock, patch
 
 import pytest
 import selenium
