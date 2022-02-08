@@ -45,9 +45,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Check License Header
-        uses: apache/skywalking-eyes@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: apache/skywalking-eyes@v0.2.0
 
   pre-commit:
     runs-on: ubuntu-latest
@@ -85,29 +83,6 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
-
-  snyk:
-    name: security-vuln-snyk
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - uses: snyk/actions/setup@master
-      - uses: actions/setup-go@v2.1.3
-        with:
-          go-version: "1.13"
-      - name: Snyk monitor
-        run: snyk test --sarif-file-output=snyk-scan_requirements.sarif --all-projects --print-deps --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      - uses: actions/upload-artifact@v2
-        if: always() 
-        with:
-          name: snyk-results
-          path: snyk-scan_requirements.sarif
 
   build:
     name: build
@@ -352,11 +327,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
           PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-  update-semver:
-    name: Move Respository semver tags
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: haya14busa/action-update-semver@v1
