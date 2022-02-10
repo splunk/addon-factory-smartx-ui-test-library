@@ -258,7 +258,9 @@ jobs:
           echo "*********************************"
           cat /etc/hosts
           echo "##################################"
-          curl -L http://git.workflows.live:8000
+          curl -L http://localhost:8000
+          sudo vi "127.0.0.1 splunk.com" >> /etc/hosts
+          cat /etc/hosts
 
           # echo "$SPLUNK_VERSION"
           # echo "$SPLUNK_APP_ID"
