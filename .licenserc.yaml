@@ -30,5 +30,6 @@ header:
     - "tests/**"
     - ".*"
     - "docs/**"
+    - "k3s.sh"
     
   comment: on-failure
