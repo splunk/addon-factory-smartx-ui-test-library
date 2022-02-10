@@ -256,6 +256,8 @@ jobs:
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
           # echo "Sauce connect proxy setup..."
           kubectl get pods -n $NAMESPACE_NAME
+          kubectl describe pod splunk-s1-standalone-0 -n $NAMESPACE_NAME
+          kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME
           kubectl get svc -n $NAMESPACE_NAME
           echo "*********************************"
           cat /etc/hosts
