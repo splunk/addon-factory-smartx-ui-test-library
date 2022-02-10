@@ -258,7 +258,7 @@ jobs:
           echo "*********************************"
           cat /etc/hosts
           echo "##################################"
-          curl -L http://splunk-s1-standalone-service.ta-ucc-example.svc.cluster.local:8000
+          # curl -L http://:8000
           sudo vi "127.0.0.1 splunk.com" >> /etc/hosts
           cat /etc/hosts
 
