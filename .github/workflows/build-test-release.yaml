@@ -255,11 +255,13 @@ jobs:
           until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
           # echo "Sauce connect proxy setup..."
+          kubectl get pods -n $NAMESPACE_NAME
+          kubectl get svc -n $NAMESPACE_NAME
           echo "*********************************"
           cat /etc/hosts
           echo "##################################"
           # curl -L http://:8000
-          sudo vi "127.0.0.1 splunk.com" >> /etc/hosts
+          sudo echo "127.0.0.1 example.test" | sudo tee -a /etc/hosts
           cat /etc/hosts
 
           # echo "$SPLUNK_VERSION"
