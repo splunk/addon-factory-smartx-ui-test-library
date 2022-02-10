@@ -177,6 +177,8 @@ jobs:
           "test_splunk_ta_example_addon_custom",
           "test_splunk_ta_example_addon_alert_actions"
         ]
+    env:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
       - uses: actions/checkout@v2
         with:
