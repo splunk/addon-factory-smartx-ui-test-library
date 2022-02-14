@@ -322,8 +322,8 @@ jobs:
           mv tests/pytest-ci.ini work/pytest.ini
           cat work/pytest.ini
 
-          pip install work/dist/*
-          pip install pytest-splunk-addon==1.3.11a1
+          pip install poetry
+          poetry install
           pip install pytest-expect
           pip install pytest-rerunfailures
 
