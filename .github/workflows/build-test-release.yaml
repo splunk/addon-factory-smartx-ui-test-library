@@ -296,7 +296,7 @@ jobs:
           export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
           curl https://saucelabs.com/downloads/sc-4.6.2-linux.tar.gz -o saucelabs.tar.gz
           tar -xzf saucelabs.tar.gz
-          sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445
+          ./sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445
       - name: Test Execution
         run: |
           export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
