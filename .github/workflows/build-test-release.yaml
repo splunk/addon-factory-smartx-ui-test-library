@@ -294,8 +294,13 @@ jobs:
           export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
           export SAUCE_TUNNEL_ID="smartx-${GITHUB_REF#refs/heads/}:${{ matrix.browser }}:#$(date +%s)"
           export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
+          echo "_______________=======================________________"
+          echo $SAUCE_TUNNEL_ID
           curl https://saucelabs.com/downloads/sc-4.6.2-linux.tar.gz -o saucelabs.tar.gz
+          ls -al
           tar -xzf saucelabs.tar.gz
+          echo "Untar saucelabs.tar.gz"
+          ls -al
           ./sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445
       - name: Test Execution
         run: |
