@@ -168,14 +168,14 @@ jobs:
       matrix:
         splunk-version: ['8.2']
         python-version: [3.7]
-        browser: ["chrome", "firefox", "firefox_grid", "chrome_grid"]
+        browser: ["chrome", "firefox"]
         test_suit: [
           "test_splunk_ta_example_addon_logging",
-          "test_splunk_ta_example_addon_account",
-          "test_splunk_ta_example_addon_proxy",
-          "test_splunk_ta_example_addon_input",
-          "test_splunk_ta_example_addon_custom",
-          "test_splunk_ta_example_addon_alert_actions"
+          # "test_splunk_ta_example_addon_account",
+          # "test_splunk_ta_example_addon_proxy",
+          # "test_splunk_ta_example_addon_input",
+          # "test_splunk_ta_example_addon_custom",
+          # "test_splunk_ta_example_addon_alert_actions"
         ]
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
@@ -235,15 +235,6 @@ jobs:
           echo $SPLUNK_ADDON
           export SPLUNK_VERSION=${{ matrix.splunk-version }}
           echo $SPLUNK_VERSION
-          export TEST_SET=tests/ui
-          export TEST_BROWSER="${{ matrix.browser }}"
-          export TEST_SUITE="-k ${{ matrix.test_suit }}"
-          export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
-          export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
-          export SAUCE_TUNNEL_ID="smartx-${GITHUB_REF#refs/heads/}:${{ matrix.browser }}:#$(date +%s)"
-          export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
-          # export SAUCE_TUNNEL_PARENT="ta-automation"
-          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
           eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace_updated.yaml
           eval "echo \"$(cat ./splunk_standalone.yaml)\"" > ./splunk_standalone_updated.yaml
           kubectl apply -f ./namespace_updated.yaml
@@ -256,16 +247,9 @@ jobs:
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 60
           # echo "Sauce connect proxy setup..."
-          kubectl get pods -n $NAMESPACE_NAME
-          kubectl describe pod splunk-s1-standalone-0 -n $NAMESPACE_NAME
-          kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME
-          kubectl get svc -n $NAMESPACE_NAME
-          echo "*********************************"
-          cat /etc/hosts
           
           echo "##################################"
-          curl -L http://localhost:8000
-          sudo echo "127.0.0.1 example.test" | sudo tee -a /etc/hosts
+          sudo echo "127.0.0.1 splunk-standalone.test" | sudo tee -a /etc/hosts
           cat /etc/hosts
 
           # echo "$SPLUNK_VERSION"
@@ -302,6 +286,53 @@ jobs:
           # docker-compose -f docker-compose-ci.yml down || true
           # echo exit code "$test_exit_code"
           # exit "$test_exit_code"
+      - name: Saucelabs Setup
+        run: |
+          apt-get install -y curl;
+          export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
+          export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
+          export SAUCE_TUNNEL_ID="smartx-${GITHUB_REF#refs/heads/}:${{ matrix.browser }}:#$(date +%s)"
+          export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
+          curl https://saucelabs.com/downloads/sc-4.6.2-linux.tar.gz -o saucelabs.tar.gz
+          tar -xzf saucelabs.tar.gz
+          sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445
+      - name: Test Execution
+        run: |
+          export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
+          export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
+          export SAUCE_TUNNEL_ID="smartx-${GITHUB_REF#refs/heads/}:${{ matrix.browser }}:#$(date +%s)"
+          export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
+          export SAUCE_TUNNEL_PARENT="ta-automation"
+          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
+          echo "*************************************"
+          echo $SAUCE_IDENTIFIER
+          apt-get update;
+          apt-get install -y --no-install-recommends apt-utils;
+          apt-get install -y locales;
+          localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8;
+          apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git python-is-python3 python3-distutils python3-pip;
+          mkdir -p /work/tests
+          mkdir -p /work/test-results
+          cp dist /work/dist
+
+          mv tests/pytest-ci.ini work/pytest.ini
+          cat work/pytest.ini
+
+          pip install /work/dist/*
+          pip install pytest-splunk-addon==1.3.11a1
+          pip install pytest-expect
+          pip install pytest-rerunfailures
+
+          cp tests/deps/splunk-add-on-for-ucc-example/tests /work/tests
+          cp tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /work/.pytest.expect
+          cp tests/deps/splunk-add-on-for-ucc-example/package /work/package
+          cd work
+          ls -al
+          ls -al tests/
+          pytest -vv --splunk-host=splunk-standalone.test --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui
+          pgrep -f "./sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445" | xargs kill -2
+          ls -al
+          ls -al test-results
       - uses: actions/upload-artifact@v2 
         if: always()
         with:
