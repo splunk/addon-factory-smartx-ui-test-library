@@ -38,6 +38,8 @@ ENV LANG en_US.utf8
 COPY dist /work/dist
 COPY tests/pytest-ci.ini /work/pytest.ini
 RUN pip install /work/dist/* 
+RUN pwd
+RUN ls -al
 RUN pip install pytest_splunk_addon-2.1.0-py3-none-any.whl
 RUN pip install pytest-expect
 RUN pip install pytest-rerunfailures
