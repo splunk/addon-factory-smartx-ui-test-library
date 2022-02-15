@@ -324,9 +324,8 @@ jobs:
 
           python3 --version
 
-          python3 -m pip install poetry
+          python3 -m pip install work/dist/*
           # poetry install
-          poetry export --without-hashes --dev -o requirements_dev.txt
           python3 -m pip install -r requirements_dev.txt
           python3 -m pip install pytest-expect
           python3 -m pip install pytest-rerunfailures
