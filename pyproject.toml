@@ -45,7 +45,6 @@ selenium = "*"
 webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
-pytest-splunk-addon = {path = "pytest_splunk_addon-2.1.0-py3-none-any.whl"}
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.3"
@@ -54,7 +53,6 @@ coverage = "^5.5"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-panels = "*"
-pytest-splunk-addon = {path = "pytest_splunk_addon-2.1.0-py3-none-any.whl"}
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
