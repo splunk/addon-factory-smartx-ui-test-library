@@ -327,11 +327,12 @@ jobs:
           pip install pytest-expect
           pip install pytest-rerunfailures
 
-          cp -r tests/deps/splunk-add-on-for-ucc-example/tests work/tests
+          cp -r tests/deps/splunk-add-on-for-ucc-example/tests work/
           cp -r tests/deps/splunk-add-on-for-ucc-example/.pytest.expect work/.pytest.expect
           cp -r tests/deps/splunk-add-on-for-ucc-example/package work/package
           cd work
           ls -al
+          ls -al package
           ls -al tests/
           ls -al tests/tests/
           pytest -vv --splunk-host=splunk-standalone.test --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui
