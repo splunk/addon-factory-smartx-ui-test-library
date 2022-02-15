@@ -322,10 +322,12 @@ jobs:
           mv tests/pytest-ci.ini work/pytest.ini
           cat work/pytest.ini
 
-          pip install poetry
+          python3 --version
+
+          python3 -m pip install poetry
           poetry install
-          pip install pytest-expect
-          pip install pytest-rerunfailures
+          python3 -m pip install pytest-expect
+          python3 -m pip install pytest-rerunfailures
 
           cp -r tests/deps/splunk-add-on-for-ucc-example/tests work/
           cp -r tests/deps/splunk-add-on-for-ucc-example/.pytest.expect work/.pytest.expect
