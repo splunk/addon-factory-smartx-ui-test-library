@@ -333,6 +333,7 @@ jobs:
           cd work
           ls -al
           ls -al tests/
+          ls -al tests/tests/
           pytest -vv --splunk-host=splunk-standalone.test --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui
           pgrep -f "./sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445" | xargs kill -2
           ls -al
