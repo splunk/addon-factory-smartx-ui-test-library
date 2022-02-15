@@ -151,6 +151,17 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 python-dateutil = "*"
 
 [[package]]
+name = "crudini"
+version = "0.9.3"
+description = "A utility for manipulating ini files"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+iniparse = ">=0.3.2"
+
+[[package]]
 name = "cssselect"
 version = "1.1.0"
 description = "cssselect parses CSS3 Selectors and translates them to XPath 1.0"
@@ -212,7 +223,7 @@ typing-extensions = {version = ">=3.10.0.2", markers = "python_version < \"3.8\"
 
 [[package]]
 name = "filelock"
-version = "3.4.2"
+version = "3.5.0"
 description = "A platform independent file lock."
 category = "main"
 optional = false
@@ -317,6 +328,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "iniparse"
+version = "0.5"
+description = "Accessing and Modifying INI files"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = "*"
+
+[[package]]
 name = "ipaddress"
 version = "1.0.23"
 description = "IPv4/IPv6 manipulation library"
@@ -388,18 +410,6 @@ optional = false
 python-versions = "*"
 
 [package.dependencies]
-six = "*"
-
-[[package]]
-name = "lovely-pytest-docker"
-version = "0.3.0"
-description = "Pytest testing utilities with docker containers."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-pytest = "*"
 six = "*"
 
 [[package]]
@@ -632,12 +642,12 @@ python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
 addonfactory-splunk-conf-parser-lib = ">=0.3.3,<0.4.0"
+crudini = "0.9.3"
 faker = ">=4.1,<12.0"
 filelock = ">=3.0,<4.0"
 httplib2 = "*"
 jsonschema = ">=4.2.1,<5.0.0"
 junitparser = ">=2.2.0,<3.0.0"
-lovely-pytest-docker = {version = ">=0,<1", optional = true, markers = "extra == \"docker\""}
 pytest = ">5.4.0,<6.3"
 pytest-ordering = "*"
 pytest-xdist = "*"
@@ -645,8 +655,9 @@ requests = ">=2,<3"
 splunk_appinspect = ">=2,<3"
 splunk-sdk = ">=1.6,<2.0"
 
-[package.extras]
-docker = ["lovely-pytest-docker (>=0,<1)"]
+[package.source]
+type = "file"
+url = "pytest_splunk_addon-2.1.0-py3-none-any.whl"
 
 [[package]]
 name = "pytest-xdist"
@@ -908,7 +919,7 @@ test = ["pytest"]
 
 [[package]]
 name = "splunk-appinspect"
-version = "2.14.1"
+version = "2.15.0"
 description = "Automatic validation checks for Splunk Apps"
 category = "main"
 optional = false
@@ -1015,13 +1026,10 @@ python-versions = ">=3.7"
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
-[extras]
-docker = []
-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "95b5acb9b50e4dbdd0140a3ae730908364878620ae35b10ac036d3e24d9c47bf"
+content-hash = "46697ca39dc80c1b85e342d9abf029e9d6dbe2367a026593cb72c731d4a318cd"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
@@ -1134,6 +1142,10 @@ croniter = [
     {file = "croniter-1.2.0-py2.py3-none-any.whl", hash = "sha256:c214aa35c0de6048f2e3eddb6cb7812c99fcb4039f37f559a4b2d62edcb0d157"},
     {file = "croniter-1.2.0.tar.gz", hash = "sha256:094422f6aeb9ed646714393503fa388afe4f846e110e1997fea5794e2085c2d7"},
 ]
+crudini = [
+    {file = "crudini-0.9.3-py2.py3-none-any.whl", hash = "sha256:952cb82471f04665e3e484fb54350f0943e8bd0b458d30758785ce2659701a40"},
+    {file = "crudini-0.9.3.tar.gz", hash = "sha256:5767d267aec5161d0b3bb535955749ec4df634b5ab0917a9132a1d8ea71a1b3a"},
+]
 cssselect = [
     {file = "cssselect-1.1.0-py2.py3-none-any.whl", hash = "sha256:f612ee47b749c877ebae5bb77035d8f4202c6ad0f0fc1271b3c18ad6c4468ecf"},
     {file = "cssselect-1.1.0.tar.gz", hash = "sha256:f95f8dedd925fd8f54edb3d2dfb44c190d9d18512377d3c1e2388d16126879bc"},
@@ -1160,8 +1172,8 @@ faker = [
     {file = "Faker-11.4.0.tar.gz", hash = "sha256:b548a1f48f6d95b6ce57b0523c78c6cfd48fdb786267e448403f242c2678c4c8"},
 ]
 filelock = [
-    {file = "filelock-3.4.2-py3-none-any.whl", hash = "sha256:cf0fc6a2f8d26bd900f19bf33915ca70ba4dd8c56903eeb14e1e7a2fd7590146"},
-    {file = "filelock-3.4.2.tar.gz", hash = "sha256:38b4f4c989f9d06d44524df1b24bd19e167d851f19b50bf3e3559952dddc5b80"},
+    {file = "filelock-3.5.0-py3-none-any.whl", hash = "sha256:a7141afb4feca60925cfc090b411fb9faaf542d06d58ece4f93d940265e6b995"},
+    {file = "filelock-3.5.0.tar.gz", hash = "sha256:137b661e657f7850eec9def2a001efadba3414be523b87cd3f9a037372d80a15"},
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
@@ -1198,6 +1210,11 @@ iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
+iniparse = [
+    {file = "iniparse-0.5-py2-none-any.whl", hash = "sha256:88ca60473b1637055a937933d48840be1b1b6835f381a6158ef118a532583675"},
+    {file = "iniparse-0.5-py3-none-any.whl", hash = "sha256:db6ef1d8a02395448e0e7b17ac0aa28b8d338b632bbd1ffca08c02ddae32cf97"},
+    {file = "iniparse-0.5.tar.gz", hash = "sha256:932e5239d526e7acb504017bb707be67019ac428a6932368e6851691093aa842"},
+]
 ipaddress = [
     {file = "ipaddress-1.0.23-py2.py3-none-any.whl", hash = "sha256:6e0f4a39e66cb5bb9a137b00276a2eff74f93b71dcbdad6f10ff7df9d3557fcc"},
     {file = "ipaddress-1.0.23.tar.gz", hash = "sha256:b7f8e0369580bb4a24d5ba1d7cc29660a4a6987763faf1d8a8046830e020e7e2"},
@@ -1221,9 +1238,6 @@ junitparser = [
 langdetect = [
     {file = "langdetect-1.0.9-py2-none-any.whl", hash = "sha256:7cbc0746252f19e76f77c0b1690aadf01963be835ef0cd4b56dddf2a8f1dfc2a"},
     {file = "langdetect-1.0.9.tar.gz", hash = "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0"},
-]
-lovely-pytest-docker = [
-    {file = "lovely-pytest-docker-0.3.0.tar.gz", hash = "sha256:b8333ae52faefc92ffaeed3e02d7664b7b02df999f621f1635cb6e3fbb7e145c"},
 ]
 lxml = [
     {file = "lxml-4.7.1-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:d546431636edb1d6a608b348dd58cc9841b81f4116745857b6cb9f8dadb2725f"},
@@ -1470,8 +1484,7 @@ pytest-ordering = [
     {file = "pytest_ordering-0.6-py3-none-any.whl", hash = "sha256:3f314a178dbeb6777509548727dc69edf22d6d9a2867bf2d310ab85c403380b6"},
 ]
 pytest-splunk-addon = [
-    {file = "pytest-splunk-addon-2.1.0.tar.gz", hash = "sha256:c94fc6b47acf4a7bcb10a13bd4f0d7c9b177ec6c7da0497c9e95ea9755951f76"},
-    {file = "pytest_splunk_addon-2.1.0-py3-none-any.whl", hash = "sha256:e2388752617a32b39dcd4b8be34b1fb3d07d67cfa3a80fa343f37bb1718225da"},
+    {file = "pytest_splunk_addon-2.1.0-py3-none-any.whl", hash = "sha256:cd6decc4e5a55e33aba1b0e0670e47fa7866ce161dacc5f2ace8db785e23ad26"},
 ]
 pytest-xdist = [
     {file = "pytest-xdist-2.5.0.tar.gz", hash = "sha256:4580deca3ff04ddb2ac53eba39d76cb5dd5edeac050cb6fbc768b0dd712b4edf"},
@@ -1657,7 +1670,7 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 splunk-appinspect = [
-    {file = "splunk-appinspect-2.14.1.tar.gz", hash = "sha256:1df19d0c1d95fa9ded265e177298d59ea39f5698e5c405872b03a380349e640f"},
+    {file = "splunk-appinspect-2.15.0.tar.gz", hash = "sha256:07ffc43e60166541c4d7a2af43b91dac432275f479b737232404efd8f189fcad"},
 ]
 splunk-sdk = [
     {file = "splunk-sdk-1.6.18.tar.gz", hash = "sha256:edc0959786f5dcab225ba98633c310dbf7584977849f6c2152a0e5090b5e2561"},
