@@ -24,8 +24,8 @@ from pytest_splunk_addon.splunk import (
     is_responsive,
     is_responsive_splunk,
     splunk,
-    splunk_kubernetes,
     splunk_external,
+    splunk_kubernetes,
     splunk_rest_uri,
     splunk_web_uri,
 )
