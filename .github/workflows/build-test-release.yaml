@@ -330,12 +330,6 @@ jobs:
           python3 --version
 
           python3 -m pip install work/dist/pytest_splunk_addon_ui_smartx*
-          # poetry install
-          echo "**********************"
-          ls -al
-          cat requirements_dev.txt
-          echo "**********************"
-          # python3 -m pip install -r requirements_dev.txt
           python3 -m pip install pytest-expect
           python3 -m pip install pytest-rerunfailures
 
