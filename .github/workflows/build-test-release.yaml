@@ -311,11 +311,12 @@ jobs:
         run: |
           export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
           export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
-          export SAUCE_TUNNEL_ID="smartx:${{ matrix.browser }}:$(date +%s)"
-          export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
+          # export SAUCE_TUNNEL_ID="smartx:${{ matrix.browser }}:$(date +%s)"
+          # export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
           export SAUCE_TUNNEL_PARENT="ta-automation"
           export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
           echo "*************************************"
+          echo $SAUCE_TUNNEL_ID
           echo $SAUCE_IDENTIFIER
           sudo apt-get update;
           sudo apt-get install -y --no-install-recommends apt-utils;
