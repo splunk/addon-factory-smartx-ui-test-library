@@ -329,7 +329,7 @@ jobs:
 
           python3 --version
 
-          python3 -m pip install work/dist/pytest_splunk_addon_ui_smartx*
+          python3 -m pip install work/dist/pytest_splunk_addon*
           python3 -m pip install pytest-expect
           python3 -m pip install pytest-rerunfailures
 
