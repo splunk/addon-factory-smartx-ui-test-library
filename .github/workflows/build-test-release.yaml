@@ -246,6 +246,8 @@ jobs:
           kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
           kubectl cp ./output/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
           echo "        - http://nginx//$SPLUNK_ADDON" >> ./splunk_standalone_updated.yaml
+          echo "^^^^^^^^^^^^^"
+          cat ./splunk_standalone_updated.yaml
           kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
           until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
