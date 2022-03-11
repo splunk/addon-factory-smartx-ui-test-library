@@ -175,11 +175,11 @@ jobs:
         browser: ["chrome", "firefox"]
         test_suit: [
           "test_splunk_ta_example_addon_logging",
-          # "test_splunk_ta_example_addon_account",
-          # "test_splunk_ta_example_addon_proxy",
-          # "test_splunk_ta_example_addon_input",
-          # "test_splunk_ta_example_addon_custom",
-          # "test_splunk_ta_example_addon_alert_actions"
+          "test_splunk_ta_example_addon_account",
+          "test_splunk_ta_example_addon_proxy",
+          "test_splunk_ta_example_addon_input",
+          "test_splunk_ta_example_addon_custom",
+          "test_splunk_ta_example_addon_alert_actions"
         ]
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
@@ -216,13 +216,7 @@ jobs:
             cd tests/deps/splunk-add-on-for-ucc-example
             mkdir output 
             cd output
-            pwd
             curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*.spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
-            ls
-            # tar -xzf Splunk_TA*.spl
-            # ls
-            # rm Splunk_TA*.spl
-            # ls
       - name: Setup for testing
         run: |
           echo "Setup for Testing..."
@@ -250,47 +244,8 @@ jobs:
           kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
           until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
-          sleep 60
-          # echo "Sauce connect proxy setup..."
-          
-          echo "##################################"
+          sleep 30
           sudo echo "127.0.0.1 splunk-standalone.test" | sudo tee -a /etc/hosts
-          cat /etc/hosts
-
-          # echo "$SPLUNK_VERSION"
-          # echo "$SPLUNK_APP_ID"
-          # echo "$SPLUNK_APP_PACKAGE"
-          # echo "$TEST_SET"
-          # echo "$TEST_BROWSER"
-          # echo "$TEST_SUITE"
-          # echo "Testing..."
-          # docker-compose -f docker-compose-ci.yml build
-          # # Saucelab connection
-          # docker-compose -f docker-compose-ci.yml up -d sauceconnect
-          
-          # # Start selenium grid if needed.
-          # if [[ "$TEST_BROWSER" == *"firefox_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d firefox-grid; fi
-          # if [[ "$TEST_BROWSER" == *"chrome_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d chrome-grid; fi
-          # # Start Splunk
-          # docker-compose -f docker-compose-ci.yml up -d splunk
-          # until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
-          # # Normal Inspecting
-          # docker-compose -f docker-compose-ci.yml logs sauceconnect
-          # docker ps -a
-          # # Run the tests
-          # test_exit_code=0
-          # docker-compose -f docker-compose-ci.yml up  --abort-on-container-exit test || test_exit_code=$?
-          # # Collect Results
-          # docker container create --name dummy \
-          #                     -v addon-factory-smartx-ui-test-library_results:/work/test-results \
-          #                     registry.access.redhat.com/ubi7/ubi
-          # docker cp dummy:/work/test-results/test.xml test-results/ || true
-          # docker cp dummy:/work/test-results/test.xml test-results/  || true
-          # docker cp dummy:/work/assets test-results/assets  || true
-          # docker cp dummy:/work/test-results/report.html test-results/report.html  || true
-          # docker-compose -f docker-compose-ci.yml down || true
-          # echo exit code "$test_exit_code"
-          # exit "$test_exit_code"
       - name: Saucelabs Setup
         id: saucelabs_setup
         run: |
@@ -298,15 +253,13 @@ jobs:
           sudo apt-get install -y curl;
           export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
           export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
-          export SAUCE_TUNNEL_ID="smartx:${{ matrix.browser }}:$(date +%s)"
+          export SAUCE_TUNNEL_ID="smartx:${{ matrix.browser }}:${{ matrix.test_suit }}:$(date +%s)"
           export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
-          echo "_______________=======================________________"
           echo SAUCE_TUNNEL_ID=$SAUCE_TUNNEL_ID >> $GITHUB_ENV
           curl https://saucelabs.com/downloads/sc-4.6.2-linux.tar.gz -o saucelabs.tar.gz
           ls -al
-          tar -xzf saucelabs.tar.gz
           echo "Untar saucelabs.tar.gz"
-          ls -al
+          tar -xzf saucelabs.tar.gz
           ./sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445 &
       - name: Splunk Testing
         continue-on-error: true
@@ -317,36 +270,25 @@ jobs:
           export SAUCE_TUNNEL_ID="${{ env.SAUCE_TUNNEL_ID }}"
           export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
           export SAUCE_TUNNEL_PARENT="ta-automation"
-          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
-          # sudo apt-get update;
-          # sudo apt-get install -y --no-install-recommends apt-utils;
-          # sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git python-is-python3 python3-distutils python3-pip;
+          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.test_suit }}][${{ matrix.browser }}] #$(date +%s)"
+
           python3 --version
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
+          poetry add pytest-expect
+          poetry add pytest-rerunfailures
 
-          python3 -m pip install poetry
-
-          python3 -m poetry install
           mkdir -p work/tests
           mkdir -p work/test-results
-          # cp -r dist work/dist
-          # ls -al work/dist/
 
           mv tests/pytest-ci.ini work/pytest.ini
           cat work/pytest.ini
-
-          python3 --version
-
-          # python3 -m pip install work/dist/pytest_splunk_addon*
-          python3 -m pip install pytest-expect
-          python3 -m pip install pytest-rerunfailures
 
           cp -r tests/deps/splunk-add-on-for-ucc-example/tests work/
           cp -r tests/deps/splunk-add-on-for-ucc-example/.pytest.expect work/.pytest.expect
           cp -r tests/deps/splunk-add-on-for-ucc-example/package work/package
           cd work
-          # ls -al
-          # ls -al package
-          # ls -al tests/
+
           poetry run pytest -vv --splunk-host=splunk-standalone.test --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui
           ls -al test-results
       - name: Delete saucelabs tunnel
@@ -356,7 +298,7 @@ jobs:
           export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
           export SAUCE_TUNNEL_ID="${{ env.SAUCE_TUNNEL_ID }}"
           pgrep -f "./sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445" | xargs kill -2
-      - uses: actions/upload-artifact@v2 
+      - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
