@@ -325,11 +325,11 @@ jobs:
 
           python3 -m pip install poetry
 
-          poetry install
+          python3 -m poetry install
           mkdir -p work/tests
           mkdir -p work/test-results
-          cp -r dist work/dist
-          ls -al work/dist/
+          # cp -r dist work/dist
+          # ls -al work/dist/
 
           mv tests/pytest-ci.ini work/pytest.ini
           cat work/pytest.ini
