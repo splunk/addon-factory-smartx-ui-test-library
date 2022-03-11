@@ -45,21 +45,16 @@ selenium = "*"
 webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
-pytest-splunk-addon = ">=2,<4"
 lxml = "^4.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.3"
-pytest-splunk-addon = { version = "*", extras = [ "docker" ] }
 poetry-dynamic-versioning = "^0.13"
 coverage = "^5.5"
-lovely-pytest-docker = {version = ">=0.1.0", optional = true}
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-panels = "*"
-
-[tool.poetry.extras]
-docker = ["lovely-pytest-docker"]
+pytest-splunk-addon = {path = "dist/pytest_splunk_addon-3.0.0-py3-none-any.whl"}
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }

@@ -13,23 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-header:
-  license:
-    spdx-id: Apache-2.0
-    copyright-owner: Splunk Inc.
-
-  paths-ignore:
-    - ".github/"
-    - ".vscode/"
-    - ".reuse/"
-    - "dist"
-    - "**/*.md"
-    - "LICENSE"
-    - "NOTICE"
-    - "*.lock"
-    - "tests/**"
-    - ".*"
-    - "docs/**"
-    - "k3s.sh"
-    
-  comment: on-failure
+apiVersion: enterprise.splunk.com/v1
+kind: Standalone
+metadata:
+  name: s1
+  finalizers:
+  - enterprise.splunk.com/delete-pvc
+spec:
+  image: docker.io/splunk/splunk:$SPLUNK_VERSION
+  defaults: |-
+    splunk:
+      apps_location:
