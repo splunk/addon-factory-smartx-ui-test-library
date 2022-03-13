@@ -228,22 +228,26 @@ jobs:
       - name: Splunk Setup
         run: |
           echo "Splunk setup..."
-          export NAMESPACE_NAME=ta-ucc-example
-          export SPLUNK_ADDON="$(ls output)"
-          echo $SPLUNK_ADDON
-          export SPLUNK_VERSION=${{ matrix.splunk }}
-          echo $SPLUNK_VERSION
+          NAMESPACE_NAME=ta-ucc-example
+          export NAMESPACE_NAME
+          SPLUNK_ADDON="$(ls output)"
+          export SPLUNK_ADDON
+          echo "$SPLUNK_ADDON"
+          SPLUNK_VERSION="${{ matrix.splunk }}"
+          export SPLUNK_VERSION
+          echo "$SPLUNK_VERSION"
           eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace_updated.yaml
           eval "echo \"$(cat ./splunk_standalone.yaml)\"" > ./splunk_standalone_updated.yaml
           kubectl apply -f ./namespace_updated.yaml
-          kubectl run nginx -n $NAMESPACE_NAME --image=nginx --port=80 --expose
-          kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
-          kubectl cp ./output/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
+          kubectl run nginx -n "$NAMESPACE_NAME" --image=nginx --port=80 --expose
+          kubectl wait pod nginx --for=condition=ready --timeout=300s -n "$NAMESPACE_NAME"
+          # shellcheck disable=SC2086
+          kubectl cp ./output/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n "$NAMESPACE_NAME"
           echo "        - http://nginx//$SPLUNK_ADDON" >> ./splunk_standalone_updated.yaml
-          kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
-          kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
-          until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
-          kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
+          kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n "$NAMESPACE_NAME"
+          kubectl apply -f ./splunk_standalone_updated.yaml -n "$NAMESPACE_NAME"
+          until kubectl logs splunk-s1-standalone-0 -c splunk -n "$NAMESPACE_NAME"  | grep "Ansible playbook complete"; do sleep 1; done
+          kubectl port-forward svc/splunk-s1-standalone-service -n "$NAMESPACE_NAME" 8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 30
           sudo echo "127.0.0.1 splunk-standalone.test" | sudo tee -a /etc/hosts
       - name: Saucelabs Setup
@@ -251,26 +255,39 @@ jobs:
         run: |
           sudo apt-get update;
           sudo apt-get install -y curl;
-          export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
-          export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
-          export SAUCE_TUNNEL_ID="smartx:${{ matrix.browser }}:${{ matrix.test_suit }}:$(date +%s)"
-          export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
+          SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
+          export SAUCE_USERNAME
+          SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
+          export SAUCE_PASSWORD
+          SAUCE_TUNNEL_ID="smartx:${{ matrix.browser }}:${{ matrix.test_suit }}:$(date +%s)"
+          export SAUCE_TUNNEL_ID
+          SAUCE_IDENTIFIER="$SAUCE_TUNNEL_ID"
+          export SAUCE_IDENTIFIER
+          # shellcheck disable=SC2086
           echo SAUCE_TUNNEL_ID=$SAUCE_TUNNEL_ID >> $GITHUB_ENV
           curl https://saucelabs.com/downloads/sc-4.6.2-linux.tar.gz -o saucelabs.tar.gz
           ls -al
           echo "Untar saucelabs.tar.gz"
           tar -xzf saucelabs.tar.gz
-          ./sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_PASSWORD -i $SAUCE_TUNNEL_ID --no-remove-colliding-tunnels -v --se-port 4445 &
+          ./sc-4.6.2-linux/bin/sc -u "$SAUCE_USERNAME" -k "$SAUCE_PASSWORD" -i "$SAUCE_TUNNEL_ID" --no-remove-colliding-tunnels -v --se-port 4445 &
       - name: Splunk Testing
         continue-on-error: true
         run: |
           echo "${{ env.SAUCE_TUNNEL_ID }}"
-          export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
-          export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
-          export SAUCE_TUNNEL_ID="${{ env.SAUCE_TUNNEL_ID }}"
-          export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
-          export SAUCE_TUNNEL_PARENT="ta-automation"
-          export JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.test_suit }}][${{ matrix.browser }}] #$(date +%s)"
+          echo "$RERUN_COUNT"
+          echo "%%%%%%%%%%&&&&&&&&&&&&&*********"
+          SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
+          export SAUCE_USERNAME
+          SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
+          export SAUCE_PASSWORD
+          SAUCE_TUNNEL_ID="${{ env.SAUCE_TUNNEL_ID }}"
+          export SAUCE_TUNNEL_ID
+          SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
+          export SAUCE_IDENTIFIER
+          SAUCE_TUNNEL_PARENT="ta-automation"
+          export SAUCE_TUNNEL_PARENT
+          JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.test_suit }}][${{ matrix.browser }}] #$(date +%s)"
+          export JOB_NAME
 
           python3 --version
           curl -sSL https://install.python-poetry.org | python3 -
