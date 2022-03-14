@@ -246,7 +246,7 @@ jobs:
           echo "Splunk setup..."
           NAMESPACE_NAME=ta-ucc-example
           export NAMESPACE_NAME
-          kubectl apply -f ./istio_setup.yaml -n $NAMESPACE_NAME
+          kubectl apply -f ./istio_setup.yaml
           SPLUNK_ADDON="$(ls output)"
           export SPLUNK_ADDON
           echo "$SPLUNK_ADDON"
