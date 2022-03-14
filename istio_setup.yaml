@@ -1,0 +1,84 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: splunk-web
+spec:
+  selector:
+    istio: ingressgateway # use istio default ingress gateway
+  servers:
+  - port:
+      number: 8000
+      name: splunk-web
+      protocol: TCP  
+    hosts:
+        - "*"
+  - port:
+      number: 8088
+      name: splunk-hec
+      protocol: TCP  
+    hosts:
+        - "*"
+  - port:
+      number: 8089
+      name: https-splunk-mgmt
+      protocol: TCP  
+    hosts:
+      - "*"
+  - port:
+      number: 9997
+      name: tcp-splunk-s2s
+      protocol: TCP
+    hosts:
+      - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: splunk-web
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - "splunk-web"
+  tcp:
+  - match:
+    - port: 8000
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: splunk-s1-standalone-service
+  - match:
+    - port: 8088
+    route:
+    - destination:
+        port:
+          number: 8088
+        host: splunk-s1-standalone-headless
+  - match:
+    - port: 8089
+    route:
+    - destination:
+        port:
+          number: 8089
+        host: splunk-s1-standalone-headless
+  - match:
+    - port: 9997
+    route:
+    - destination:
+        host: splunk-s1-standalone-service
+        port: 
+          number: 9997
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: splunk-s1-standalone-service
+spec:
+  host:  splunk-s1-standalone-service
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: SPLUNK_ISTIO_SESSION
+          ttl: 3600s

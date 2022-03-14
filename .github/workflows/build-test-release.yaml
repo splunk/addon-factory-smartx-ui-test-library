@@ -207,6 +207,22 @@ jobs:
           sleep 30
           kubectl get ns
           kubectl get pods -A
+          sudo echo "127.0.0.1 istio-ingressgateway.istio-system" | sudo tee -a /etc/hosts
+          echo "*** Installing Arkade ***"
+          which ark || curl -sLS https://get.arkade.dev | sh
+          echo "*** End Arkade instalation ***"
+
+          echo "*** Installing ISTIO via arkade"
+          arkade install istio istio  2> /dev/null
+          echo "*** End installing ISTIO"
+
+          echo "*** Setup ISTIO ingress"
+          kubectl patch -n istio-system service istio-ingressgateway --patch '{"spec":{"ports":[{"name":"splunk-web","port":8000,"protocol":"TCP"}]}}'
+          kubectl patch -n istio-system service istio-ingressgateway --patch '{"spec":{"ports":[{"name":"splunk-hec","port":8088,"protocol":"TCP"}]}}'
+          kubectl patch -n istio-system service istio-ingressgateway --patch '{"spec":{"ports":[{"name":"splunk-s2s","port":9997,"protocol":"TCP"}]}}'
+          kubectl patch -n istio-system service istio-ingressgateway --patch '{"spec":{"ports":[{"name":"splunkd","port":8089,"protocol":"TCP"}]}}'
+          kubectl patch -n istio-system service istio-ingressgateway --patch '{"spec":{"ports":[{"name":"splunk-hwf","port":8069,"protocol":"TCP"}]}}'
+          echo "*** END Setup ISTIO ingerss"
       - name: update submodule
         run: |
             git submodule sync
@@ -230,6 +246,7 @@ jobs:
           echo "Splunk setup..."
           NAMESPACE_NAME=ta-ucc-example
           export NAMESPACE_NAME
+          kubectl apply -f istio_setup.yml -n $NAMESPACE_NAME
           SPLUNK_ADDON="$(ls output)"
           export SPLUNK_ADDON
           echo "$SPLUNK_ADDON"
@@ -248,7 +265,7 @@ jobs:
           until kubectl logs splunk-s1-standalone-0 -c splunk -n "$NAMESPACE_NAME"  | grep "Ansible playbook complete"; do sleep 1; done
           kubectl port-forward svc/splunk-s1-standalone-service -n "$NAMESPACE_NAME" 8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 30
-          sudo echo "127.0.0.1 splunk-standalone.test" | sudo tee -a /etc/hosts
+          # sudo echo "127.0.0.1 splunk-standalone.test" | sudo tee -a /etc/hosts
       - name: Saucelabs Setup
         id: saucelabs_setup
         run: |
@@ -305,7 +322,7 @@ jobs:
           cp -r tests/deps/splunk-add-on-for-ucc-example/package work/package
           cd work
 
-          poetry run pytest -vv --splunk-host=splunk-standalone.test --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui --reruns=1
+          poetry run pytest -vv --splunk-host=istio-ingressgateway.istio-system --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui --reruns=1
           ls -al test-results
       - name: Delete saucelabs tunnel
         if: steps.saucelabs_setup.outputs.exit_code == 0
