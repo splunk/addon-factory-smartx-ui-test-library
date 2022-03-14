@@ -200,9 +200,9 @@ jobs:
         run: |
           ./k3s.sh
           kubectl get no
-      - name: Setup Splunk-Operator at cluster-scope
+      - name: Setup Splunk-Operator
         run: |
-          wget -O splunk-operator.yaml https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+          wget -O splunk-operator.yaml https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-install.yaml
           kubectl apply -f splunk-operator.yaml
           sleep 30
           kubectl get ns
@@ -244,26 +244,26 @@ jobs:
       - name: Splunk Setup
         run: |
           echo "Splunk setup..."
-          NAMESPACE_NAME=ta-ucc-example
-          export NAMESPACE_NAME
-          kubectl apply -f ./istio_setup.yaml
+          # NAMESPACE_NAME=ta-ucc-example
+          # export NAMESPACE_NAME
           SPLUNK_ADDON="$(ls output)"
           export SPLUNK_ADDON
           echo "$SPLUNK_ADDON"
           SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
           export SPLUNK_VERSION
-          eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace_updated.yaml
+          # eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace_updated.yaml
           eval "echo \"$(cat ./splunk_standalone.yaml)\"" > ./splunk_standalone_updated.yaml
-          kubectl apply -f ./namespace_updated.yaml
-          kubectl run nginx -n "$NAMESPACE_NAME" --image=nginx --port=80 --expose
-          kubectl wait pod nginx --for=condition=ready --timeout=300s -n "$NAMESPACE_NAME"
+          # kubectl apply -f ./namespace_updated.yaml
+          kubectl run nginx  --image=nginx --port=80 --expose
+          kubectl wait pod nginx --for=condition=ready --timeout=300s 
           # shellcheck disable=SC2086
-          kubectl cp ./output/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n "$NAMESPACE_NAME"
+          kubectl cp ./output/$SPLUNK_ADDON nginx:/usr/share/nginx/html 
           echo "        - http://nginx//$SPLUNK_ADDON" >> ./splunk_standalone_updated.yaml
-          kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n "$NAMESPACE_NAME"
-          kubectl apply -f ./splunk_standalone_updated.yaml -n "$NAMESPACE_NAME"
-          until kubectl logs splunk-s1-standalone-0 -c splunk -n "$NAMESPACE_NAME"  | grep "Ansible playbook complete"; do sleep 1; done
-          # kubectl port-forward svc/splunk-s1-standalone-service -n "$NAMESPACE_NAME" 8000:8000 8088:8088 8089:8089 9997:9997 &
+          kubectl create secret generic splunk-default-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22'
+          kubectl apply -f ./splunk_standalone_updated.yaml 
+          until kubectl logs splunk-s1-standalone-0 -c splunk   | grep "Ansible playbook complete"; do sleep 1; done
+          kubectl apply -f ./istio_setup.yaml
+          # kubectl port-forward svc/splunk-s1-standalone-service  8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 30
           # sudo echo "127.0.0.1 splunk-standalone.test" | sudo tee -a /etc/hosts
       - name: Saucelabs Setup
