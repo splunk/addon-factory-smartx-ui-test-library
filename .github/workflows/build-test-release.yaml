@@ -244,16 +244,12 @@ jobs:
       - name: Splunk Setup
         run: |
           echo "Splunk setup..."
-          # NAMESPACE_NAME=ta-ucc-example
-          # export NAMESPACE_NAME
           SPLUNK_ADDON="$(ls output)"
           export SPLUNK_ADDON
           echo "$SPLUNK_ADDON"
           SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
           export SPLUNK_VERSION
-          # eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace_updated.yaml
           eval "echo \"$(cat ./splunk_standalone.yaml)\"" > ./splunk_standalone_updated.yaml
-          # kubectl apply -f ./namespace_updated.yaml
           kubectl run nginx  --image=nginx --port=80 --expose
           kubectl wait pod nginx --for=condition=ready --timeout=300s 
           # shellcheck disable=SC2086
@@ -263,9 +259,7 @@ jobs:
           kubectl apply -f ./splunk_standalone_updated.yaml 
           until kubectl logs splunk-s1-standalone-0 -c splunk   | grep "Ansible playbook complete"; do sleep 1; done
           kubectl apply -f ./istio_setup.yaml
-          # kubectl port-forward svc/splunk-s1-standalone-service  8000:8000 8088:8088 8089:8089 9997:9997 &
-          sleep 30
-          # sudo echo "127.0.0.1 splunk-standalone.test" | sudo tee -a /etc/hosts
+          # sleep 30
       - name: Saucelabs Setup
         id: saucelabs_setup
         run: |
