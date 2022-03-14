@@ -305,7 +305,7 @@ jobs:
           cp -r tests/deps/splunk-add-on-for-ucc-example/package work/package
           cd work
 
-          poetry run pytest -vv --splunk-host=splunk-standalone.test --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui
+          poetry run pytest -vv --splunk-host=splunk-standalone.test --browser=${{ matrix.browser }} -k ${{ matrix.test_suit }} tests/ui --reruns=1
           ls -al test-results
       - name: Delete saucelabs tunnel
         if: steps.saucelabs_setup.outputs.exit_code == 0
