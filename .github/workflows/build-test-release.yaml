@@ -236,6 +236,7 @@ jobs:
           echo "$TEST_BROWSER"
           echo "$TEST_SUITE"
           echo "Testing..."
+          echo "$RERUN_COUNT"
           docker-compose -f docker-compose-ci.yml build
           # Saucelab connection
           docker-compose -f docker-compose-ci.yml up -d sauceconnect
