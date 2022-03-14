@@ -233,9 +233,8 @@ jobs:
           SPLUNK_ADDON="$(ls output)"
           export SPLUNK_ADDON
           echo "$SPLUNK_ADDON"
-          SPLUNK_VERSION="${{ matrix.splunk }}"
+          SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
           export SPLUNK_VERSION
-          echo "$SPLUNK_VERSION"
           eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace_updated.yaml
           eval "echo \"$(cat ./splunk_standalone.yaml)\"" > ./splunk_standalone_updated.yaml
           kubectl apply -f ./namespace_updated.yaml
