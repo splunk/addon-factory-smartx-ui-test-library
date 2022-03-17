@@ -44,7 +44,7 @@ cssselect = "*"
 lxml = "^4.8.0"
 
 [tool.poetry.dev-dependencies]
-pytest = ">=5.4, <6.3"
+pytest = ">=5.4,<7.2"
 poetry-dynamic-versioning = "^0.13"
 coverage = "^5.5"
 Sphinx = "*"
