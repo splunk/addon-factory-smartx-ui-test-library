@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v3
         with:
           python-version: "3.7"
       - name: Install actionlint
@@ -99,7 +99,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.7
       - name: Get pip cache dir
@@ -133,7 +133,7 @@ jobs:
         with:
           submodules: true
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v3
         with:
           python-version: 3.7
       - name: Install dependencies
@@ -311,7 +311,7 @@ jobs:
           submodules: false
           persist-credentials: false
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: "3.7"
       - name: Install Poetry
