@@ -419,14 +419,10 @@ class AlertTable(ActionControls):
             :return: Bool whether or not switching to the page was successful
         """
         for each in self.get_elements("switch_to_page"):
-            if (
-                self.get_clear_text(each).lower()
-                not in [
-                    "prev",
-                    "next",
-                ]
-                and self.get_clear_text(each) == str(value)
-            ):
+            if self.get_clear_text(each).lower() not in [
+                "prev",
+                "next",
+            ] and self.get_clear_text(each) == str(value):
                 each.click()
                 return True
         else:
