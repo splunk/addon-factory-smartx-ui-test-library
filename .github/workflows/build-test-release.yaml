@@ -27,7 +27,7 @@ jobs:
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
       - name: upload THIRDPARTY file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: THIRDPARTY
           path: /tmp/THIRDPARTY
@@ -111,7 +111,7 @@ jobs:
           poetry run poetry-dynamic-versioning
           poetry build
       - name: artifact-splunk-unpacked
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: package
           path: dist/*
@@ -150,7 +150,7 @@ jobs:
           poetry run coverage run --source=./pytest_splunk_addon_ui_smartx -m pytest -v tests/unit
           poetry run coverage json
       - name: Archive test coverage results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report-unit-tests
           path: coverage.json
@@ -256,7 +256,7 @@ jobs:
           docker-compose -f docker-compose-ci.yml down || true
           echo exit code "$test_exit_code"
           exit "$test_exit_code"
-      - uses: actions/upload-artifact@v2 
+      - uses: actions/upload-artifact@v3 
         if: always()
         with:
           name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
