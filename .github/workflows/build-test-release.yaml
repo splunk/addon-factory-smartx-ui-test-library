@@ -27,7 +27,7 @@ jobs:
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
       - name: upload THIRDPARTY file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: THIRDPARTY
           path: /tmp/THIRDPARTY
@@ -42,25 +42,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Check License Header
-        uses: apache/skywalking-eyes@v0.2.0
+        uses: apache/skywalking-eyes@v0.3.0
 
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.7"
-      - uses: pre-commit/action@v2.0.3
+      - uses: pre-commit/action@v3.0.0
 
   review_secrets:
     name: security-detect-secrets
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: false
           fetch-depth: "0"
@@ -74,7 +74,7 @@ jobs:
     name: security-sast-semgrep
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Semgrep
         id: semgrep
         uses: returntocorp/semgrep-action@v1
@@ -88,11 +88,11 @@ jobs:
       - fossa-scan
       - compliance-copyrights
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - name: Get pip cache dir
@@ -111,7 +111,7 @@ jobs:
           poetry run poetry-dynamic-versioning
           poetry build
       - name: artifact-splunk-unpacked
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: package
           path: dist/*
@@ -122,11 +122,11 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: true
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - name: Install dependencies
@@ -150,7 +150,7 @@ jobs:
           poetry run coverage run --source=./pytest_splunk_addon_ui_smartx -m pytest -v tests/unit
           poetry run coverage json
       - name: Archive test coverage results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report-unit-tests
           path: coverage.json
@@ -174,10 +174,10 @@ jobs:
           "test_splunk_ta_example_addon_alert_actions"
         ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: package
           path: dist/
@@ -256,7 +256,7 @@ jobs:
           docker-compose -f docker-compose-ci.yml down || true
           echo exit code "$test_exit_code"
           exit "$test_exit_code"
-      - uses: actions/upload-artifact@v2 
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
@@ -299,12 +299,12 @@ jobs:
           echo " some test job failed. "
           exit 1
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: false
           persist-credentials: false
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.7"
       - name: Install Poetry
