@@ -106,7 +106,6 @@ jobs:
         id: uccgen
         run: |
           # shellcheck source=/dev/null
-          source "$HOME"/.poetry/env
           poetry install
           poetry run poetry-dynamic-versioning
           poetry build
