@@ -82,7 +82,7 @@ class MessageTray(BaseComponent):
         Returns a generator list for the messages in the message tray
             :return: Returns Generator list of values
         """
-        return [each.text.strip() for each in self.get_elements("msg_text")]
+        return [each.get_attribute("textContent").strip() for each in self.get_elements("msg_text")]
 
     def get_msg_count(self):
         """
