@@ -101,7 +101,7 @@ jobs:
           echo "::set-output name=dir::$(pip cache dir)"
       - name: Install tools
         run: |
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          curl -sSL https://install.python-poetry.org | python3 -
       - name: Build Package
         id: uccgen
         run: |
