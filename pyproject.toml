@@ -42,6 +42,7 @@ webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
 lxml = "^4.8.0"
+pytest-splunk-addon = ">=3,<5"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.3"
