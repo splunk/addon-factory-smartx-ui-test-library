@@ -101,7 +101,7 @@ jobs:
           echo "::set-output name=dir::$(pip cache dir)"
       - name: Install tools
         run: |
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          curl -sSL https://install.python-poetry.org | python3 -
       - name: Build Package
         id: uccgen
         run: |
@@ -137,7 +137,7 @@ jobs:
           eval "$(pyenv init -)"
           pyenv install 3.7.8
           pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          curl -sSL https://install.python-poetry.org | python3 -
           # shellcheck source=/dev/null
           source ~/.poetry/env
       - name: Test with pytest
@@ -308,7 +308,7 @@ jobs:
         with:
           python-version: "3.7"
       - name: Install Poetry
-        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+        run: curl -sSL https://install.python-poetry.org | python3 -
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v3.0.0
         with:
