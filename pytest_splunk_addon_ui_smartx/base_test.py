@@ -118,6 +118,9 @@ class SeleniumHelper:
                     command_executor="http://chrome-grid:4444/wd/hub",
                     desired_capabilities=self.get_grid_opts("chrome", google_cert_opts),
                 )
+                
+                self.browser.implicitly_wait(1)
+                
             elif browser == "firefox_grid":
                 firefox_cert_opts = {
                     "acceptInsecureCerts": True,
@@ -130,6 +133,7 @@ class SeleniumHelper:
                         "firefox", firefox_cert_opts
                     ),
                 )
+                self.browser.implicitly_wait(1)
             # kubernetes selenium
             elif browser == "chrome_k8s":
                 google_cert_opts = {
