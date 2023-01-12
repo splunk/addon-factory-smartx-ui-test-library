@@ -119,7 +119,7 @@ class SeleniumHelper:
                     desired_capabilities=self.get_grid_opts("chrome", google_cert_opts),
                 )
                 
-                self.browser.implicitly_wait(10)
+                self.browser.implicitly_wait(1)
                 
             elif browser == "firefox_grid":
                 firefox_cert_opts = {
@@ -133,7 +133,7 @@ class SeleniumHelper:
                         "firefox", firefox_cert_opts
                     ),
                 )
-                self.browser.implicitly_wait(10)
+                self.browser.implicitly_wait(1)
             # kubernetes selenium
             elif browser == "chrome_k8s":
                 google_cert_opts = {
