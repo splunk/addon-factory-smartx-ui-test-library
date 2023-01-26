@@ -23,6 +23,7 @@ ReadTheDocs Page link: https://addon-factory-smartx-ui-test-library.readthedocs.
 
 To test all the UI configuration page of the Splunk add-ons. All the add-ons are built with the same template. The configuration pages consist of an Input page and a configuration page that has different tabs to configure logging, proxy settings and add product account in the add-ons. To support the testing of all the add-ons, a generic framework should be made, which can be used in the test cases for all the add-ons. The framework should have methods that can interact with UI components and test the working of UI.
 
+
 ### Design
 
 For UI development, we follow a practice in which we create a set of components first. The component has its own state-cycle. The component will be reusable so that it can be placed on any page. A web-page will be a composition of these components placed in the proper container.
