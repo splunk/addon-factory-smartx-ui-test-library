@@ -310,7 +310,7 @@ jobs:
       - name: Install Poetry
         run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
       - name: Semantic Release
-        uses: splunk/semantic-release-action@v1.3
+        uses: splunk/semantic-release-action@v1.2
         with:
           extra_plugins: |
             @google/semantic-release-replace-plugin
