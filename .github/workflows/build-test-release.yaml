@@ -105,8 +105,6 @@ jobs:
       - name: Build Package
         id: uccgen
         run: |
-          # shellcheck source=/dev/null
-          source "$HOME"/.poetry/env
           poetry install
           poetry run poetry-dynamic-versioning
           poetry build
@@ -138,14 +136,10 @@ jobs:
           pyenv install 3.7.8
           pyenv local 3.7.8
           pip install poetry==1.2.2
-          # shellcheck source=/dev/null
-          source ~/.poetry/env
       - name: Test with pytest
         run: |
           export PATH="$HOME/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
-          # shellcheck source=/dev/null
-          source ~/.poetry/env
           poetry install
           poetry run coverage run --source=./pytest_splunk_addon_ui_smartx -m pytest -v tests/unit
           poetry run coverage json
