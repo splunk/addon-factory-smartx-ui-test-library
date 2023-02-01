@@ -101,7 +101,7 @@ jobs:
           echo "::set-output name=dir::$(pip cache dir)"
       - name: Install tools
         run: |
-          pip install poetry==1.2.2
+          pip install poetry==1.3.0
       - name: Build Package
         id: uccgen
         run: |
@@ -135,7 +135,7 @@ jobs:
           eval "$(pyenv init -)"
           pyenv install 3.7.8
           pyenv local 3.7.8
-          pip install poetry==1.2.2
+          pip install poetry==1.3.0
       - name: Test with pytest
         run: |
           export PATH="$HOME/.pyenv/bin:$PATH"
@@ -302,7 +302,7 @@ jobs:
         with:
           python-version: "3.7"
       - name: Install Poetry
-        run: pip install poetry==1.2.2
+        run: pip install poetry==1.3.0
       - name: Semantic Release
         uses: splunk/semantic-release-action@v1.2
         with:
