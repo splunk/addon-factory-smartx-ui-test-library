@@ -105,9 +105,9 @@ jobs:
       - name: Build Package
         id: uccgen
         run: |
-          poetry install
-          poetry run poetry-dynamic-versioning
-          poetry build
+          poetry -vvv install
+          poetry -vvv run poetry-dynamic-versioning
+          poetry -vvv build
       - name: artifact-splunk-unpacked
         uses: actions/upload-artifact@v3
         with:
@@ -140,9 +140,9 @@ jobs:
         run: |
           export PATH="$HOME/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
-          poetry install
-          poetry run coverage run --source=./pytest_splunk_addon_ui_smartx -m pytest -v tests/unit
-          poetry run coverage json
+          poetry -vvv --no-plugins install
+          poetry -vvv run coverage run --source=./pytest_splunk_addon_ui_smartx -m pytest -v tests/unit
+          poetry -vvv run coverage json
       - name: Archive test coverage results
         uses: actions/upload-artifact@v3
         with:
