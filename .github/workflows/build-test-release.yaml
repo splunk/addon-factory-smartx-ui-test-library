@@ -81,10 +81,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.7
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
       - name: Install tools
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
@@ -115,7 +111,6 @@ jobs:
           python-version: 3.7
       - name: Install dependencies
         run: |
-          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
           curl -sSL https://install.python-poetry.org | python3 -
       - name: Test with pytest
         run: |
