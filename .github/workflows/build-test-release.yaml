@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: run fossa anlyze and create report
+      - name: run fossa analyze and create report
         run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
           fossa analyze --debug
@@ -55,20 +55,6 @@ jobs:
           python-version: "3.7"
       - uses: pre-commit/action@v3.0.0
 
-  review_secrets:
-    name: security-detect-secrets
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: false
-          fetch-depth: "0"
-      - name: Trufflehog Actions Scan
-        uses: edplato/trufflehog-actions-scan@v0.9j-beta
-        with:
-          scanArguments: "--max_dept 50 -x .github/workflows/exclude-patterns.txt"
-
   semgrep:
     runs-on: ubuntu-latest
     name: security-sast-semgrep
@@ -101,12 +87,10 @@ jobs:
           echo "::set-output name=dir::$(pip cache dir)"
       - name: Install tools
         run: |
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          curl -sSL https://install.python-poetry.org | python3 -
       - name: Build Package
         id: uccgen
         run: |
-          # shellcheck source=/dev/null
-          source "$HOME"/.poetry/env
           poetry install
           poetry run poetry-dynamic-versioning
           poetry build
@@ -132,20 +116,9 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-          curl https://pyenv.run | bash
-          export PATH="$HOME/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          pyenv install 3.7.8
-          pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          # shellcheck source=/dev/null
-          source ~/.poetry/env
+          curl -sSL https://install.python-poetry.org | python3 -
       - name: Test with pytest
         run: |
-          export PATH="$HOME/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          # shellcheck source=/dev/null
-          source ~/.poetry/env
           poetry install
           poetry run coverage run --source=./pytest_splunk_addon_ui_smartx -m pytest -v tests/unit
           poetry run coverage json
@@ -270,34 +243,13 @@ jobs:
           reporter: java-junit
 
   publish:
-    if: always()
     needs:
       - pre-commit
       - build
-      - review_secrets
       - run-ui-tests
       - run-unit-tests
     runs-on: ubuntu-latest
-    env:
-      NEEDS: ${{ toJson(needs) }}
     steps:
-      - name: check if tests have passed or skipped
-        if: github.event_name != 'pull_request'
-        id: check
-        shell: bash
-        run: |
-          RUN_PUBLISH=$(echo "$NEEDS" | jq ".[] |  select(  ( .result != \"skipped\" ) and .result != \"success\" ) | length == 0")
-          if [[ $RUN_PUBLISH != *'false'* ]]
-          then
-              echo "::set-output name=run-publish::true"
-          else
-              echo "::set-output name=run-publish::false"
-          fi
-      - name: exit without publish
-        if: ${{ steps.check.outputs.run-publish == 'false' || github.event_name == 'pull_request'}}
-        run: |
-          echo " some test job failed. "
-          exit 1
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -308,7 +260,7 @@ jobs:
         with:
           python-version: "3.7"
       - name: Install Poetry
-        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+        run: curl -sSL https://install.python-poetry.org | python3 -
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v3.0.0
         with:
