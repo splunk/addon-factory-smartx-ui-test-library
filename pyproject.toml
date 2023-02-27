@@ -44,16 +44,12 @@ lxml = "^4.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.4, <6.3"
-poetry-dynamic-versioning = "^0.13"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-panels = "*"
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
-
-[tool.poetry-dynamic-versioning]
-enable = true
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
