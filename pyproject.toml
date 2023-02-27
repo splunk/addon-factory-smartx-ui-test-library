@@ -34,7 +34,6 @@ version = "2.3.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-future = "^0.18"
 pytest-html = "*"
 urllib3 = "^1.21.1"
 selenium = "*"
