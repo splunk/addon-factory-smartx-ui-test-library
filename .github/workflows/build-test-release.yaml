@@ -116,10 +116,31 @@ jobs:
           name: package
           path: dist/*
         if: always()
-
+  
+  prerequisites-ui-tests:
+      runs-on: ubuntu-latest
+      outputs: 
+        ta_example_version: ${{ steps.ta-example.outputs.version }}
+      steps:
+        - name: Fetch latest version of Splunk_TA example
+          id: ta-example
+          run: |
+              ta_example_version=`basename $(curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | jq -r '.assets | last | .browser_download_url')`
+              echo "version=$ta_example_version" >> $GITHUB_OUTPUT
+        - name: Cache Splunk_TA example
+          id: cache_ta
+          uses: actions/cache@v3
+          with:
+            path: Splunk_TA*.spl
+            key: ${{ steps.ta-example.outputs.version }}
+        - name: Download Splunk_TA example
+          if: steps.cache_ta.outputs.cache-hit != 'true'
+          run: curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | jq -r '.assets | last | .browser_download_url' | wget -i -
+  
   run-ui-tests:
     needs:
       - build
+      - prerequisites-ui-tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -146,31 +167,24 @@ jobs:
         run: |
             git submodule sync
             git submodule update --recursive --remote
-      - name: Downloading Example-TA
-        run: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            mkdir output 
-            cd output
-            pwd
-            curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*.spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
-            ls
-            tar -xzf Splunk_TA*.spl
-            ls
-            rm Splunk_TA*.spl
-            ls
+      - name: Cache Splunk_TA example
+        id: cache_ta
+        uses: actions/cache@v3
+        with:
+          path: Splunk_TA*.spl
+          key: ${{ needs.prerequisites-ui-tests.outputs.ta_example_version }} 
       - name: Setup for testing
         run: |
-          echo "Setup for Testing..."
-          pip install git+https://github.com/pixelb/crudini
-          mkdir test-results
-          cp -r tests/deps/splunk-add-on-for-ucc-example/output output
+            mkdir output test-results
+            tar -xvf Splunk_TA*.spl -C output/
+            pip install git+https://github.com/pixelb/crudini
       - name: Splunk Testing
         run: |
           SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
           export SPLUNK_VERSION
           SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_ID
-          SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
+          SPLUNK_APP_PACKAGE=output/$(ls output/)
           export SPLUNK_APP_PACKAGE
           export TEST_SET=tests/ui
           export TEST_BROWSER="${{ matrix.browser }}"
@@ -250,14 +264,16 @@ jobs:
       - name: Install Poetry
         run: curl -sSL https://install.python-poetry.org | python3 -
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v3.0.0
+        id: semantic
+        uses: splunk/semantic-release-action@v1.2
         with:
-          semantic_version: 19.0.2
           extra_plugins: |
-            @semantic-release/exec
-            @semantic-release/git
             @google/semantic-release-replace-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
-          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      - name: Publish to pypi
+        if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
+        uses: splunk/pypi-publish-action@v1.0
+        with:
+          pypi_username: ${{ secrets.PYPI_USERNAME }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
