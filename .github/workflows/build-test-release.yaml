@@ -119,6 +119,8 @@ jobs:
   
   prerequisites-ui-tests:
       runs-on: ubuntu-latest
+      outputs: 
+        ta_example_version: ${{ steps.ta-example.outputs.version }}
       steps:
         - name: Fetch latest version of Splunk_TA example
           id: ta-example
@@ -165,17 +167,12 @@ jobs:
         run: |
             git submodule sync
             git submodule update --recursive --remote
-      - name: Fetch latest version of Splunk_TA example
-        id: ta-example
-        run: |
-            ta_example_version=`basename $(curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | jq -r '.assets | last | .browser_download_url')`
-            echo "version=$ta_example_version" >> $GITHUB_OUTPUT
       - name: Cache Splunk_TA example
         id: cache_ta
         uses: actions/cache@v3
         with:
           path: Splunk_TA*.spl
-          key: ${{ steps.ta-example.outputs.version }} 
+          key: ${{ needs.prerequisites-ui-tests.outputs.ta_example_version }} 
       - name: Setup for testing
         run: |
             mkdir output test-results
