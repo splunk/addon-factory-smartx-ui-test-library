@@ -176,6 +176,11 @@ jobs:
         with:
           path: Splunk_TA*.spl
           key: ${{ steps.ta-example.outputs.version }}
+      - name: Prepare for tests
+        run: |
+            tar -xzf Splunk_TA*.spl
+            rm Splunk_TA*.spl
+            ls
       - name: Setup for testing
         run: |
           echo "Setup for Testing..."
