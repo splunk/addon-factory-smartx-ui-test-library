@@ -152,8 +152,18 @@ jobs:
             mkdir output 
             cd output
             pwd
-            curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*.spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi - || true
-            ls
+            retry=0
+            while [ "$retry" -lt 3 ]
+            do
+                retry=$(( retry + 1 ))
+                echo "Downloading Splunk_TA example... $retry attempt"
+                curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*.spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -i - || true
+                ls -la | grep "Splunk_TA.*.spl"
+                if [ "$?" -eq 0 ]
+                then
+                  break
+                fi
+            done
             tar -xzf Splunk_TA*.spl
             ls
             rm Splunk_TA*.spl
