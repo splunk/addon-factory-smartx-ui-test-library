@@ -250,14 +250,16 @@ jobs:
       - name: Install Poetry
         run: curl -sSL https://install.python-poetry.org | python3 -
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v3.0.0
+        id: semantic
+        uses: splunk/semantic-release-action@v1.2
         with:
-          semantic_version: 19.0.2
           extra_plugins: |
-            @semantic-release/exec
-            @semantic-release/git
             @google/semantic-release-replace-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
-          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      - name: Publish to pypi
+        if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
+        uses: splunk/pypi-publish-action@v1.0
+        with:
+          pypi_username: ${{ secrets.PYPI_USERNAME }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
