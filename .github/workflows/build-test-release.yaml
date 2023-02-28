@@ -187,7 +187,7 @@ jobs:
           export SPLUNK_VERSION
           SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_ID
-          SPLUNK_APP_PACKAGE=tests/deps/splunk-add-on-for-ucc-example/output/$(ls tests/deps/splunk-add-on-for-ucc-example/output/)
+          SPLUNK_APP_PACKAGE=output/$(ls output/)
           export SPLUNK_APP_PACKAGE
           export TEST_SET=tests/ui
           export TEST_BROWSER="${{ matrix.browser }}"
