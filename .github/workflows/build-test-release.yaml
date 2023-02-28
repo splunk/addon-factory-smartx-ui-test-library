@@ -178,10 +178,9 @@ jobs:
           key: ${{ steps.ta-example.outputs.version }} 
       - name: Setup for testing
         run: |
-            echo "Setup for Testing..."
+            mkdir output test-results
             tar -xvf Splunk_TA*.spl -C output/
             pip install git+https://github.com/pixelb/crudini
-            mkdir test-results
       - name: Splunk Testing
         run: |
           SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
