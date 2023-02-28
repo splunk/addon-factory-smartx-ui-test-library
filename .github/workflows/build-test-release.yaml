@@ -175,18 +175,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: Splunk_TA*.spl
-          key: ${{ steps.ta-example.outputs.version }}
-      - name: Prepare for tests
-        run: |
-            tar -xzf Splunk_TA*.spl
-            rm Splunk_TA*.spl
-            ls
+          key: ${{ steps.ta-example.outputs.version }} 
       - name: Setup for testing
         run: |
-          echo "Setup for Testing..."
-          pip install git+https://github.com/pixelb/crudini
-          mkdir test-results
-          cp -r tests/deps/splunk-add-on-for-ucc-example/output output
+            echo "Setup for Testing..."
+            tar -xvf Splunk_TA*.spl -C output/
+            pip install git+https://github.com/pixelb/crudini
+            mkdir test-results
       - name: Splunk Testing
         run: |
           SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
