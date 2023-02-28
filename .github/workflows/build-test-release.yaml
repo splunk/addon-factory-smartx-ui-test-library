@@ -116,10 +116,41 @@ jobs:
           name: package
           path: dist/*
         if: always()
+  
+  prerequisites-ui-tests:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Fetch latest version of Splunk_TA example
+          id: ta-example
+          run: |
+              ta_example_version=`basename $(curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | jq -r '.assets | last | .browser_download_url')`
+              echo "version=$ta_example_version" >> $GITHUB_OUTPUT
+        - name: Cache Splunk_TA example
+          id: cache_ta
+          uses: actions/cache@v3
+          with:
+            path: Splunk_TA.*.spl
+            key: ${{ steps.ta-example.outputs.version }}
+        - name: Download Splunk_TA example
+          if: steps.cache_ta.outputs.cache-hit != 'true'
+          run: |
+              retry=0
+              while [ "$retry" -lt 3 ]
+              do
+                retry=$(( retry + 1 ))
+                echo "Downloading Splunk_TA example... $retry attempt"
+                basename $(curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | jq -r '.assets | last | .browser_download_url')`
+                if [ "$?" -eq 0 ]
+                then
+                  break
+                fi
+                sleep 10
+              done
 
   run-ui-tests:
     needs:
       - build
+      - prerequisites-ui-tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -146,28 +177,17 @@ jobs:
         run: |
             git submodule sync
             git submodule update --recursive --remote
-      - name: Downloading Example-TA
+      - name: Fetch latest version of Splunk_TA example
+        id: ta-example
         run: |
-            cd tests/deps/splunk-add-on-for-ucc-example
-            mkdir output 
-            cd output
-            pwd
-            retry=0
-            while [ "$retry" -lt 3 ]
-            do
-                retry=$(( retry + 1 ))
-                echo "Downloading Splunk_TA example... $retry attempt"
-                curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | grep "Splunk_TA.*.spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -i - || true
-                ls -la | grep "Splunk_TA.*.spl"
-                if [ "$?" -eq 0 ]
-                then
-                  break
-                fi
-            done
-            tar -xzf Splunk_TA*.spl
-            ls
-            rm Splunk_TA*.spl
-            ls
+            ta_example_version=`basename $(curl -s https://api.github.com/repos/splunk/splunk-add-on-for-ucc-example/releases/latest | jq -r '.assets | last | .browser_download_url') ls -la | grep "Splunk_TA.*.spl"`
+            echo "version=$ta_example_version" >> $GITHUB_OUTPUT
+      - name: Cache Splunk_TA example
+        id: cache_ta
+        uses: actions/cache@v3
+        with:
+          path: Splunk_TA.*.spl
+          key: ${{ steps.ta-example.outputs.version }}
       - name: Setup for testing
         run: |
           echo "Setup for Testing..."
