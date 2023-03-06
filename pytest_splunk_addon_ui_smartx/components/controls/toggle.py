@@ -35,8 +35,7 @@ class Toggle(BaseControl):
         self.elements.update(
             {
                 "toggle_btn": Selector(
-                    select=container.select
-                    + ' [data-test="option"]'
+                    select=container.select + ' [data-test="option"]'
                 ),
                 "selected": Selector(
                     select=container.select
