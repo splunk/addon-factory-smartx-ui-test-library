@@ -39,7 +39,7 @@ class Toggle(BaseControl):
                 ),
                 "selected": Selector(
                     select=container.select
-                    + ' [data-test="option"][aria-checked="true"]'
+                    + ' [data-test="option"][aria-checked="true"] :not([data-test=’screen-reader-content’])'
                 ),
             }
         )
