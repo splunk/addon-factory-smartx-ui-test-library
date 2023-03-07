@@ -36,11 +36,11 @@ class Toggle(BaseControl):
             {
                 "toggle_btn": Selector(
                     select=container.select
-                    + ' [data-test="option"] [data-test="label"]'
+                    + ' [data-test="option"] :not([data-test=’screen-reader-content’])'
                 ),
                 "selected": Selector(
                     select=container.select
-                    + ' [data-test="option"][aria-checked="true"] [data-test="label"]'
+                    + ' [data-test="option"][aria-checked="true"] :not([data-test=’screen-reader-content’])'
                 ),
             }
         )
