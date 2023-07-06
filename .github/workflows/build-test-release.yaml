@@ -234,8 +234,11 @@ jobs:
         with:
           name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
           path: test-results/*
-      - name: Test Report
-        uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v1
+        permissions:
+          id-token: write
+          contents: read
+          checks: write
         if: always()
         with:
           name: test-report-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
