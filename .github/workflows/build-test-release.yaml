@@ -140,6 +140,7 @@ jobs:
   
   run-ui-tests:
     needs:
+      - meta
       - build
       - prerequisites-ui-tests
     runs-on: ubuntu-latest
