@@ -182,8 +182,7 @@ jobs:
             pip install git+https://github.com/pixelb/crudini
       - name: Splunk Testing
         run: |
-          SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
-          export SPLUNK_VERSION
+          export SPLUNK_VERSION=${{ matrix.splunk.version }}
           SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_ID
           SPLUNK_APP_PACKAGE=output/$(ls output/)
