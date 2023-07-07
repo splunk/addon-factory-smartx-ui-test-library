@@ -144,6 +144,10 @@ jobs:
       - build
       - prerequisites-ui-tests
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      checks: write
     strategy:
       fail-fast: false
       matrix:
@@ -235,10 +239,6 @@ jobs:
           name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
           path: test-results/*
       - uses: dorny/test-reporter@v1
-        permissions:
-          id-token: write
-          contents: read
-          checks: write
         if: always()
         with:
           name: test-report-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
