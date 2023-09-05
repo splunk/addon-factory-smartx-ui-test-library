@@ -1,4 +1,3 @@
-name: build-test-release
 on:
   push:
     branches:
@@ -14,37 +13,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: matrix
+        uses: splunk/addonfactory-test-matrix-action@v1
+
   fossa-scan:
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: run fossa analyze and create report
-        run: |
+      - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
           fossa analyze --debug
           fossa report attribution --format text > /tmp/THIRDPARTY
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-      - name: upload THIRDPARTY file
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: THIRDPARTY
           path: /tmp/THIRDPARTY
-      - name: run fossa test
-        run: |
+      - run: |
           fossa test --debug
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
 
   compliance-copyrights:
-    name: Compliance Copyright Headers
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Check License Header
-        uses: apache/skywalking-eyes@v0.4.0
+      - uses: actions/checkout@v3
+      - uses: apache/skywalking-eyes@v0.4.0
 
   pre-commit:
     runs-on: ubuntu-latest
@@ -61,8 +63,7 @@ jobs:
     if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v3
-      - name: Semgrep
-        id: semgrep
+      - id: semgrep
         uses: returntocorp/semgrep-action@v1
         with:
           publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
@@ -139,14 +140,19 @@ jobs:
   
   run-ui-tests:
     needs:
+      - meta
       - build
       - prerequisites-ui-tests
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      checks: write
     strategy:
       fail-fast: false
       matrix:
-        splunk: ["8.2"]
-        browser: ["chrome", "firefox", "firefox_grid", "chrome_grid"]
+        splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+        browser: ["chrome", "firefox"]
         test_suit: [
           "test_splunk_ta_example_addon_logging",
           "test_splunk_ta_example_addon_account",
@@ -180,8 +186,7 @@ jobs:
             pip install git+https://github.com/pixelb/crudini
       - name: Splunk Testing
         run: |
-          SPLUNK_VERSION=$(crudini --get tests/deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "${{ matrix.splunk }}" VERSION)
-          export SPLUNK_VERSION
+          export SPLUNK_VERSION=${{ matrix.splunk.version }}
           SPLUNK_APP_ID=$(crudini --get tests/deps/splunk-add-on-for-ucc-example/package/default/app.conf id name)
           export SPLUNK_APP_ID
           SPLUNK_APP_PACKAGE=output/$(ls output/)
@@ -207,10 +212,7 @@ jobs:
           docker-compose -f docker-compose-ci.yml build
           # Saucelab connection
           docker-compose -f docker-compose-ci.yml up -d sauceconnect
-          
-          # Start selenium grid if needed.
-          if [[ "$TEST_BROWSER" == *"firefox_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d firefox-grid; fi
-          if [[ "$TEST_BROWSER" == *"chrome_grid"* ]]; then docker-compose -f docker-compose-ci.yml up -d chrome-grid; fi
+
           # Start Splunk
           docker-compose -f docker-compose-ci.yml up -d splunk
           until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
@@ -236,8 +238,7 @@ jobs:
         with:
           name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
           path: test-results/*
-      - name: Test Report
-        uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v1
         if: always()
         with:
           name: test-report-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suit }}
@@ -252,19 +253,15 @@ jobs:
       - run-unit-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           submodules: false
           persist-credentials: false
-      - name: Setup python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.7"
-      - name: Install Poetry
-        run: curl -sSL https://install.python-poetry.org | python3 -
-      - name: Semantic Release
-        id: semantic
+      - run: curl -sSL https://install.python-poetry.org | python3 -
+      - id: semantic
         uses: splunk/semantic-release-action@v1.3
         with:
           git_committer_name: ${{ secrets.SA_GH_USER_NAME }}
@@ -275,8 +272,7 @@ jobs:
             @google/semantic-release-replace-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
-      - name: Publish to pypi
-        if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
+      - if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
         uses: splunk/pypi-publish-action@v1.0
         with:
           pypi_username: ${{ secrets.PYPI_USERNAME }}
