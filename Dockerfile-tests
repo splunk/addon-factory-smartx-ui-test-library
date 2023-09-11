@@ -13,14 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#Splunk Connect for Syslog (SC4S) by Splunk, Inc.
-#
-#To the extent possible under law, the person who associated CC0 with
-#Splunk Connect for Syslog (SC4S) has waived all copyright and related or neighboring rights
-#to Splunk Connect for Syslog (SC4S).
-#
-#You should have received a copy of the CC0 legalcode along with this
-#work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 FROM ubuntu:latest
 RUN mkdir -p /work/tests
 RUN mkdir -p /work/test-results/functional
@@ -36,17 +28,16 @@ RUN export DEBIAN_FRONTEND=noninteractive ;\
 ENV LANG en_US.utf8
 
 COPY dist /work/dist
-COPY tests/pytest-ci.ini /work/pytest.ini
+COPY tests/ui/pytest-ci.ini /work/pytest.ini
 RUN pip install /work/dist/*.whl
 RUN pip install pytest-splunk-addon
 RUN pip install pytest-expect
 RUN pip install pytest-rerunfailures
 COPY tests/entrypoint.sh /
-COPY tests/deps/splunk-add-on-for-ucc-example/tests /work/tests
-COPY tests/deps/splunk-add-on-for-ucc-example/.pytest.expect /work/.pytest.expect
+COPY tests /work/tests
+COPY tests/ui/.pytest.expect /work/.pytest.expect
 RUN cd /work/tests && ls
 RUN cd ../..
-COPY tests/deps/splunk-add-on-for-ucc-example/package /work/package
 
 WORKDIR /work
 
