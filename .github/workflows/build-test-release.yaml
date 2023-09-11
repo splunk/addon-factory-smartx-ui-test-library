@@ -18,7 +18,7 @@ jobs:
     outputs:
       matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: matrix
         uses: splunk/addonfactory-test-matrix-action@v1
 
@@ -26,7 +26,7 @@ jobs:
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
           fossa analyze --debug
@@ -45,13 +45,13 @@ jobs:
   compliance-copyrights:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: apache/skywalking-eyes@v0.4.0
+      - uses: actions/checkout@v4
+      - uses: apache/skywalking-eyes@v0.5.0
 
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: "3.7"
@@ -60,9 +60,8 @@ jobs:
   semgrep:
     runs-on: ubuntu-latest
     name: security-sast-semgrep
-    if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: semgrep
         uses: returntocorp/semgrep-action@v1
         with:
@@ -71,18 +70,15 @@ jobs:
   run-unit-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.7
-      - name: Install dependencies
-        run: |
+      - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
-      - name: Test with pytest
-        run: |
+      - run: |
           poetry install
           poetry run pytest -v tests/unit
 
@@ -95,11 +91,10 @@ jobs:
       - pre-commit
       - run-unit-tests
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Setup python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - name: Install tools
@@ -160,7 +155,7 @@ jobs:
           "test_splunk_ta_example_addon_alert_actions"
         ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
       - uses: actions/download-artifact@v3
@@ -251,7 +246,7 @@ jobs:
       - run-unit-tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: false
           persist-credentials: false
