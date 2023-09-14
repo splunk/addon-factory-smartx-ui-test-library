@@ -101,11 +101,20 @@ jobs:
       - run: |
           poetry install
           poetry build
+      - run: |
+          poetry run ucc-gen build \
+            --source=tests/testdata/Splunk_TA_UCCExample/package \
+            --config=tests/testdata/Splunk_TA_UCCExample/globalConfig.json \
+            --ta-version=0.0.1
       - uses: actions/upload-artifact@v3
         with:
           name: package
           path: dist/*
         if: always()
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: output/*
   
   run-ui-tests:
     needs:
@@ -137,20 +146,13 @@ jobs:
         with:
           name: package
           path: dist/
+      - uses: actions/download-artifact@v3
+        with:
+          name: output
+          path: output/
       - run: |
           git submodule sync
           git submodule update --recursive --remote
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.7
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
-      - name: Setup for testing
-        run: |
-          poetry install
-          poetry run ucc-gen build \
-            --source=tests/testdata/Splunk_TA_UCCExample/package \
-            --config=tests/testdata/Splunk_TA_UCCExample/globalConfig.json \
-            --ta-version=0.0.1
       - name: Splunk Testing
         run: |
           mkdir test-results
