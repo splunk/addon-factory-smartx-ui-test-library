@@ -16,6 +16,7 @@ def setup_alert(ucc_smartx_selenium_helper):
         # Splunk 8.x
         if not setup_alert.first_execution:
             return
+
         AlertPage(ucc_smartx_selenium_helper, None, open_page=False)
         intro_popup = Button(
             ucc_smartx_selenium_helper.browser,
@@ -24,6 +25,14 @@ def setup_alert(ucc_smartx_selenium_helper):
         intro_popup.wait_to_be_clickable()
         intro_popup.click()
         setup_alert.first_execution = False
+
+        # Splunk 8.2.x
+        intro_popup = Button(
+            ucc_smartx_selenium_helper.browser,
+            Selector(select='[data-test="label"]'),
+        )
+        intro_popup.wait_to_be_clickable()
+        intro_popup.click()
 
         # Splunk 8.0.x
         important_changes_coming = Button(
@@ -34,7 +43,7 @@ def setup_alert(ucc_smartx_selenium_helper):
         )
         important_changes_coming.wait_to_be_clickable()
         important_changes_coming.click()
-    except:
+    except Exception:
         pass
 
 
