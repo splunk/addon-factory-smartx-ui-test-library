@@ -30,12 +30,9 @@ ENV LANG en_US.utf8
 COPY dist /work/dist
 COPY tests/ui/pytest-ci.ini /work/pytest.ini
 RUN pip install /work/dist/*.whl
-RUN pip install pytest-splunk-addon
-RUN pip install pytest-expect
 RUN pip install pytest-rerunfailures
 COPY tests/entrypoint.sh /
 COPY tests /work/tests
-COPY tests/ui/.pytest.expect /work/.pytest.expect
 RUN cd /work/tests && ls
 RUN cd ../..
 

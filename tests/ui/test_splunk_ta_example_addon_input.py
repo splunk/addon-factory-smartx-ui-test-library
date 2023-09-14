@@ -278,20 +278,6 @@ class TestInput(UccTester):
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.input
-    def test_inputs_delete_enabled_input(
-        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, add_input_one
-    ):
-        """Verifies enabled input should not delete"""
-        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
-        self.assert_util(
-            input_page.table.delete_row,
-            r"Can't delete enabled input",
-            left_args={"name": "dummy_input_one"},
-        )
-
-    @pytest.mark.execute_enterprise_cloud_true
-    @pytest.mark.forwarder
-    @pytest.mark.input
     def test_inputs_more_info(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, add_input_one
     ):

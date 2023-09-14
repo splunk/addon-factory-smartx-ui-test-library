@@ -102,6 +102,7 @@ class TestCustom(UccTester):
             custom.backend_conf.get_stanza,
             {
                 "disabled": False,
+                "test_help_link": "",
                 "test_number": "7",
                 "test_regex": "test_rex",
                 "test_string": "test_str",
