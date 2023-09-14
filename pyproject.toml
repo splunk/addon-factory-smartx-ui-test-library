@@ -16,8 +16,8 @@
 [tool.poetry]
 name = "pytest-splunk-addon-ui-smartx"
 description = "Library to support testing Splunk Add-on UX"
-authors = ["rfaircloth-splunk <rfaircloth@splunk.com>"]
-license = "APACHE-2.0"
+authors = ["Splunk <addonfactory@splunk.com>"]
+license = "Apache-2.0"
 classifiers = [
         "Framework :: Pytest",
         "Intended Audience :: Developers",
@@ -43,14 +43,15 @@ cssselect = "*"
 lxml = "^4.8.0"
 pytest-splunk-addon = "^5.0.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.plugins]
+pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
+
+[tool.poetry.group.dev.dependencies]
 pytest = ">=5.4, <7.3"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-panels = "*"
-
-[tool.poetry.plugins]
-pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
+splunk-add-on-ucc-framework = "^5.28.5"
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
