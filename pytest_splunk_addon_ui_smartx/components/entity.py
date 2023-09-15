@@ -13,17 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from typing import Union
 
-import time
-from abc import abstractmethod
-
+import selenium.common
 from selenium.webdriver.common.by import By
 
-from ..pages.page import Page
 from .base_component import BaseComponent, Selector
 from .controls.button import Button
 from .controls.message import Message
 from .dropdown import Dropdown
+
+import warnings
 
 
 class Entity(BaseComponent):
@@ -91,23 +91,33 @@ class Entity(BaseComponent):
         except:
             return True
 
-    def save(self, expect_error=False, expect_warning=False):
+    def save(
+        self, expect_error: bool = False, expect_warning: bool = False
+    ) -> Union[str, bool]:
         """
-        Save the configuration
-            :param expect_error: if True, the error message will be fetched.
-            :param expoect_warning: If True, the warning message will be fetched.
-            :returns: If expect_error or expect_warning is True, then it will return the message appearing on page.
-                       Otherwise, the function will return True if the configuration was saved properly
+        Attempts to save configuration. If error or warning messages are found, return them instead.
         """
+        warnings.warn(
+            "expect_error and expect_warning are deprecated and will be removed in the future versions.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.save_btn.wait_to_be_clickable()
         self.save_btn.click()
-        if expect_error:
-            return self.get_error()
-        elif expect_warning:
-            return self.get_warning()
-        else:
-            self.loading.wait_loading()
-            return True
+        try:
+            error_message = self.get_error()
+        except selenium.common.exceptions.TimeoutException:
+            error_message = ""
+        if error_message != "":
+            return error_message
+        try:
+            warning_message = self.get_warning()
+        except selenium.common.exceptions.TimeoutException:
+            warning_message = ""
+        if warning_message != "":
+            return warning_message
+        self.loading.wait_loading()
+        return True
 
     def cancel(self):
         """
