@@ -52,7 +52,7 @@ class Message(BaseControl):
 
     def wait_loading(self):
         """
-        Wait till the message appears and then dissapears
+        Wait till the message appears and then disappears
             :return: Str The text message after waiting
         """
         try:
