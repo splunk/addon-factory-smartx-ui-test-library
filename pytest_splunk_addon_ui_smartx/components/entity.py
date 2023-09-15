@@ -15,6 +15,7 @@
 #
 from typing import Union
 
+import selenium.common
 from selenium.webdriver.common.by import By
 
 from .base_component import BaseComponent, Selector
@@ -103,10 +104,16 @@ class Entity(BaseComponent):
         )
         self.save_btn.wait_to_be_clickable()
         self.save_btn.click()
-        error_message = self.get_error()
+        try:
+            error_message = self.get_error()
+        except selenium.common.exceptions.TimeoutException:
+            error_message = ""
         if error_message != "":
             return error_message
-        warning_message = self.get_warning()
+        try:
+            warning_message = self.get_warning()
+        except selenium.common.exceptions.TimeoutException:
+            warning_message = ""
         if warning_message != "":
             return warning_message
         self.loading.wait_loading()
