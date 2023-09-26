@@ -195,7 +195,7 @@ class TestCustom(UccTester):
     def test_custom_valid_input_test_number(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
-        """This test case checks test number field should be interger"""
+        """This test case checks test number field should be integer"""
         custom = Custom(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         custom.test_string.set_value("test_str")
         custom.test_number.set_value("a")
@@ -370,7 +370,7 @@ class TestCustom(UccTester):
     def test_custom_search_value_test_multiselect(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
-        """This test case checks multiple select seach funtionality"""
+        """This test case checks multiple select search functionality"""
         custom = Custom(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         self.assert_util(
             custom.test_multiselect.search_get_list,
@@ -381,10 +381,33 @@ class TestCustom(UccTester):
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.custom
+    def test_custom_clear_text_test_multiselect(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """This test case checks multiple select clear_text functionality"""
+        custom = Custom(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        self.assert_util(
+            len(custom.test_multiselect.search_get_list("Option")),
+            2,
+        )
+        custom.test_multiselect.clear_text()
+        self.assert_util(
+            len(custom.test_multiselect.search_get_list("Option A")),
+            1,
+        )
+        custom.test_multiselect.clear_text()
+        self.assert_util(
+            len(custom.test_multiselect.search_get_list("Option B")),
+            1,
+        )
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.custom
     def test_custom_deselect_test_multiselect(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
-        """This test case checks deselect funtionality of multiple select"""
+        """This test case checks deselect functionality of multiple select"""
         custom = Custom(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         selected_values = ["Option A", "Option B"]
         for each in selected_values:
