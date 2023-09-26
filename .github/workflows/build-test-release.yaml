@@ -122,7 +122,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     if: |
-      !contains(github.event.issue.labels.*.name, "skip-ui-tests")
+      !contains(github.event.issue.labels.*.name, 'skip-ui-tests')
     permissions:
       id-token: write
       contents: read
