@@ -77,7 +77,7 @@ jobs:
         with:
           python-version: 3.7
       - run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
       - run: |
           poetry install
           poetry run pytest -v tests/unit
@@ -97,7 +97,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.7
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
       - run: |
           poetry install
           poetry build
@@ -122,7 +122,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     if: |
-      !contains(github.event.issue.labels.*.name, "skip-ui-tests")
+      !contains(github.event.issue.labels.*.name, 'skip-ui-tests')
     permissions:
       id-token: write
       contents: read
@@ -232,7 +232,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.7"
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
       - id: semantic
         uses: splunk/semantic-release-action@v1.3
         with:
