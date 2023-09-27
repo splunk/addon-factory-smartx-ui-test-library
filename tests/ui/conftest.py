@@ -1,6 +1,6 @@
 import pytest
 
-from tests.ui.Example_UccLib.account import AccountPage
+from .Example_UccLib.account import AccountPage
 
 
 @pytest.fixture
