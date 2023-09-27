@@ -136,7 +136,9 @@ jobs:
           "test_splunk_ta_example_addon_logging",
           "test_splunk_ta_example_addon_account",
           "test_splunk_ta_example_addon_proxy",
-          "test_splunk_ta_example_addon_input",
+          "test_splunk_ta_example_addon_input_common",
+          "test_splunk_ta_example_addon_input_1",
+          "test_splunk_ta_example_addon_input_2",
           "test_splunk_ta_example_addon_custom",
           "test_splunk_ta_example_addon_alert_actions"
         ]
@@ -208,12 +210,12 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: test-results-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
+          name: test-results-${{ matrix.splunk.version }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
           path: test-results/*
       - uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: test-report-${{ matrix.splunk }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
+          name: test-report-${{ matrix.splunk.version }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
           path: "test-results/*.xml"
           reporter: java-junit
 

@@ -154,7 +154,7 @@ def ucc_smartx_configs(request):
 
 def get_browser_scope(fixture_name, config):
     """
-    Set the scope of the browser dyncamically.
+    Set the scope of the browser dynamically.
     """
     if config.getoption("--local") and config.getoption("--persist-browser"):
         return "session"
@@ -186,7 +186,7 @@ def ucc_smartx_selenium_helper(
             break
         except Exception as e:
             last_exc = e
-            LOGGER.warn(
+            LOGGER.warning(
                 "Failed to configure the browser or login to Splunk instance for - Try={} \nTRACEBACK::{}".format(
                     try_number, traceback.format_exc()
                 )
@@ -212,7 +212,7 @@ def ucc_smartx_selenium_helper(
                     "Could not notify to sauce labs because scope of fixture is not set to function"
                 )
         except:
-            LOGGER.warn(
+            LOGGER.warning(
                 "Could not notify to Saucelabs \nTRACEBACK::{}".format(
                     traceback.format_exc()
                 )
@@ -232,7 +232,7 @@ def ucc_smartx_rest_helper(ucc_smartx_configs, splunk, splunk_rest_uri):
             break
         except Exception as e:
             last_exc = e
-            LOGGER.warn(
+            LOGGER.warning(
                 "Failed to configure rest endpint for Splunk instance - Try={} \nTRACEBACK::{}".format(
                     try_number, traceback.format_exc()
                 )
@@ -290,13 +290,15 @@ def pytest_runtest_makereport(item, call):
 
                         report.extra = [pytest_html.extras.image(screenshot_path)]
                     except:
-                        LOGGER.warn(
+                        LOGGER.warning(
                             "Screenshot can not be captured. Scope of the fixture test_helper must be 'function' to capture the screenshot. "
                         )
         else:
-            LOGGER.warn(
+            LOGGER.warning(
                 "pytest-html is not installed. Install by using: pip install pytest-html"
             )
     except Exception as e:
-        LOGGER.warn("Got exception while making test report. Exception  {}".format(e))
+        LOGGER.warning(
+            "Got exception while making test report. Exception  {}".format(e)
+        )
         LOGGER.debug("test_report, Exception: {}".format(traceback.format_exc()))
