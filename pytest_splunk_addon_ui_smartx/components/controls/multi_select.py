@@ -61,6 +61,12 @@ class MultiSelect(BaseControl):
         """
         self.input.send_keys(value)
 
+    def clear_text(self):
+        """
+        Clears the search box value in the multiselect field
+        """
+        self.input.clear()
+
     def search_get_list(self, value):
         """
         search with the multiselect input and return the list
