@@ -4,7 +4,6 @@ from pytest_splunk_addon_ui_smartx.components.base_component import Selector
 from pytest_splunk_addon_ui_smartx.components.controls.button import Button
 
 from .Example_UccLib.alert_action import AlertPage
-from .test_splunk_ta_example_addon_input import add_account
 
 
 @pytest.fixture(autouse=True)
@@ -85,7 +84,7 @@ class TestAlertActions(UccTester):
 
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
-    def test_account_functionality(self, ucc_smartx_selenium_helper):
+    def test_account_functionality(self, ucc_smartx_selenium_helper, add_account):
         alert_page = AlertPage(ucc_smartx_selenium_helper, None)
         alert_page.alert_entity.open()
         alert_page.alert_entity.add_action_dropdown.wait_for_values()
@@ -144,7 +143,9 @@ class TestAlertActions(UccTester):
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.sanity_test
-    def test_alert_action_save(self, ucc_smartx_selenium_helper, clean_alert):
+    def test_alert_action_save(
+        self, ucc_smartx_selenium_helper, add_account, clean_alert
+    ):
         alert_page = AlertPage(ucc_smartx_selenium_helper, None)
         alert_page.alert_entity.open()
         alert_page.alert_entity.add_action_dropdown.wait_for_values()
@@ -168,7 +169,7 @@ class TestAlertActions(UccTester):
 
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
-    def test_alert_help_text_entity(self, ucc_smartx_selenium_helper):
+    def test_alert_help_text_entity(self, add_account, ucc_smartx_selenium_helper):
         alert_page = AlertPage(ucc_smartx_selenium_helper, None)
         alert_page.alert_entity.open()
         alert_page.alert_entity.add_action_dropdown.wait_for_values()
