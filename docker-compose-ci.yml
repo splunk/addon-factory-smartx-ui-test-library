@@ -54,6 +54,7 @@ services:
       - SPLUNK_PASSWORD=Chang3d!
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=9b741d03-43e9-4164-908b-e09102327d22
+      - SPLUNK_DISABLE_POPUPS=true
 
   sauceconnect:
     build:
