@@ -233,7 +233,7 @@ def ucc_smartx_rest_helper(ucc_smartx_configs, splunk, splunk_rest_uri):
         except Exception as e:
             last_exc = e
             LOGGER.warning(
-                "Failed to configure rest endpint for Splunk instance - Try={} \nTRACEBACK::{}".format(
+                "Failed to configure rest endpoint for Splunk instance - Try={} \nTRACEBACK::{}".format(
                     try_number, traceback.format_exc()
                 )
             )

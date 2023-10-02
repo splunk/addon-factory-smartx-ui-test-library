@@ -16,19 +16,15 @@
 
 import logging
 import os
-import re
 import sys
 import time
-import traceback
 
-import pytest
 import requests
 from msedge.selenium_tools import Edge, EdgeOptions
 from msedge.selenium_tools.remote_connection import EdgeRemoteConnection
 from selenium import webdriver
 from selenium.common.exceptions import ElementNotInteractableException, TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .pages.login import LoginPage
@@ -36,7 +32,7 @@ from .utils import backend_retry
 
 # requests.urllib3.disable_warnings()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 PNG_PATH = "assets"
 
 

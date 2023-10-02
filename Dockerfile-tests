@@ -38,4 +38,7 @@ RUN cd ../..
 
 WORKDIR /work
 
+RUN curl -ku admin:Chang3d! https://splunk:8089/services/properties/user-prefs/general -d hideInstrumentationOptInModal=1
+RUN curl -ku admin:Chang3d! https://splunk:8089/servicesNS/nobody/splunk_instrumentation/admin/telemetry/general -d showOptInModal=0 -d optInVersionAcknowledged=4
+
 ENTRYPOINT "/entrypoint.sh"

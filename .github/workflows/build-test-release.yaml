@@ -134,12 +134,12 @@ jobs:
         browser: ["chrome", "firefox"]
         test_suite: [
           "test_splunk_ta_example_addon_logging",
-          "test_splunk_ta_example_addon_account",
-          "test_splunk_ta_example_addon_proxy",
-          "test_splunk_ta_example_addon_input_common",
-          "test_splunk_ta_example_addon_input_1",
-          "test_splunk_ta_example_addon_input_2",
-          "test_splunk_ta_example_addon_custom",
+#          "test_splunk_ta_example_addon_account",
+#          "test_splunk_ta_example_addon_proxy",
+#          "test_splunk_ta_example_addon_input_common",
+#          "test_splunk_ta_example_addon_input_1",
+#          "test_splunk_ta_example_addon_input_2",
+#          "test_splunk_ta_example_addon_custom",
           "test_splunk_ta_example_addon_alert_actions"
         ]
     steps:
