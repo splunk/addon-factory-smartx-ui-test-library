@@ -34,7 +34,13 @@ class TextArea(TextBox):
         :param container: The locator of the container where the control is located in.
         """
         super().__init__(browser, container)
-        self.elements.update({"input": Selector(select=container.select + ' textarea[data-test="textbox"]')})
+        self.elements.update(
+            {
+                "input": Selector(
+                    select=container.select + ' textarea[data-test="textbox"]'
+                )
+            }
+        )
 
     def get_value(self):
         """
@@ -49,7 +55,7 @@ class TextArea(TextBox):
             :return: Str Value of the placeholder
         """
         return self.input.get_attribute("placeholder")
-        
+
     def get_textarea_height(self) -> int:
         """
         Get the height of the displayed textarea.
@@ -63,7 +69,7 @@ class TextArea(TextBox):
                     height = int(s.split(":")[-1].strip().replace("px", ""))
                     return height
         return 0
-    
+
     def append_value(self, value):
         """
         Appends the specified 'value' to an textarea element
