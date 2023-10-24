@@ -26,7 +26,7 @@ from .base_control import BaseControl
 class MultiSelect(BaseControl):
     """
     Entity-Component: Multiselect
-    Select Javascript framework: select2
+    Reference: https://splunkui.splunk.com/Packages/react-ui/Multiselect?section=test
     A dropdown which can select more than one values
     """
 
@@ -40,15 +40,17 @@ class MultiSelect(BaseControl):
         self.elements.update(
             {
                 "internal_container": Selector(
-                    select=container.select + ' [role="listbox"]'
+                    select=container.select + ' [data-test="multiselect"]'
                 ),
-                "dropdown": Selector(select=container.select + ' [role="listbox"]'),
+                "dropdown": Selector(select=container.select + ' [data-test="menu"]'),
                 "selected": Selector(
-                    select=container.select
-                    + ' button[data-test="selected-option"][role="option"]'
+                    select=container.select + ' [data-test="selected-option"]'
                 ),
+                """
+                Click on selected element deselects it
+                """
                 "deselect": Selector(
-                    select=container.select + ' [data-test="crossmark"]'
+                    select=container.select + ' [data-test="selected-option"]'
                 ),
                 "input": Selector(select=container.select + ' [data-test="textbox"]'),
             }
