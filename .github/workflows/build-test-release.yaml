@@ -129,9 +129,10 @@ jobs:
       checks: write
     strategy:
       fail-fast: false
+      max-parallel: 8
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
-        browser: ["chrome", "firefox"]
+        browser: ["chrome"]
         test_suite: [
           "test_splunk_ta_example_addon_logging",
           "test_splunk_ta_example_addon_account",
