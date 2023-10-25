@@ -37,7 +37,7 @@ class Dropdown(BaseComponent):
                     select=container.select
                     + ' [data-test="select"] [data-test="label"]'
                 ),
-                "type_dropdown": Selector(select=container.select)
+                "type_dropdown": Selector(select=container.select),
             }
         )
 
@@ -79,11 +79,13 @@ class Dropdown(BaseComponent):
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "pagination_dropdown": Selector(select=popover_id + '[data-test="menu"]'),
+                "pagination_dropdown": Selector(
+                    select=popover_id + '[data-test="menu"]'
+                ),
                 "values": Selector(
                     select=popover_id
                     + ' [data-test="item"]:not([data-test-selected="true"]) [data-test="label"]'
-                )
+                ),
             }
         )
 
@@ -106,7 +108,9 @@ class Dropdown(BaseComponent):
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "type_filter_list": Selector(select=popover_id + ' [data-test="label"]'),
+                "type_filter_list": Selector(
+                    select=popover_id + ' [data-test="label"]'
+                ),
             }
         )
         for each in self.get_elements("type_filter_list"):
@@ -153,7 +157,9 @@ class Dropdown(BaseComponent):
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "type_filter_list": Selector(select=popover_id + ' [data-test="label"]'),
+                "type_filter_list": Selector(
+                    select=popover_id + ' [data-test="label"]'
+                ),
             }
         )
         return [each.text.strip() for each in self.get_elements("type_filter_list")]

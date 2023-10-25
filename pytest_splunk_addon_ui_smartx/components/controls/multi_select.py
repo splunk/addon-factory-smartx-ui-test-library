@@ -36,22 +36,22 @@ class MultiSelect(BaseControl):
         super().__init__(browser, container)
 
         root_selector = container.select + ' [data-test="multiselect"]'
-        self.elements.update({
-            "root": Selector(select=root_selector)
-        })
+        self.elements.update({"root": Selector(select=root_selector)})
 
-        self.elements.update({
-            "selected": Selector(
-                select=root_selector + ' [data-test="selected-option"]'
-            ),
-            """
+        self.elements.update(
+            {
+                "selected": Selector(
+                    select=root_selector + ' [data-test="selected-option"]'
+                ),
+                """
                 Click on selected element deselects it
                 """
-            "deselect": Selector(
-                select=root_selector + ' [data-test="selected-option"]'
-            ),
-            "input": Selector(select=root_selector + ' [data-test="textbox"]'),
-        })
+                "deselect": Selector(
+                    select=root_selector + ' [data-test="selected-option"]'
+                ),
+                "input": Selector(select=root_selector + ' [data-test="textbox"]'),
+            }
+        )
 
     def search(self, value):
         """
@@ -170,7 +170,8 @@ class MultiSelect(BaseControl):
         self.elements.update(
             {
                 "values": Selector(
-                    select=popover_id + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]'
+                    select=popover_id
+                    + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]'
                 )
             }
         )

@@ -46,14 +46,19 @@ class SingleSelect(BaseControl):
                 "Invalid combination of values for searchable and allow_new_values flags"
             )
 
-        self.element_selector = (container.select +
-                                 (' [data-test="combo-box"]' if allow_new_values else ' [data-test="select"]'))
+        self.element_selector = container.select + (
+            ' [data-test="combo-box"]' if allow_new_values else ' [data-test="select"]'
+        )
 
         self.elements.update(
             {
                 "root": Selector(select=self.element_selector),
-                "selected": Selector(select=container.select + ' [data-test="textbox"]'),
-                "cancel_selected": Selector(select=container.select + ' [data-test="clear"]'),
+                "selected": Selector(
+                    select=container.select + ' [data-test="textbox"]'
+                ),
+                "cancel_selected": Selector(
+                    select=container.select + ' [data-test="clear"]'
+                ),
             }
         )
 
@@ -72,11 +77,13 @@ class SingleSelect(BaseControl):
 
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
 
-        self.elements.update({
-            "values": Selector(select=popover_id + ' [data-test="option"]'),
-            "dropdown": Selector(select=popover_id + ' [data-test="menu"]'),
-            "combobox": Selector(select=popover_id + ' [data-test="menu"]'),
-        })
+        self.elements.update(
+            {
+                "values": Selector(select=popover_id + ' [data-test="option"]'),
+                "dropdown": Selector(select=popover_id + ' [data-test="menu"]'),
+                "combobox": Selector(select=popover_id + ' [data-test="menu"]'),
+            }
+        )
 
         for each in self.get_elements("values"):
             if each.text.strip().lower() == value.lower():
@@ -96,11 +103,13 @@ class SingleSelect(BaseControl):
             self.root.click()
         if self.searchable:
             if self.allow_new_values:
-                self.elements.update({
+                self.elements.update(
+                    {
                         "input": Selector(
                             select=self.element_selector + ' [data-test="textbox"]'
                         )
-                    })
+                    }
+                )
             else:
                 popover_id = "#" + self.root.get_attribute("data-test-popover-id")
                 self.elements.update(
@@ -142,7 +151,7 @@ class SingleSelect(BaseControl):
             self.input.send_keys(Keys.ESCAPE)
             self.wait_for("root")
 
-        print('searched_values')
+        print("searched_values")
         print(searched_values)
         return searched_values
 
@@ -170,7 +179,9 @@ class SingleSelect(BaseControl):
                 }
             )
         for each in self.get_elements("values"):
-            yield each.get_attribute("data-test-current-value-option") or each.get_attribute("textContent")
+            yield each.get_attribute(
+                "data-test-current-value-option"
+            ) or each.get_attribute("textContent")
 
     def get_value(self):
         """
@@ -269,7 +280,7 @@ class SingleSelect(BaseControl):
         """
         selected_val = self.get_value()
 
-        self.wait_to_be_clickable('root')
+        self.wait_to_be_clickable("root")
         self.root.click()
         if self.allow_new_values:
             if self.searchable:
