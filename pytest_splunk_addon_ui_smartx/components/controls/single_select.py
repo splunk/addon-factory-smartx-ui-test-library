@@ -151,8 +151,6 @@ class SingleSelect(BaseControl):
             self.input.send_keys(Keys.ESCAPE)
             self.wait_for("root")
 
-        print("searched_values")
-        print(searched_values)
         return searched_values
 
     def _list_visible_values(self, open_dropdown=True):
