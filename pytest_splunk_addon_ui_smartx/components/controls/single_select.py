@@ -123,7 +123,7 @@ class SingleSelect(BaseControl):
         """
         search with the singleselect input and return the list
             :param value: string value to search
-            :return list of values
+            :return: list of values
         """
 
         if self.searchable:
@@ -159,7 +159,7 @@ class SingleSelect(BaseControl):
         """
         Gets a list of values which are visible. Used while filtering
             :param open_dropdown: Whether the dropdown should be opened
-            :return List of the values that are visible
+            :return: List of the values that are visible
         """
         if open_dropdown:
             self.root.click()
@@ -234,7 +234,7 @@ class SingleSelect(BaseControl):
     def list_of_values(self):
         """
         Gets the list of value from the Single Select
-            :return list of options avaialble within the single select
+            :return: list of options avaialble within the single select
         """
         selected_val = self.get_value()
         self.root.click()
@@ -276,7 +276,7 @@ class SingleSelect(BaseControl):
 
     def get_single_value(self):
         """
-        Return one value from Single Select
+        :return: one value from Single Select
         """
         selected_val = self.get_value()
 

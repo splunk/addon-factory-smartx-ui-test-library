@@ -70,7 +70,7 @@ class MultiSelect(BaseControl):
         """
         search with the multiselect input and return the list
             :param value: string value to search
-            :return list of values
+            :return: list of values
         """
         self.search(value)
         self.wait_for_search_list()
@@ -82,7 +82,7 @@ class MultiSelect(BaseControl):
         """
         select a single value
             :param value: the value to select
-            :return Bool returns true if selection was successful, else raises an exception
+            :return: Bool returns true if selection was successful, else raises an exception
         """
         try:
             try:
@@ -110,7 +110,7 @@ class MultiSelect(BaseControl):
         """
         Remove an item from selected list.
             :param value: the value to deselect
-            :return Bool returns true if deselect was successful, else raises an exception
+            :return: Bool returns true if deselect was successful, else raises an exception
         """
         for each in self.get_child_elements("selected"):
             if each.text.strip().lower() == value.lower():
@@ -130,14 +130,14 @@ class MultiSelect(BaseControl):
     def get_values(self):
         """
         get list selected values
-            :return List of values selected within the multi-select
+            :return: List of values selected within the multi-select
         """
         return [each.text.strip() for each in self.get_child_elements("selected")]
 
     def list_of_values(self):
         """
         Get list of possible values to select from dropdown
-            :return List of options within the multi-select dropdown
+            :return: List of options within the multi-select dropdown
         """
         self.wait_for("root")
         list_of_values = []
@@ -163,7 +163,7 @@ class MultiSelect(BaseControl):
     def _list_visible_values(self):
         """
         Get list of values which are visible. Used while filtering
-            :return List of visible options within the multi-select dropdown
+            :return: List of visible options within the multi-select dropdown
         """
         self.input.click()
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
