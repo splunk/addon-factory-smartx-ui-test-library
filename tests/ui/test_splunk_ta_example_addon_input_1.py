@@ -87,6 +87,7 @@ def add_input_one(ucc_smartx_rest_helper):
         "singleSelectTest": "two",
         "start_date": "2020-12-11T20:00:32.000z",
         "disabled": 0,
+        "example_textarea_field": "line1\nline2",
     }
     yield input_page.backend_conf.post_stanza(url, kwargs)
 
@@ -794,6 +795,7 @@ class TestInput(UccTester):
         input_page.entity1.object.set_value("test_object")
         input_page.entity1.object_fields.set_value("test_field")
         input_page.entity1.query_start_date.set_value("2020-12-11T20:00:32.000z")
+        input_page.entity1.text_area.set_value("line1\nline2")
         self.assert_util(input_page.entity1.save, True)
         input_page.table.wait_for_rows_to_appear(1)
         self.assert_util(
@@ -829,6 +831,7 @@ class TestInput(UccTester):
         input_page.entity1.object.set_value("test_object")
         input_page.entity1.object_fields.set_value("test_field")
         input_page.entity1.query_start_date.set_value("2020-12-11T20:00:32.000z")
+        input_page.entity1.text_area.set_value("line1\nline2")
         self.assert_util(input_page.entity1.save, True)
         input_page.table.wait_for_rows_to_appear(1)
         value_to_test = {
@@ -844,6 +847,7 @@ class TestInput(UccTester):
             "singleSelectTest": "two",
             "start_date": "2020-12-11T20:00:32.000z",
             "disabled": 0,
+            "example_textarea_field": "line1\nline2",
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_one://dummy_input"
@@ -889,6 +893,7 @@ class TestInput(UccTester):
         input_page.entity1.order_by.set_value("LastDate")
         input_page.entity1.limit.set_value("2000")
         input_page.entity1.query_start_date.set_value("2020-20-20T20:20:20.000z")
+        input_page.entity1.text_area.set_value("line3\nline4")
         self.assert_util(input_page.entity1.save, True)
         input_page.table.wait_for_rows_to_appear(1)
         self.assert_util(
@@ -926,6 +931,7 @@ class TestInput(UccTester):
         input_page.entity1.order_by.set_value("LastDate")
         input_page.entity1.limit.set_value("2000")
         input_page.entity1.query_start_date.set_value("2020-20-20T20:20:20.000z")
+        input_page.entity1.text_area.set_value("line3\nline4")
         self.assert_util(input_page.entity1.save, True)
         input_page.table.wait_for_rows_to_appear(1)
         value_to_test = {
@@ -942,6 +948,7 @@ class TestInput(UccTester):
             "singleSelectTest": "four",
             "start_date": "2020-20-20T20:20:20.000z",
             "disabled": 0,
+            "example_textarea_field": "line3\nline4",
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_one://dummy_input_one"
@@ -974,6 +981,7 @@ class TestInput(UccTester):
             input_page.entity1.query_start_date.get_value, "2020-12-11T20:00:32.000z"
         )
         self.assert_util(input_page.entity1.limit.get_value, "1000")
+        self.assert_util(input_page.entity1.text_area.get_value, "line1\nline2")
 
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
@@ -990,6 +998,7 @@ class TestInput(UccTester):
         input_page.entity1.name.set_value("dummy_input_one_Clone_Test")
         input_page.entity1.interval.set_value("180")
         input_page.entity1.limit.set_value("500")
+        input_page.entity1.text_area.set_value("line1\nline2")
         self.assert_util(input_page.entity1.save, True)
         input_page.table.wait_for_rows_to_appear(2)
         self.assert_util(
@@ -1019,6 +1028,7 @@ class TestInput(UccTester):
         input_page.entity1.name.set_value("dummy_input_one_Clone_Test")
         input_page.entity1.interval.set_value("180")
         input_page.entity1.limit.set_value("500")
+        input_page.entity1.text_area.set_value("line3\nline4")
         self.assert_util(input_page.entity1.save, True)
         input_page.table.wait_for_rows_to_appear(2)
         value_to_test = {
@@ -1035,6 +1045,7 @@ class TestInput(UccTester):
             "singleSelectTest": "two",
             "start_date": "2020-12-11T20:00:32.000z",
             "disabled": 0,
+            "example_textarea_field": "line3\nline4",
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_one://dummy_input_one_Clone_Test"
@@ -1276,3 +1287,67 @@ class TestInput(UccTester):
         self.assert_util(
             prompt_message, 'Are you sure you want to delete "{}" ?'.format(input_name)
         )
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_inputs_textarea_height(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, add_input_one
+    ):
+        """
+        Verifies that textarea height values
+        """
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        input_page.table.edit_row("dummy_input_one")
+        min_textarea_height = 71
+        max_textarea_height = 311
+        long_input = ""
+        self.assert_util(
+            min_textarea_height, input_page.entity1.text_area.get_textarea_height
+        )
+        for i in range(1, 50):
+            long_input += f"{str(i)}\n"
+        input_page.entity1.text_area.append_value(long_input)
+        self.assert_util(
+            max_textarea_height, input_page.entity1.text_area.get_textarea_height
+        )
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_inputs_textarea_big_input(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, add_input_one
+    ):
+        """
+        Verifies that textarea can handle big inputs
+        """
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        input_page.table.edit_row("dummy_input_one")
+        big_input = ""
+        for i in range(1, 1000):
+            big_input += f"{str(i)}\n"
+        input_page.entity1.text_area.set_value(big_input)
+        self.assert_util(big_input, input_page.entity1.text_area.get_value())
+        self.assert_util(input_page.entity1.save, True)
+        input_page.table.edit_row("dummy_input_one")
+        self.assert_util(big_input.strip(), input_page.entity1.text_area.get_value())
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_inputs_textarea_scroll(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, add_input_one
+    ):
+        """
+        Verifies that textarea height values
+        """
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        input_page.table.edit_row("dummy_input_one")
+        long_input = ""
+        screnshot_before = input_page.entity1.text_area.screenshot()
+        for i in range(1, 50):
+            long_input += f"{str(i)}\n"
+        input_page.entity1.text_area.append_value(long_input)
+        input_page.entity1.text_area.scroll("UP", 40)
+        screenshot_after = input_page.entity1.text_area.screenshot()
+        self.assert_util(screnshot_before, screenshot_after, operator="!=")

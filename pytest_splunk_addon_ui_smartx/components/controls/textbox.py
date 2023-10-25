@@ -95,6 +95,6 @@ class TextBox(BaseControl):
         """
 
         def _wait_for_field_to_be_editable(driver):
-            return self.is_editable == True
+            return self.is_editable()
 
         self.wait_for(_wait_for_field_to_be_editable, msg="Field is uneditable")
