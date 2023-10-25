@@ -61,7 +61,7 @@ class TextArea(TextBox):
         Get the height of the displayed textarea.
             :return: Int Height of the textarea in pixels.
         """
-        return self.input.size['height']
+        return self.input.size["height"]
 
     def append_value(self, value) -> None:
         """
