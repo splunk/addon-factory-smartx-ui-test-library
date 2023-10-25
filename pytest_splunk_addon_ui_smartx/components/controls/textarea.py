@@ -1,11 +1,11 @@
 #
-# Copyright 2021 Splunk Inc.
+# Copyright 2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,17 +61,28 @@ class TextArea(TextBox):
         Get the height of the displayed textarea.
             :return: Int Height of the textarea in pixels.
         """
-        style = self.input.get_attribute("style")
-        if "height" in style:
-            styles = style.split(";")
-            for s in styles:
-                if "height" in s:
-                    height = int(s.split(":")[-1].strip().replace("px", ""))
-                    return height
-        return 0
+        return self.input.size['height']
 
-    def append_value(self, value):
+    def append_value(self, value) -> None:
         """
         Appends the specified 'value' to an textarea element
         """
         self.input.send_keys(value)
+
+    def screenshot(self) -> str:
+        """
+        Creates screenshot of current element
+            :return: screenshot as base64
+        """
+        return self.input.screenshot_as_base64
+
+    def scroll(self, direction: str, scroll_count: int) -> None:
+        """
+        Scrolls the input element in the specified direction.
+        """
+        valid_directions = ["UP", "DOWN"]
+        if direction not in valid_directions:
+            raise ValueError("Invalid direction. Use 'UP' or 'DOWN'.")
+        key = Keys.ARROW_UP if direction == "UP" else Keys.ARROW_DOWN
+        for _ in range(scroll_count):
+            self.input.send_keys(key)
