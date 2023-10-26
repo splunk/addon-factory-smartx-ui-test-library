@@ -261,7 +261,13 @@ class TestInput(UccTester):
     ):
         """Verifies input type filter list"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
-        type_filter_list = ["All", "Example Input One", "Example Input Two", "Example Input Three", "Example Input Four"]
+        type_filter_list = [
+            "All",
+            "Example Input One",
+            "Example Input Two",
+            "Example Input Three",
+            "Example Input Four",
+        ]
         self.assert_util(input_page.type_filter.get_input_type_list, type_filter_list)
         input_page.type_filter.select_input_type(
             "Example Input One", open_dropdown=False
@@ -347,7 +353,7 @@ class TestInput(UccTester):
         self.assert_util(
             input_page.description.wait_to_display, "Manage your data inputs"
         )
-        
+
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.input
@@ -361,10 +367,8 @@ class TestInput(UccTester):
             "Example Input Four",
         ]
         input_page.create_new_input.select("Group One")
-        self.assert_util(
-            input_page.create_new_input.get_inputs_list, value_to_test
-        )
-        
+        self.assert_util(input_page.create_new_input.get_inputs_list, value_to_test)
+
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.input
@@ -373,16 +377,10 @@ class TestInput(UccTester):
     ):
         """Verifies Back button after dropdown multilevel select"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
-        value_to_test = [
-            "Example Input One",
-            "Example Input Two",
-            "Group One"
-        ]
+        value_to_test = ["Example Input One", "Example Input Two", "Group One"]
         input_page.create_new_input.select_nested(["Group One", "Back"])
-        self.assert_util(
-            input_page.create_new_input.get_inputs_list, value_to_test
-        )
-    
+        self.assert_util(input_page.create_new_input.get_inputs_list, value_to_test)
+
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.input

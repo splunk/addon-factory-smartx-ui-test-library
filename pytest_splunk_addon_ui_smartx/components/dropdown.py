@@ -100,37 +100,34 @@ class Dropdown(BaseComponent):
                 return True
         else:
             raise ValueError("{} not found in select list".format(value))
-    
+
     def select_nested(self, values):
-            """
-            Selects the values we want from the type list in defined order
-                :param values: Dropdown values list in order we want to select
-                :return: Returns True if successful, otherwise raises an error
-            """
-            if not isinstance(values, list):
-                raise ValueError("{} has to be of type list".format(value))
-                
-            self.add_input.click()
-            popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
-            dropdown_selector = ' [data-test="item"]:not([data-test-selected="true"]) [data-test="label"]'
-            for value in values:
-                found = False
-                self.elements.update(
-                    {
-                        "dropdown_options": Selector(
-                            select=popoverid
-                            + dropdown_selector
-                        )
-                    }
-                )
-                for each in self.get_elements("dropdown_options"):
-                    if each.text.strip().lower() == value.lower():
-                        found = True
-                        each.click()
-                        break
-                if not found:
-                    raise ValueError("{} not found in select list".format(value))
-                return True
+        """
+        Selects the values we want from the type list in defined order
+            :param values: Dropdown values list in order we want to select
+            :return: Returns True if successful, otherwise raises an error
+        """
+        if not isinstance(values, list):
+            raise ValueError("{} has to be of type list".format(value))
+
+        self.add_input.click()
+        popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
+        dropdown_selector = (
+            ' [data-test="item"]:not([data-test-selected="true"]) [data-test="label"]'
+        )
+        for value in values:
+            found = False
+            self.elements.update(
+                {"dropdown_options": Selector(select=popoverid + dropdown_selector)}
+            )
+            for each in self.get_elements("dropdown_options"):
+                if each.text.strip().lower() == value.lower():
+                    found = True
+                    each.click()
+                    break
+            if not found:
+                raise ValueError("{} not found in select list".format(value))
+            return True
 
     def select_input_type(self, value, open_dropdown=True):
         """
