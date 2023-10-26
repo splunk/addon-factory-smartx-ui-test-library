@@ -244,7 +244,7 @@ class TestInput(UccTester):
     ):
         """Verifies input list dropdown"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
-        create_new_input_list = ["Example Input One", "Example Input Two"]
+        create_new_input_list = ["Example Input One", "Example Input Two", "Group One"]
         self.assert_util(
             input_page.create_new_input.get_inputs_list, create_new_input_list
         )
@@ -261,7 +261,7 @@ class TestInput(UccTester):
     ):
         """Verifies input type filter list"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
-        type_filter_list = ["All", "Example Input One", "Example Input Two"]
+        type_filter_list = ["All", "Example Input One", "Example Input Two", "Example Input Three", "Example Input Four"]
         self.assert_util(input_page.type_filter.get_input_type_list, type_filter_list)
         input_page.type_filter.select_input_type(
             "Example Input One", open_dropdown=False
@@ -269,6 +269,10 @@ class TestInput(UccTester):
         self.assert_util(input_page.table.get_row_count, 1)
         input_page.type_filter.select_input_type("Example Input Two")
         self.assert_util(input_page.table.get_row_count, 1)
+        input_page.type_filter.select_input_type("Example Input Three")
+        self.assert_util(input_page.table.get_row_count, 0)
+        input_page.type_filter.select_input_type("Example Input Four")
+        self.assert_util(input_page.table.get_row_count, 0)
 
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
@@ -350,7 +354,7 @@ class TestInput(UccTester):
     def test_inputs_create_new_input_list_nested_values(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
-        """Verifies input list dropdown after multivalue select"""
+        """Verifies input list dropdown after multilevel select"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         value_to_test = [
             "Example Input Three",
@@ -367,7 +371,7 @@ class TestInput(UccTester):
     def test_inputs_create_new_input_list_nested_values_back(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
-        """Verifies Back button after dropdown multivalue select"""
+        """Verifies Back button after dropdown multilevel select"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         value_to_test = [
             "Example Input One",
