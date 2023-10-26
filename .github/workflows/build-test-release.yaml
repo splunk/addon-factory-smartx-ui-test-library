@@ -152,7 +152,7 @@ jobs:
           export PATH=$PATH:$CHROMEWEBDRIVER
           chromedriver --version
           export PATH=$PATH:$GECKOWEBDRIVER
-          gecko_driver --version
+          geckodriver --version
       - run: |
           ./run_splunk.sh ${{ matrix.splunk.version }}
           until curl -Lsk "https://localhost:8088/services/collector/health" &>/dev/null ; do echo -n "Waiting for HEC-" && sleep 5 ; done
