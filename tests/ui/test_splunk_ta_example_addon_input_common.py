@@ -343,3 +343,64 @@ class TestInput(UccTester):
         self.assert_util(
             input_page.description.wait_to_display, "Manage your data inputs"
         )
+        
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_inputs_create_new_input_list_nested_values(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """Verifies input list dropdown after multivalue select"""
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        value_to_test = [
+            "Example Input Three",
+            "Example Input Four",
+        ]
+        input_page.create_new_input.select("Group One")
+        self.assert_util(
+            input_page.create_new_input.get_inputs_list, value_to_test
+        )
+        
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_inputs_create_new_input_list_nested_values_back(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """Verifies Back button after dropdown multivalue select"""
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        value_to_test = [
+            "Example Input One",
+            "Example Input Two",
+            "Group One"
+        ]
+        input_page.create_new_input.select_nested(["Group One", "Back"])
+        self.assert_util(
+            input_page.create_new_input.get_inputs_list, value_to_test
+        )
+    
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_inputs_create_new_input_from_nested_value(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """Verifies input creations after nested value select"""
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        group_one_list = [
+            "Example Input Three",
+            "Example Input Four",
+        ]
+        input_page.create_new_input.select_nested(["Group One", "Example Input Three"])
+        input_page.entity3.name.set_value("input_three")
+        input_page.entity3.interval.set_value("50")
+        input_page.entity3.save()
+        value_to_test = {
+            "account": "dummy_input_three",
+            "interval": "50",
+        }
+        backend_stanza = input_page.backend_conf.get_stanza(
+            "example_input_three://dummy_input_three"
+        )
+        for each_key, each_value in value_to_test.items():
+            self.assert_util(each_value, backend_stanza[each_key])
