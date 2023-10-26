@@ -146,6 +146,8 @@ jobs:
         with:
           name: output
           path: output/
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+      - run: poetry install
       - name: Link chromedriver and geckodriver
         # Use installed chromedriver https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
         run: |
