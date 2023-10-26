@@ -193,6 +193,7 @@ class ExampleInputTwo(Entity):
         )
         self.title = BaseComponent(browser, Selector(select=' [data-test="title"]'))
 
+
 class ExampleInputThree(Entity):
     """
     Form to configure a new Input
@@ -218,7 +219,8 @@ class ExampleInputThree(Entity):
             browser,
             Selector(select=' [data-test="control-group"][data-name="interval"]'),
         )
-        
+
+
 class ExampleInputFour(Entity):
     """
     Form to configure a new Input
