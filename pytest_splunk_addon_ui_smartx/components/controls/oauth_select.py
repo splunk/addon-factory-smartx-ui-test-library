@@ -14,18 +14,13 @@
 # limitations under the License.
 #
 
-import time
-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-
 from ..base_component import Selector
 from .base_control import BaseControl
 
 
 class OAuthSelect(BaseControl):
     """
-    Entity-Component: OAuthSelect
+    Entity-Component: Select
 
     OAuthSelect Javascript framework: OAuthSelect
 
@@ -41,8 +36,8 @@ class OAuthSelect(BaseControl):
         super().__init__(browser, container)
         self.elements.update(
             {
+                "root": Selector(select=container.select + ' [data-test="select"]'),
                 "values": Selector(select=container.select + ' [data-test="option"]'),
-                "dropdown": Selector(select=container.select + " .dropdownBox"),
             }
         )
 
@@ -53,12 +48,12 @@ class OAuthSelect(BaseControl):
             :return: Bool if successful in selection, else raises an error
         """
 
-        self.dropdown.click()
-        popoverid = "#" + self.dropdown.get_attribute("data-test-popover-id")
+        self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
                 "values": Selector(
-                    select=popoverid
+                    select=popover_id
                     + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]'
                 )
             }
@@ -76,8 +71,7 @@ class OAuthSelect(BaseControl):
             :return: Str The elected value within the dropdown, else returns blank
         """
         try:
-            element = self.get_element("dropdown")
-            return element.get_attribute("data-test-value")
+            return self.root.get_attribute("data-test-value")
         except:
             return ""
 
@@ -87,12 +81,12 @@ class OAuthSelect(BaseControl):
             :returns: List of options from the single select
         """
         selected_val = self.get_value()
-        self.container.click()
+        self.root.click()
         first_element = None
         list_of_values = []
-        popoverid = "#" + self.dropdown.get_attribute("data-test-popover-id")
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
-            {"values": Selector(select=popoverid + ' [data-test="option"]')}
+            {"values": Selector(select=popover_id + ' [data-test="option"]')}
         )
         for each in self.get_elements("values"):
             list_of_values.append(each.text.strip())

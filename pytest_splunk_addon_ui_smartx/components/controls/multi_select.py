@@ -13,10 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import time
 
 from selenium.common.exceptions import ElementClickInterceptedException
-from selenium.webdriver.common.by import By
+
 from selenium.webdriver.common.keys import Keys
 
 from ..base_component import Selector
@@ -26,7 +25,6 @@ from .base_control import BaseControl
 class MultiSelect(BaseControl):
     """
     Entity-Component: Multiselect
-    Select Javascript framework: select2
     A dropdown which can select more than one values
     """
 
@@ -37,20 +35,21 @@ class MultiSelect(BaseControl):
         """
         super().__init__(browser, container)
 
+        root_selector = container.select + ' [data-test="multiselect"]'
+        self.elements.update({"root": Selector(select=root_selector)})
+
         self.elements.update(
             {
-                "internal_container": Selector(
-                    select=container.select + ' [role="listbox"]'
-                ),
-                "dropdown": Selector(select=container.select + ' [role="listbox"]'),
                 "selected": Selector(
-                    select=container.select
-                    + ' button[data-test="selected-option"][role="option"]'
+                    select=root_selector + ' [data-test="selected-option"]'
                 ),
+                """
+                Click on selected element deselects it
+                """
                 "deselect": Selector(
-                    select=container.select + ' [data-test="crossmark"]'
+                    select=root_selector + ' [data-test="selected-option"]'
                 ),
-                "input": Selector(select=container.select + ' [data-test="textbox"]'),
+                "input": Selector(select=root_selector + ' [data-test="textbox"]'),
             }
         )
 
@@ -71,13 +70,12 @@ class MultiSelect(BaseControl):
         """
         search with the multiselect input and return the list
             :param value: string value to search
-            :returns: list of values
+            :return: list of values
         """
         self.search(value)
         self.wait_for_search_list()
         searched_values = list(self._list_visible_values())
         self.input.send_keys(Keys.ESCAPE)
-        self.wait_for("container")
         return searched_values
 
     def select(self, value):
@@ -87,21 +85,18 @@ class MultiSelect(BaseControl):
             :return: Bool returns true if selection was successful, else raises an exception
         """
         try:
-            time.sleep(1)
             try:
                 self.input.click()
             except ElementClickInterceptedException:
                 self.label_text.click()
-                time.sleep(1)
                 self.input.click()
-            time.sleep(1)
-            popoverid = "#" + self.dropdown.get_attribute("data-test-popover-id")
 
         except:
             raise Exception("dropdown not found")
 
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
-            {"values": Selector(select=popoverid + ' [data-test="option"]')}
+            {"values": Selector(select=popover_id + ' [data-test="option"]')}
         )
         for each in self.get_elements("values"):
             if each.text.strip().lower() == value.lower():
@@ -119,11 +114,8 @@ class MultiSelect(BaseControl):
         """
         for each in self.get_child_elements("selected"):
             if each.text.strip().lower() == value.lower():
-                time.sleep(1)
-                each.find_element(
-                    *list(self.elements["deselect"]._asdict().values())
-                ).click()
-                self.wait_for("internal_container")
+                each.click()
+                self.wait_for("root")
                 return True
         else:
             raise ValueError("{} not found in select list".format(value))
@@ -138,24 +130,23 @@ class MultiSelect(BaseControl):
     def get_values(self):
         """
         get list selected values
-            :returns: List of values selected within the multi-select
+            :return: List of values selected within the multi-select
         """
         return [each.text.strip() for each in self.get_child_elements("selected")]
 
     def list_of_values(self):
         """
         Get list of possible values to select from dropdown
-            :returns: List of options within the multi-select dropdown
+            :return: List of options within the multi-select dropdown
         """
-        self.wait_for("internal_container")
-        time.sleep(1)
+        self.wait_for("root")
         list_of_values = []
         self.input.click()
-        popoverid = "#" + self.dropdown.get_attribute("data-test-popover-id")
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
                 "values": Selector(
-                    select=popoverid + ' [data-test="option"] [data-test="label"]'
+                    select=popover_id + ' [data-test="option"] [data-test="label"]'
                 )
             }
         )
@@ -172,14 +163,14 @@ class MultiSelect(BaseControl):
     def _list_visible_values(self):
         """
         Get list of values which are visible. Used while filtering
-            :returns: List of visible options within the multi-select dropdown
+            :return: List of visible options within the multi-select dropdown
         """
         self.input.click()
-        popoverid = "#" + self.dropdown.get_attribute("data-test-popover-id")
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
                 "values": Selector(
-                    select=popoverid
+                    select=popover_id
                     + ' [data-test="option"]:not([data-test-selected="true"]) [data-test="label"]'
                 )
             }
