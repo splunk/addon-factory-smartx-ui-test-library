@@ -87,10 +87,6 @@ jobs:
           key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             poetry-${{ runner.os }}-
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry
-          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       - run: poetry install
         if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
       - run: poetry run pytest -v tests/unit
@@ -111,9 +107,16 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
-      - run: |
-          poetry install
-          poetry build
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+      - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
+      - run: poetry build
       - run: |
           poetry run ucc-gen build \
             --source=tests/testdata/Splunk_TA_UCCExample/package \
@@ -162,7 +165,15 @@ jobs:
           name: output
           path: output/
       - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
       - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
       - name: Link chromedriver and geckodriver
         # Use installed chromedriver https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
         run: |
