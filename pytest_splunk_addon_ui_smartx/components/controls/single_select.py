@@ -22,7 +22,7 @@ from .base_control import BaseControl
 
 class SingleSelect(BaseControl):
     """
-    Entity-Component: SingleSelect
+    Entity-Component: Select, ComboBox
 
     A dropdown which can select only one value
     """
@@ -96,7 +96,7 @@ class SingleSelect(BaseControl):
         """
         search with the singleselect input
             :param value: string value to search
-            :assert Asserts whether the single select is seachable
+            :assert Asserts whether the single select is searchable
         """
         assert self.searchable, "Can not search, as the Singleselect is not searchable"
         if open_dropdown:
@@ -123,7 +123,7 @@ class SingleSelect(BaseControl):
         """
         search with the singleselect input and return the list
             :param value: string value to search
-            :return: list of values
+            :return: a list of values
         """
 
         if self.searchable:
@@ -161,13 +161,13 @@ class SingleSelect(BaseControl):
         """
         if open_dropdown:
             self.root.click()
+
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         if self.allow_new_values:
-            popover_id = "#" + self.root.get_attribute("data-test-popover-id")
             self.elements.update(
                 {"values": Selector(select=popover_id + ' [data-test="option"]')}
             )
         else:
-            popover_id = "#" + self.root.get_attribute("data-test-popover-id")
             self.elements.update(
                 {
                     "values": Selector(
@@ -280,6 +280,7 @@ class SingleSelect(BaseControl):
 
         self.wait_to_be_clickable("root")
         self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         if self.allow_new_values:
             if self.searchable:
                 self.elements.update(
@@ -289,7 +290,6 @@ class SingleSelect(BaseControl):
                         )
                     }
                 )
-            popover_id = "#" + self.root.get_attribute("data-test-popover-id")
             self.elements.update(
                 {
                     "values": Selector(
@@ -299,7 +299,6 @@ class SingleSelect(BaseControl):
                 }
             )
         else:
-            popover_id = "#" + self.root.get_attribute("data-test-popover-id")
             if self.searchable:
                 self.elements.update(
                     {"input": Selector(select=popover_id + ' [data-test="textbox"]')}
@@ -311,7 +310,7 @@ class SingleSelect(BaseControl):
         single_element = self.get_element("values")
 
         if selected_val and not self.allow_new_values:
-            # as the dropdown is already open we dont try to open it
+            # as the dropdown is already open, we don't try to open it
             self.select(selected_val, open_dropdown=False)
         elif self.searchable:
             self.input.send_keys(Keys.ESCAPE)
