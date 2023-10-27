@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
+env:
+  PYTHON_VERSION: "3.7"
+  POETRY_VERSION: "1.5.1"
+
 jobs:
   meta:
     runs-on: ubuntu-latest
@@ -54,7 +58,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
+          python-version: ${{ env.PYTHON_VERSION }}
       - uses: pre-commit/action@v3.0.0
 
   semgrep:
@@ -73,12 +77,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
+          python-version: ${{ env.PYTHON_VERSION }}
       - run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-      - run: |
-          poetry install
-          poetry run pytest -v tests/unit
+          curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+      - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
+      - run: poetry run pytest -v tests/unit
 
   build:
     name: build
@@ -94,11 +105,18 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.7
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-      - run: |
-          poetry install
-          poetry build
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+      - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
+      - run: poetry build
       - run: |
           poetry run ucc-gen build \
             --source=tests/testdata/Splunk_TA_UCCExample/package \
@@ -124,7 +142,6 @@ jobs:
       checks: write
     strategy:
       fail-fast: false
-      max-parallel: 8
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
         browser: ["chrome", "firefox"]
@@ -142,13 +159,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
+          python-version: ${{ env.PYTHON_VERSION }}
       - uses: actions/download-artifact@v3
         with:
           name: output
           path: output/
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
       - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
       - name: Link chromedriver and geckodriver
         # Use installed chromedriver https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
         run: |
@@ -186,8 +211,8 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - id: semantic
         uses: splunk/semantic-release-action@v1.3
         with:
