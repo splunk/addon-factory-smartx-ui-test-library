@@ -118,7 +118,9 @@ class Dropdown(BaseComponent):
                 if each.text.strip().lower() == value.lower():
                     found = True
                     each.click()
-                    time.sleep(1) #sleep here prevents broken animation resulting in unclicable button
+                    time.sleep(
+                        1
+                    )  # sleep here prevents broken animation resulting in unclicable button
                     break
             if not found:
                 raise ValueError("{} not found in select list".format(value))
