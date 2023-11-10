@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+import time
 from .base_component import BaseComponent, Selector
 
 
@@ -96,11 +97,40 @@ class Dropdown(BaseComponent):
         else:
             raise ValueError("{} not found in select list".format(value))
 
+    def select_nested(self, values):
+        """
+        Selects the values we want from the type list in defined order
+            :param values: Dropdown values list in order we want to select
+            :return: Returns True if successful, otherwise raises an error
+        """
+        if not isinstance(values, list):
+            raise ValueError("{} has to be of type list".format(values))
+
+        self.root.click()
+        popoverid = "#" + self.root.get_attribute("data-test-popover-id")
+        dropdown_selector = ' [data-test="item"] [data-test="label"]'
+        for value in values:
+            found = False
+            self.elements.update(
+                {"dropdown_options": Selector(select=popoverid + dropdown_selector)}
+            )
+            for each in self.get_elements("dropdown_options"):
+                if each.text.strip().lower() == value.lower():
+                    found = True
+                    each.click()
+                    time.sleep(
+                        1
+                    )  # sleep here prevents broken animation resulting in unclicable button
+                    break
+            if not found:
+                raise ValueError("{} not found in select list".format(value))
+        return True
+
     def select_input_type(self, value, open_dropdown=True):
         """
         Selects the input type option that the user specifies in value
             :param value: The value in which we want to select
-            :param open_dropdown: Whether or not the dropdown should be opened
+            :param open_dropdown: Whether the dropdown should be opened
             :return: Returns True if successful, otherwise raises an error
         """
         if open_dropdown:

@@ -194,6 +194,60 @@ class ExampleInputTwo(Entity):
         self.title = BaseComponent(browser, Selector(select=' [data-test="title"]'))
 
 
+class ExampleInputThree(Entity):
+    """
+    Form to configure a new Input
+    """
+
+    def __init__(self, browser, container):
+        """
+        :param browser: The selenium webdriver
+        :param container: The container in which the entity is located in
+        """
+        add_btn = Button(
+            browser, Selector(select=container.select + ' [id="addInputBtn"]')
+        )
+        entity_container = Selector(select=' [data-test="modal"]')
+
+        super().__init__(browser, entity_container, add_btn=add_btn)
+
+        # Controls
+        self.name = TextBox(
+            browser, Selector(select='[data-test="control-group"][data-name="name"]')
+        )
+        self.interval = TextBox(
+            browser,
+            Selector(select=' [data-test="control-group"][data-name="interval"]'),
+        )
+
+
+class ExampleInputFour(Entity):
+    """
+    Form to configure a new Input
+    """
+
+    def __init__(self, browser, container):
+        """
+        :param browser: The selenium webdriver
+        :param container: The container in which the entity is located in
+        """
+        add_btn = Button(
+            browser, Selector(select=container.select + ' [id="addInputBtn"]')
+        )
+        entity_container = Selector(select=' [data-test="modal"]')
+
+        super().__init__(browser, entity_container, add_btn=add_btn)
+
+        # Controls
+        self.name = TextBox(
+            browser, Selector(select='[data-test="control-group"][data-name="name"]')
+        )
+        self.interval = TextBox(
+            browser,
+            Selector(select=' [data-test="control-group"][data-name="interval"]'),
+        )
+
+
 class InputPage(Page):
     """
     Page: Input page
@@ -235,6 +289,12 @@ class InputPage(Page):
                 ucc_smartx_selenium_helper.browser, input_container
             )
             self.entity2 = ExampleInputTwo(
+                ucc_smartx_selenium_helper.browser, input_container
+            )
+            self.entity3 = ExampleInputThree(
+                ucc_smartx_selenium_helper.browser, input_container
+            )
+            self.entity4 = ExampleInputFour(
                 ucc_smartx_selenium_helper.browser, input_container
             )
             self.pagination = Dropdown(
