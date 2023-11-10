@@ -913,8 +913,6 @@
                 },
                 {
                     "name": "example_input_four",
-                    "restHandlerModule": "splunk_ta_uccexample_custom_rh",
-                    "restHandlerClass": "CustomRestHandler",
                     "entity": [
                         {
                             "type": "text",
