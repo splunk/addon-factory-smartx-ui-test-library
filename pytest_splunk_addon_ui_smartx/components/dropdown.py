@@ -106,8 +106,8 @@ class Dropdown(BaseComponent):
         if not isinstance(values, list):
             raise ValueError("{} has to be of type list".format(values))
 
-        self.add_input.click()
-        popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
+        self.root.click()
+        popoverid = "#" + self.root.get_attribute("data-test-popover-id")
         dropdown_selector = ' [data-test="item"] [data-test="label"]'
         for value in values:
             found = False
