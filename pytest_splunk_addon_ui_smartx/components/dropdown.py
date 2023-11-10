@@ -108,9 +108,7 @@ class Dropdown(BaseComponent):
 
         self.add_input.click()
         popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
-        dropdown_selector = (
-            ' [data-test="item"] [data-test="label"]'
-        )
+        dropdown_selector = ' [data-test="item"] [data-test="label"]'
         for value in values:
             found = False
             self.elements.update(

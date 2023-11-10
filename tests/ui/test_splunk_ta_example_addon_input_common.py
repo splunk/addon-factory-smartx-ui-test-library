@@ -398,11 +398,7 @@ class TestInput(UccTester):
         input_page.entity3.name.set_value("dummy_input_three")
         input_page.entity3.interval.set_value("50")
         input_page.entity3.save()
-        value_to_test = {
-            "index": "default",
-            "interval": "50",
-            "disabled": False
-        }
+        value_to_test = {"index": "default", "interval": "50", "disabled": False}
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_three://dummy_input_three"
         )
