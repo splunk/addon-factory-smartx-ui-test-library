@@ -14,13 +14,8 @@
 # limitations under the License.
 #
 
-import re
 import time
-
-from selenium.common import exceptions
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-
 from .base_component import BaseComponent, Selector
 
 
@@ -90,7 +85,7 @@ class Dropdown(BaseComponent):
             {
                 "values": Selector(
                     select=popoverid
-                    + ' [data-test="item"]:not([data-test-selected="true"]) [data-test="label"]'
+                    + ' [data-test="item"] [data-test="label"]'
                 )
             }
         )
@@ -108,12 +103,12 @@ class Dropdown(BaseComponent):
             :return: Returns True if successful, otherwise raises an error
         """
         if not isinstance(values, list):
-            raise ValueError("{} has to be of type list".format(value))
+            raise ValueError("{} has to be of type list".format(values))
 
         self.add_input.click()
         popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
         dropdown_selector = (
-            ' [data-test="item"]:not([data-test-selected="true"]) [data-test="label"]'
+            ' [data-test="item"] [data-test="label"]'
         )
         for value in values:
             found = False
@@ -124,16 +119,17 @@ class Dropdown(BaseComponent):
                 if each.text.strip().lower() == value.lower():
                     found = True
                     each.click()
+                    time.sleep(1)
                     break
             if not found:
                 raise ValueError("{} not found in select list".format(value))
-            return True
+        return True
 
     def select_input_type(self, value, open_dropdown=True):
         """
         Selects the input type option that the user specifies in value
             :param value: The value in which we want to select
-            :param open_dropdown: Whether or not the dropdown should be opened
+            :param open_dropdown: Whether the dropdown should be opened
             :return: Returns True if successful, otherwise raises an error
         """
         if open_dropdown:

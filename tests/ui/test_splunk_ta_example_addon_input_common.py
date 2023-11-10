@@ -363,6 +363,7 @@ class TestInput(UccTester):
         """Verifies input list dropdown after multilevel select"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         value_to_test = [
+            "Back",
             "Example Input Three",
             "Example Input Four",
         ]
@@ -394,12 +395,13 @@ class TestInput(UccTester):
             "Example Input Four",
         ]
         input_page.create_new_input.select_nested(["Group One", "Example Input Three"])
-        input_page.entity3.name.set_value("input_three")
+        input_page.entity3.name.set_value("dummy_input_three")
         input_page.entity3.interval.set_value("50")
         input_page.entity3.save()
         value_to_test = {
-            "account": "dummy_input_three",
+            "index": "default",
             "interval": "50",
+            "disabled": False
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_three://dummy_input_three"
