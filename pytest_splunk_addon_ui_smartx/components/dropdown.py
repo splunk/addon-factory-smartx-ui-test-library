@@ -15,7 +15,6 @@
 #
 
 import time
-from selenium.webdriver.common.by import By
 from .base_component import BaseComponent, Selector
 
 
@@ -25,7 +24,7 @@ class Dropdown(BaseComponent):
     Base class of Input & Configuration table
     """
 
-    def __init__(self, browser, container, mapping=dict()):
+    def __init__(self, browser, container):
         """
         :param browser: The selenium webdriver
         :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
@@ -34,14 +33,12 @@ class Dropdown(BaseComponent):
         super().__init__(browser, container)
         self.elements.update(
             {
+                "root": Selector(select=container.select),
                 "currunt_value": Selector(
                     select=container.select
                     + ' [data-test="select"] [data-test="label"]'
                 ),
-                "pagination_dropdown": Selector(select='button[data-test="select"]'),
                 "type_dropdown": Selector(select=container.select),
-                "add_input": Selector(by=By.ID, select="addInputBtn"),
-                "type_filter_list": Selector(select='button[data-test="option"]'),
             }
         )
 
@@ -51,11 +48,11 @@ class Dropdown(BaseComponent):
             :param value: The value in which we want to select
             :return: Returns True if successful, otherwise raises an error
         """
-        self.pagination_dropdown.click()
-        popoverid = "#" + self.pagination_dropdown.get_attribute("data-test-popover-id")
+        self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "page_list": Selector(select=popoverid + ' [data-test="label"]'),
+                "page_list": Selector(select=popover_id + ' [data-test="label"]'),
             }
         )
         for each in self.get_elements("page_list"):
@@ -79,16 +76,20 @@ class Dropdown(BaseComponent):
             :return: Returns True if successful, otherwise raises an error
         """
 
-        self.add_input.click()
-        popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
+        self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
+                "pagination_dropdown": Selector(
+                    select=popover_id + '[data-test="menu"]'
+                ),
                 "values": Selector(
-                    select=popoverid
-                    + ' [data-test="item"] [data-test="label"]'
-                )
+                    select=popover_id
+                    + ' [data-test="item"]:not([data-test-selected="true"]) [data-test="label"]'
+                ),
             }
         )
+
         for each in self.get_elements("values"):
             if each.text.strip().lower() == value.lower():
                 each.click()
@@ -133,11 +134,13 @@ class Dropdown(BaseComponent):
             :return: Returns True if successful, otherwise raises an error
         """
         if open_dropdown:
-            self.type_dropdown.click()
-        popoverid = "#" + self.type_dropdown.get_attribute("data-test-popover-id")
+            self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "type_filter_list": Selector(select=popoverid + ' [data-test="label"]'),
+                "type_filter_list": Selector(
+                    select=popover_id + ' [data-test="label"]'
+                ),
             }
         )
         for each in self.get_elements("type_filter_list"):
@@ -152,11 +155,11 @@ class Dropdown(BaseComponent):
         Returns a generator list for the options available in the add input dropdown
             :return: Returns Generator list of values
         """
-        self.add_input.click()
-        popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
+        self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "type_list": Selector(select=popoverid + ' [data-test="item"]'),
+                "type_list": Selector(select=popover_id + ' [data-test="item"]'),
             }
         )
         return [each.text.strip() for each in self.get_elements("type_list")]
@@ -166,11 +169,11 @@ class Dropdown(BaseComponent):
         Returns a generator list for the pagination text available in the add input dropdown
             :return: Returns Generator list of values
         """
-        self.pagination_dropdown.click()
-        popoverid = "#" + self.pagination_dropdown.get_attribute("data-test-popover-id")
+        self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "page_list": Selector(select=popoverid + ' [data-test="label"]'),
+                "page_list": Selector(select=popover_id + ' [data-test="label"]'),
             }
         )
         return [each.text.strip() for each in self.get_elements("page_list")]
@@ -180,11 +183,13 @@ class Dropdown(BaseComponent):
         Returns a generator list for the input types available in the add input dropdown
             :return: Returns Generator list of values
         """
-        self.type_dropdown.click()
-        popoverid = "#" + self.type_dropdown.get_attribute("data-test-popover-id")
+        self.root.click()
+        popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
             {
-                "type_filter_list": Selector(select=popoverid + ' [data-test="label"]'),
+                "type_filter_list": Selector(
+                    select=popover_id + ' [data-test="label"]'
+                ),
             }
         )
         return [each.text.strip() for each in self.get_elements("type_filter_list")]
