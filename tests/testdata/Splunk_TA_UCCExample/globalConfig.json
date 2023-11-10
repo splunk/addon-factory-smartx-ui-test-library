@@ -873,7 +873,6 @@
                 },
                 {
                     "name": "example_input_three",
-                    "restHandlerName": "splunk_ta_uccexample_rh_three_custom",
                     "entity": [
                         {
                             "type": "text",
