@@ -30,7 +30,7 @@ classifiers = [
 packages = [
         {include = "pytest_splunk_addon_ui_smartx/**/*.py"},
 ]
-version = "2.4.0"
+version = "2.5.2"
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -51,7 +51,8 @@ pytest = ">=5.4, <7.3"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-panels = "*"
-splunk-add-on-ucc-framework = "^5.28.5"
+splunk-add-on-ucc-framework = "5.28.5"
+pytest-rerunfailures = "^12.0"
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]

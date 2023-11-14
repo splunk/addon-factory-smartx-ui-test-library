@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
+env:
+  PYTHON_VERSION: "3.7"
+  POETRY_VERSION: "1.5.1"
+
 jobs:
   meta:
     runs-on: ubuntu-latest
@@ -54,7 +58,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
+          python-version: ${{ env.PYTHON_VERSION }}
       - uses: pre-commit/action@v3.0.0
 
   semgrep:
@@ -63,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: semgrep
-        uses: returntocorp/semgrep-action@v1
+        uses: semgrep/semgrep-action@v1
         with:
           publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
 
@@ -71,16 +75,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: ${{ env.PYTHON_VERSION }}
       - run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-      - run: |
-          poetry install
-          poetry run pytest -v tests/unit
+          curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+      - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
+      - run: poetry run pytest -v tests/unit
 
   build:
     name: build
@@ -96,20 +105,23 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.7
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-      - run: |
-          poetry install
-          poetry build
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+      - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
+      - run: poetry build
       - run: |
           poetry run ucc-gen build \
             --source=tests/testdata/Splunk_TA_UCCExample/package \
             --config=tests/testdata/Splunk_TA_UCCExample/globalConfig.json \
             --ta-version=0.0.1
-      - uses: actions/upload-artifact@v3
-        with:
-          name: package
-          path: dist/*
         if: always()
       - uses: actions/upload-artifact@v3
         with:
@@ -117,6 +129,7 @@ jobs:
           path: output/*
   
   run-ui-tests:
+    name: test-ui Splunk ${{ matrix.splunk.version }} -k ${{ matrix.test_suite }}
     needs:
       - meta
       - build
@@ -129,7 +142,6 @@ jobs:
       checks: write
     strategy:
       fail-fast: false
-      max-parallel: 8
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
         browser: ["chrome", "firefox"]
@@ -145,69 +157,34 @@ jobs:
         ]
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
-          submodules: recursive
-      - uses: actions/download-artifact@v3
-        with:
-          name: package
-          path: dist/
+          python-version: ${{ env.PYTHON_VERSION }}
       - uses: actions/download-artifact@v3
         with:
           name: output
           path: output/
-      - run: |
-          git submodule sync
-          git submodule update --recursive --remote
-      - name: Splunk Testing
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - id: cache-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+      - run: poetry install
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
+      - name: Link chromedriver and geckodriver
+        # Use installed chromedriver https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
         run: |
-          mkdir test-results
-          export SPLUNK_VERSION=${{ matrix.splunk.version }}
-          SPLUNK_APP_ID=Splunk_TA_UCCExample
-          export SPLUNK_APP_ID
-          SPLUNK_APP_PACKAGE=output/Splunk_TA_UCCExample
-          export SPLUNK_APP_PACKAGE
-          export TEST_SET=tests/ui
-          export TEST_BROWSER="${{ matrix.browser }}"
-          export TEST_SUITE="-k ${{ matrix.test_suite }}"
-          export SAUCE_USERNAME="${{ secrets.SAUCE_USERNAME }}"
-          export SAUCE_PASSWORD="${{ secrets.SAUCE_PASSWORD }}"
-          export SAUCE_TUNNEL_ID="${{ secrets.SAUCE_TUNNEL_ID }}"
-          JOB_NAME="GithubActions::${GITHUB_REPOSITORY#splunk/}[${GITHUB_REF#refs/heads/}][${{ matrix.browser }}] #$(date +%s)"
-          export JOB_NAME
-          SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
-          export SAUCE_IDENTIFIER
-          echo "environment setup..."
-          echo "$SPLUNK_VERSION"
-          echo "$SPLUNK_APP_ID"
-          echo "$SPLUNK_APP_PACKAGE"
-          echo "$TEST_SET"
-          echo "$TEST_BROWSER"
-          echo "$TEST_SUITE"
-          echo "Testing..."
-          docker-compose -f docker-compose-ci.yml build
-          # Saucelab connection
-          docker-compose -f docker-compose-ci.yml up -d sauceconnect
-
-          # Start Splunk
-          docker-compose -f docker-compose-ci.yml up -d splunk
-          until docker-compose -f docker-compose-ci.yml logs splunk | grep "Ansible playbook complete" ; do sleep 1; done
-          # Normal Inspecting
-          docker-compose -f docker-compose-ci.yml logs sauceconnect
-          docker ps -a
-          # Run the tests
-          test_exit_code=0
-          docker-compose -f docker-compose-ci.yml up  --abort-on-container-exit test || test_exit_code=$?
-          # Collect Results
-          docker container create --name dummy \
-                              -v addon-factory-smartx-ui-test-library_results:/work/test-results \
-                              registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results/ || true
-          docker cp dummy:/work/test-results/test.xml test-results/  || true
-          docker cp dummy:/work/assets test-results/assets  || true
-          docker cp dummy:/work/test-results/report.html test-results/report.html  || true
-          docker-compose -f docker-compose-ci.yml down || true
-          echo exit code "$test_exit_code"
-          exit "$test_exit_code"
+          export PATH=$PATH:$CHROMEWEBDRIVER
+          chromedriver --version
+          export PATH=$PATH:$GECKOWEBDRIVER
+          geckodriver --version
+      - run: |
+          ./run_splunk.sh ${{ matrix.splunk.version }}
+          until curl -Lsk "https://localhost:8088/services/collector/health" &>/dev/null ; do echo -n "Waiting for HEC-" && sleep 5 ; done
+      - run: poetry run pytest tests/ui -k "${{ matrix.test_suite }}" --headless --junitxml=test-results/junit.xml
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -234,8 +211,8 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
-      - run: curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - id: semantic
         uses: splunk/semantic-release-action@v1.3
         with:
