@@ -1351,3 +1351,18 @@ class TestInput(UccTester):
         input_page.entity1.text_area.scroll("UP", 40)
         screenshot_after = input_page.entity1.text_area.screenshot()
         self.assert_util(screnshot_before, screenshot_after, operator="!=")
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_single_select_is_editable(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """
+        Verifies that SingleSelect value is editable or not
+        """
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        input_page.create_new_input.select("Example Input One")
+        self.assert_util(input_page.entity1.single_select_group_test.is_editable, True)
+        self.assert_util(input_page.entity1.index.is_editable, True)
+        self.assert_util(input_page.entity1.example_account.is_editable, False)

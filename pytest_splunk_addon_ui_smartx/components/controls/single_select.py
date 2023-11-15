@@ -348,27 +348,9 @@ class SingleSelect(BaseControl):
             _wait_for_search_list, msg="No values found in SingleSelect search"
         )
 
-    def is_editable(self):
+    def is_editable(self) -> bool:
         """
-        Returns True if the Textbox is editable, False otherwise
+        Returns True if the SingleSelect is editable, False otherwise
         """
-        if self.searchable:
-            if self.allow_new_values:
-                self.elements.update(
-                    {
-                        "input": Selector(
-                            select=self.container.select + ' [data-test="textbox"]'
-                        )
-                    }
-                )
-            else:
-                self.root.click()
-                popover_id = "#" + self.root.get_attribute("data-test-popover-id")
-                self.elements.update(
-                    {"input": Selector(select=popover_id + ' [data-test="textbox"]')}
-                )
-        return not bool(
-            self.input.get_attribute("readonly")
-            or self.input.get_attribute("readOnly")
-            or self.input.get_attribute("disabled")
-        )
+        self.get_element("root")
+        return True if self.allow_new_values else False
