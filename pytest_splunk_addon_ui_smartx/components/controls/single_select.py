@@ -53,21 +53,15 @@ class SingleSelect(BaseControl):
 
         self.elements.update(
             {
-<<<<<<< HEAD
                 "internal_container": Selector(
                     select=container.select + " .dropdownBox"
                 ),
                 "dropdown": Selector(select=container.select + " .dropdownBox"),
+                "select": Selector(select=container.select + ' [data-test="select"]'),
                 "combobox": Selector(
                     select=container.select + ' [data-test="combo-box"]'
                 ),
-                "listbox_role": Selector(select=container.select + ' [role="listbox"]'),
-                "combobox_role": Selector(
-                    select=container.select + ' [role="combobox"]'
-                ),
-=======
                 "root": Selector(select=self.element_selector),
->>>>>>> main
                 "selected": Selector(
                     select=container.select + ' [data-test="textbox"]'
                 ),
@@ -364,30 +358,12 @@ class SingleSelect(BaseControl):
         )
 
     def is_editable(self) -> bool:
-        """
-        Returns True if the SingleSelect is editable, False otherwise
-        """
-        if self.searchable:
-            element_key = "combobox_role" if self.allow_new_values else "listbox_role"
-            try:
-                self.get_element(element_key)
-            except TimeoutException as e:
-                raise Exception(
-                    f"{e}Make sure that SingleSelect option allow_new_values is properly configured within entity"
-                )
-<<<<<<< HEAD
-            self.elements.update({"input": self.elements[element_key]})
-        return bool(self.input.get_attribute("type") == "text")
-=======
+            """
+            Returns True if the SingleSelect is editable, False otherwise
+            """   
+            if self.allow_new_values:
+                self.get_element("combobox")
             else:
-                self.root.click()
-                popover_id = "#" + self.root.get_attribute("data-test-popover-id")
-                self.elements.update(
-                    {"input": Selector(select=popover_id + ' [data-test="textbox"]')}
-                )
-        return not bool(
-            self.input.get_attribute("readonly")
-            or self.input.get_attribute("readOnly")
-            or self.input.get_attribute("disabled")
-        )
->>>>>>> main
+                self.get_element("select")
+            return True if self.allow_new_values else False
+
