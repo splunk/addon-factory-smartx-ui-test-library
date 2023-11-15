@@ -15,7 +15,6 @@
 #
 
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
 
 from ..base_component import Selector
 from .base_control import BaseControl
@@ -53,14 +52,6 @@ class SingleSelect(BaseControl):
 
         self.elements.update(
             {
-                "internal_container": Selector(
-                    select=container.select + " .dropdownBox"
-                ),
-                "dropdown": Selector(select=container.select + " .dropdownBox"),
-                "select": Selector(select=container.select + ' [data-test="select"]'),
-                "combobox": Selector(
-                    select=container.select + ' [data-test="combo-box"]'
-                ),
                 "root": Selector(select=self.element_selector),
                 "selected": Selector(
                     select=container.select + ' [data-test="textbox"]'
@@ -358,12 +349,8 @@ class SingleSelect(BaseControl):
         )
 
     def is_editable(self) -> bool:
-            """
-            Returns True if the SingleSelect is editable, False otherwise
-            """   
-            if self.allow_new_values:
-                self.get_element("combobox")
-            else:
-                self.get_element("select")
-            return True if self.allow_new_values else False
-
+        """
+        Returns True if the SingleSelect is editable, False otherwise
+        """
+        self.get_element("root")
+        return True if self.allow_new_values else False
