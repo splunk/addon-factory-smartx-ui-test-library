@@ -1355,7 +1355,7 @@ class TestInput(UccTester):
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.input
-    def test_single_select_is_editable(
+    def test_single_select_allows_new_values(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
         """
@@ -1363,6 +1363,22 @@ class TestInput(UccTester):
         """
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.create_new_input.select("Example Input One")
-        self.assert_util(input_page.entity1.single_select_group_test.is_editable, True)
-        self.assert_util(input_page.entity1.index.is_editable, True)
+        self.assert_util(
+            input_page.entity1.single_select_group_test.allow_new_values, True
+        )
+        self.assert_util(input_page.entity1.index.allow_new_values, True)
+        self.assert_util(input_page.entity1.example_account.allow_new_values, False)
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_single_select_is_editable(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, add_input_one
+    ):
+        """
+        Verifies that SingleSelect value is editable or not
+        """
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        input_page.table.edit_row("dummy_input_one")
         self.assert_util(input_page.entity1.example_account.is_editable, False)
+        self.assert_util(input_page.entity1.index.is_editable, True)
