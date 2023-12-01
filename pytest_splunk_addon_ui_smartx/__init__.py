@@ -17,4 +17,4 @@
 from . import components, pages
 from .components import controls
 
-__version__ = "2.5.3"
+__version__ = "2.5.4-beta.1"
