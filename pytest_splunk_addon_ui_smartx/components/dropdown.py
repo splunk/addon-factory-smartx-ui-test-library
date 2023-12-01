@@ -195,11 +195,4 @@ class Dropdown(BaseComponent):
         return [each.text.strip() for each in self.get_elements("type_filter_list")]
 
     def wait_to_be_stale(self, msg=None):
-        if not msg:
-            msg = "{} element is not stale.".format(key)
-        wait = WebDriverWait(self.browser, DEFAULT_TIMEOUT)
-        try:
-            wait.until(EC.staleness_of(self.get_element("root")), msg)
-            return True
-        except TimeoutException:
-            pass
+        return super().wait_to_be_stale(key=self.get_element("root"), msg=msg)

@@ -880,7 +880,6 @@ class TestInput(UccTester):
         """Verifies the frontend edit functionality of the example input one entity"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.table.edit_row("dummy_input_one")
-        input_page.entity1.example_account.wait_for_values()
         input_page.entity1.example_checkbox.uncheck()
         input_page.entity1.example_radio.select("No")
         input_page.entity1.single_select_group_test.select("four")
