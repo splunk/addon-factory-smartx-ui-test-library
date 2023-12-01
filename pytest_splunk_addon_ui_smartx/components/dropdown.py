@@ -119,7 +119,7 @@ class Dropdown(BaseComponent):
                     found = True
                     each.click()
                     time.sleep(
-                        1
+                        2
                     )  # sleep here prevents broken animation resulting in unclicable button
                     break
             if not found:
