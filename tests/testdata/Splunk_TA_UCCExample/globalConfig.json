@@ -626,7 +626,8 @@
                             "type": "singleSelect",
                             "label": "Example Account",
                             "options": {
-                                "referenceName": "account"
+                                "referenceName": "account",
+                                "disableonEdit": true
                             },
                             "help": "",
                             "field": "account",
@@ -965,7 +966,10 @@
                 {
                     "groupName": "group_one",
                     "groupTitle": "Group One",
-                    "groupServices": ["example_input_three", "example_input_four"]
+                    "groupServices": [
+                        "example_input_three",
+                        "example_input_four"
+                    ]
                 }
             ],
             "description": "Manage your data inputs",
