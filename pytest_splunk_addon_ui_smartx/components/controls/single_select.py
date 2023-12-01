@@ -348,9 +348,22 @@ class SingleSelect(BaseControl):
             _wait_for_search_list, msg="No values found in SingleSelect search"
         )
 
+    def allow_new_values(self) -> bool:
+        """
+        Returns True if the SingleSelect accepts new values, False otherwise
+        """
+        self.get_element("root")
+        return True if self.allow_new_values else False
+
     def is_editable(self) -> bool:
         """
         Returns True if the SingleSelect is editable, False otherwise
         """
-        self.get_element("root")
-        return True if self.allow_new_values else False
+        if (
+            self.root.get_attribute("readonly")
+            or self.root.get_attribute("readOnly")
+            or self.root.get_attribute("disabled")
+        ):
+            return False
+        else:
+            return True

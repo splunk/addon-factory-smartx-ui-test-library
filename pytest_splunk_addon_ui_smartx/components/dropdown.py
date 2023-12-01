@@ -193,3 +193,6 @@ class Dropdown(BaseComponent):
             }
         )
         return [each.text.strip() for each in self.get_elements("type_filter_list")]
+
+    def wait_to_be_stale(self, msg=None):
+        return super().wait_to_be_stale(key=self.get_element("root"), msg=msg)

@@ -880,14 +880,12 @@ class TestInput(UccTester):
         """Verifies the frontend edit functionality of the example input one entity"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.table.edit_row("dummy_input_one")
-        input_page.entity1.example_account.wait_for_values()
         input_page.entity1.example_checkbox.uncheck()
         input_page.entity1.example_radio.select("No")
         input_page.entity1.single_select_group_test.select("four")
         input_page.entity1.multiple_select_test.deselect("b")
         input_page.entity1.interval.set_value("3600")
         input_page.entity1.index.select("main")
-        input_page.entity1.example_account.select("test_input")
         input_page.entity1.object.set_value("edit_object")
         input_page.entity1.object_fields.set_value("edit_field")
         input_page.entity1.order_by.set_value("LastDate")
@@ -918,14 +916,12 @@ class TestInput(UccTester):
         """Verifies the backend edit functionality of the example input one entity"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.table.edit_row("dummy_input_one")
-        input_page.entity1.example_account.wait_for_values()
         input_page.entity1.example_checkbox.uncheck()
         input_page.entity1.example_radio.select("No")
         input_page.entity1.single_select_group_test.select("Four")
         input_page.entity1.multiple_select_test.deselect("b")
         input_page.entity1.interval.set_value("3600")
         input_page.entity1.index.select("main")
-        input_page.entity1.example_account.select("test_input")
         input_page.entity1.object.set_value("edit_object")
         input_page.entity1.object_fields.set_value("edit_field")
         input_page.entity1.order_by.set_value("LastDate")
@@ -1355,7 +1351,7 @@ class TestInput(UccTester):
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.input
-    def test_single_select_is_editable(
+    def test_single_select_allows_new_values(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
         """
@@ -1363,6 +1359,22 @@ class TestInput(UccTester):
         """
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.create_new_input.select("Example Input One")
-        self.assert_util(input_page.entity1.single_select_group_test.is_editable, True)
-        self.assert_util(input_page.entity1.index.is_editable, True)
+        self.assert_util(
+            input_page.entity1.single_select_group_test.allow_new_values, True
+        )
+        self.assert_util(input_page.entity1.index.allow_new_values, True)
+        self.assert_util(input_page.entity1.example_account.allow_new_values, False)
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_single_select_is_editable(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper, add_input_one
+    ):
+        """
+        Verifies that SingleSelect value is editable or not
+        """
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        input_page.table.edit_row("dummy_input_one")
         self.assert_util(input_page.entity1.example_account.is_editable, False)
+        self.assert_util(input_page.entity1.index.is_editable, True)

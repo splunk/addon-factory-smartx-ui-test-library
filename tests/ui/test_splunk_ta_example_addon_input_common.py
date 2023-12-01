@@ -368,6 +368,7 @@ class TestInput(UccTester):
             "Example Input Four",
         ]
         input_page.create_new_input.select("Group One")
+        input_page.create_new_input.wait_to_be_stale()
         self.assert_util(input_page.create_new_input.get_inputs_list, value_to_test)
 
     @pytest.mark.execute_enterprise_cloud_true
