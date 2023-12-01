@@ -119,7 +119,7 @@ class Dropdown(BaseComponent):
                     found = True
                     each.click()
                     time.sleep(
-                        2
+                        1
                     )  # sleep here prevents broken animation resulting in unclicable button
                     break
             if not found:
@@ -193,3 +193,13 @@ class Dropdown(BaseComponent):
             }
         )
         return [each.text.strip() for each in self.get_elements("type_filter_list")]
+
+    def wait_to_be_stale(self, msg=None):
+        if not msg:
+            msg = "{} element is not stale.".format(key)
+        wait = WebDriverWait(self.browser, DEFAULT_TIMEOUT)
+        try:
+            wait.until(EC.staleness_of(self.get_element("root")), msg)
+            return True
+        except TimeoutException:
+            pass
