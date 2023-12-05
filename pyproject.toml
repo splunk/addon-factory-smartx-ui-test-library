@@ -51,8 +51,8 @@ pytest = ">=5.4, <7.3"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-panels = "*"
-splunk-add-on-ucc-framework = "5.28.5"
-pytest-rerunfailures = "^12.0"
+splunk-add-on-ucc-framework = "5.34.0"
+pytest-rerunfailures = "^13.0"
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
