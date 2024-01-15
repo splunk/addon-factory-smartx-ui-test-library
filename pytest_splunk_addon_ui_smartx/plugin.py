@@ -156,7 +156,7 @@ def get_browser_scope(fixture_name, config):
     """
     Set the scope of the browser dyncamically.
     """
-    if config.getoption("--local") and config.getoption("--persist-browser"):
+    if config.getoption("--persist-browser"):
         return "session"
     else:
         return "function"
