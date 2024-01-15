@@ -12,12 +12,17 @@ ReadTheDocs Page link: https://addon-factory-smartx-ui-test-library.readthedocs.
 
 ## Table of contents
 
-- [Goal](#goal)
-- [Design](#design)
-- [Features](#features)
-- [Build test cases using the framework](#build-test-cases-using-the-framework)
-- [Steps to test in Local environment](#steps-to-test-in-local-environment)
-- [Steps to test with Saucelabs](#steps-to-test-with-saucelabs)
+- [SPDX-FileCopyrightText: 2020 Splunk Inc.](#spdx-filecopyrighttext-2020-splunk-inc)
+- [](#)
+- [SPDX-License-Identifier: Apache-2.0](#spdx-license-identifier-apache-20)
+- [SmartX](#smartx)
+  - [Table of contents](#table-of-contents)
+    - [Goal](#goal)
+    - [Design](#design)
+    - [Features](#features)
+    - [Build test cases using the framework](#build-test-cases-using-the-framework)
+    - [Steps to test in Local environment](#steps-to-test-in-local-environment)
+    - [Steps to test with Saucelabs](#steps-to-test-with-saucelabs)
  
 ### Goal
 
@@ -75,7 +80,7 @@ https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-conf
 2. Configure saucelabs credentials as environment variables
     SAUCE_USERNAME : <saucelabs_username>
     SAUCE_PASSWORD : <saucelabs_access_key>
-3. Execute the test cases
+3. Execute the test case
 ```script
 pytest -vv --browser={browser} --splunk-host={web_url} --splunk-port={mgmt_url} --setup-retry-count={retry-count} --splunk-user {username} --splunk-password {password}
 ```
