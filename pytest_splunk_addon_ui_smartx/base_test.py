@@ -71,11 +71,14 @@ class SeleniumHelper:
         if "grid" in browser:
             self.skip_saucelab_job = True
             debug = True
-
+        # options = webdriver.ChromeOptions()
+        # options.add_argument('--ignore-ssl-errors=yes')
+        # options.add_argument('--ignore-certificate-errors')
+        # options.add_argument('--disable-dev-shm-usage')
         if not debug:
             # Using Saucelabs
             self.init_sauce_env_variables()
-
+            
         try:
             if browser == "firefox":
                 if debug:
