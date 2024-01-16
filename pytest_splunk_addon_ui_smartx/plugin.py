@@ -94,11 +94,14 @@ def pytest_addoption(parser):
     group.addoption(
         "--headless", action="store_true", help="Run the test case on headless mode"
     )
-
+    
+    group.addoption(
+        "--selenium-dns", action="store_true", help="selenium dns in k8s"
+    )
 
 SmartConfigs = namedtuple(
     "SmartConfigs",
-    ["driver", "driver_version", "local_run", "retry_count", "headless_run"],
+    ["driver", "driver_version", "local_run", "retry_count", "headless_run", "selenium_dns"],
 )
 
 
@@ -136,6 +139,8 @@ def ucc_smartx_configs(request):
         LOGGER.debug("--headless")
     else:
         headless_run = False
+    
+    selenium_dns = request.config.getoption("--selenium-dns")
 
     LOGGER.info(
         "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
@@ -148,6 +153,7 @@ def ucc_smartx_configs(request):
         local_run=local_run,
         retry_count=retry_count,
         headless_run=headless_run,
+        selenium_dns=selenium_dns
     )
     return smartx_configs
 
@@ -182,6 +188,7 @@ def ucc_smartx_selenium_helper(
                 cred=(splunk["username"], splunk["password"]),
                 headless=ucc_smartx_configs.headless_run,
                 test_case=test_case,
+                selenium_dns=ucc_smartx_configs.selenium_dns,
             )
             break
         except Exception as e:
