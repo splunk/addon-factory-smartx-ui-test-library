@@ -57,6 +57,7 @@ class SeleniumHelper:
         browser_version,
         splunk_web_url,
         splunk_mgmt_url,
+        selenium_dns,
         debug=False,
         cred=("admin", "Chang3d!"),
         headless=False,
@@ -64,6 +65,7 @@ class SeleniumHelper:
     ):
         self.splunk_web_url = splunk_web_url
         self.splunk_mgmt_url = splunk_mgmt_url
+        self.selenium_dns = selenium_dns
         self.cred = cred
         self.test_case = test_case
         self.skip_saucelab_job = False
@@ -75,9 +77,13 @@ class SeleniumHelper:
         # options.add_argument('--ignore-ssl-errors=yes')
         # options.add_argument('--ignore-certificate-errors')
         # options.add_argument('--disable-dev-shm-usage')
-        if not debug:
+        #if not debug:
             # Using Saucelabs
-            self.init_sauce_env_variables()
+            #self.init_sauce_env_variables()
+        
+        options = webdriver.ChromeOptions()
+        options.add_argument('--ignore-ssl-errors=yes')
+        options.add_argument('--ignore-certificate-errors')
             
         try:
             if browser == "firefox":
@@ -88,10 +94,8 @@ class SeleniumHelper:
                     )
                 else:
                     self.browser = webdriver.Remote(
-                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
-                        desired_capabilities=self.get_sauce_firefox_opts(
-                            browser_version
-                        ),
+                        command_executor=f"{self.selenium_dns}:4444/wd/hub",
+                        options=options
                     )
 
             elif browser == "chrome":
@@ -102,10 +106,8 @@ class SeleniumHelper:
                     )
                 else:
                     self.browser = webdriver.Remote(
-                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
-                        desired_capabilities=self.get_sauce_chrome_opts(
-                            browser_version
-                        ),
+                        command_executor=f"{self.selenium_dns}:4444/wd/hub",
+                        options=options
                     )
 
             # selenium local stack
