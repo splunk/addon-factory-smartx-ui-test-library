@@ -99,6 +99,7 @@ def pytest_addoption(parser):
         "--selenium-dns", action="store_true", help="selenium dns in k8s"
     )
 
+
 SmartConfigs = namedtuple(
     "SmartConfigs",
     ["driver", "driver_version", "local_run", "retry_count", "headless_run"],
@@ -139,8 +140,13 @@ def ucc_smartx_configs(request):
         LOGGER.debug("--headless")
     else:
         headless_run = False
+
+    if request.config.getoption("--selenium-dns"):
+        selenium_dns = request.config.getoption("--selenium-dns")
+        LOGGER.debug(f"--selenium-dns: {selenium_dns}")
+    else:
+        headless_run = False
     
-    selenium_dns = request.config.getoption("--selenium-dns")
 
     LOGGER.info(
         "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
@@ -188,7 +194,7 @@ def ucc_smartx_selenium_helper(
                 cred=(splunk["username"], splunk["password"]),
                 headless=ucc_smartx_configs.headless_run,
                 test_case=test_case,
-                selenium_dns=ucc_smartx_configs.selenium_dns,
+                #selenium_dns=ucc_smartx_configs.selenium_dns,
             )
             break
         except Exception as e:
