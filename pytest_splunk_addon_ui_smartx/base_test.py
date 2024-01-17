@@ -84,6 +84,7 @@ class SeleniumHelper:
         options = webdriver.ChromeOptions()
         options.add_argument('--ignore-ssl-errors=yes')
         options.add_argument('--ignore-certificate-errors')
+        options.add_argument('--disable-dev-shm-usage')
             
         try:
             if browser == "firefox":
@@ -106,7 +107,7 @@ class SeleniumHelper:
                     )
                 else:
                     self.browser = webdriver.Remote(
-                        command_executor=f"{self.selenium_dns}:4444/wd/hub",
+                        command_executor=f"http://localhost:4444/wd/hub",
                         options=options
                     )
 

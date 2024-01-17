@@ -101,7 +101,7 @@ def pytest_addoption(parser):
 
 SmartConfigs = namedtuple(
     "SmartConfigs",
-    ["driver", "driver_version", "local_run", "retry_count", "headless_run", "selenium_dns"],
+    ["driver", "driver_version", "local_run", "retry_count", "headless_run"],
 )
 
 
@@ -153,7 +153,7 @@ def ucc_smartx_configs(request):
         local_run=local_run,
         retry_count=retry_count,
         headless_run=headless_run,
-        selenium_dns=selenium_dns
+        #selenium_dns=selenium_dns
     )
     return smartx_configs
 
