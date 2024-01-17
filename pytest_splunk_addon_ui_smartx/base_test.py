@@ -73,10 +73,10 @@ class SeleniumHelper:
         if "grid" in browser:
             self.skip_saucelab_job = True
             debug = True
-        # options = webdriver.ChromeOptions()
-        # options.add_argument('--ignore-ssl-errors=yes')
-        # options.add_argument('--ignore-certificate-errors')
-        # options.add_argument('--disable-dev-shm-usage')
+        options = webdriver.ChromeOptions()
+        options.add_argument('--ignore-ssl-errors=yes')
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument('--disable-dev-shm-usage')
         #if not debug:
             # Using Saucelabs
             #self.init_sauce_env_variables()
@@ -107,7 +107,7 @@ class SeleniumHelper:
                     )
                 else:
                     self.browser = webdriver.Remote(
-                        command_executor=f"http://localhost:4444/wd/hub",
+                        command_executor=f"{self.selenium_dns}:4444/wd/hub",
                         options=options
                     )
 
