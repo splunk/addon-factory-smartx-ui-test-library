@@ -57,7 +57,6 @@ class SeleniumHelper:
         browser_version,
         splunk_web_url,
         splunk_mgmt_url,
-        selenium_dns,
         debug=False,
         cred=("admin", "Chang3d!"),
         headless=False,
@@ -77,15 +76,8 @@ class SeleniumHelper:
         options.add_argument('--ignore-ssl-errors=yes')
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--disable-dev-shm-usage')
-        #if not debug:
-            # Using Saucelabs
-            #self.init_sauce_env_variables()
-        
-        options = webdriver.ChromeOptions()
-        options.add_argument('--ignore-ssl-errors=yes')
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--disable-dev-shm-usage')
-            
+
+        selenium_dns = os.environ.get('SELENIUM_DNS', '')
         try:
             if browser == "firefox":
                 if debug:
@@ -95,7 +87,7 @@ class SeleniumHelper:
                     )
                 else:
                     self.browser = webdriver.Remote(
-                        command_executor=f"{self.selenium_dns}:4444/wd/hub",
+                        command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options
                     )
 
@@ -107,7 +99,7 @@ class SeleniumHelper:
                     )
                 else:
                     self.browser = webdriver.Remote(
-                        command_executor=f"{self.selenium_dns}:4444/wd/hub",
+                        command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options
                     )
 
