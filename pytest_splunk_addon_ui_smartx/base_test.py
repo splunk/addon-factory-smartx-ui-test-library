@@ -64,7 +64,6 @@ class SeleniumHelper:
     ):
         self.splunk_web_url = splunk_web_url
         self.splunk_mgmt_url = splunk_mgmt_url
-        self.selenium_dns = selenium_dns
         self.cred = cred
         self.test_case = test_case
         self.skip_saucelab_job = False
