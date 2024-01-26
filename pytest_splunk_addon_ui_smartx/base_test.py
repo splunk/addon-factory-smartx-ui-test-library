@@ -71,10 +71,14 @@ class SeleniumHelper:
         if "grid" in browser:
             self.skip_saucelab_job = True
             debug = True
-        options = webdriver.ChromeOptions()
-        options.add_argument('--ignore-ssl-errors=yes')
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--disable-dev-shm-usage')
+        options_chrome = webdriver.ChromeOptions()
+        options_chrome.add_argument('--ignore-ssl-errors=yes')
+        options_chrome.add_argument('--ignore-certificate-errors')
+        options_chrome.add_argument('--disable-dev-shm-usage')
+        options_firefox = webdriver.FirefoxOptions()
+        options_firefox.add_argument('--ignore-ssl-errors=yes')
+        options_firefox.add_argument('--ignore-certificate-errors')
+        options_firefox.add_argument('--disable-dev-shm-usage')
 
         selenium_dns = os.environ.get('SELENIUM_DNS', '')
         try:
@@ -87,7 +91,7 @@ class SeleniumHelper:
                 else:
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_dns}:4444/wd/hub",
-                        options=options
+                        options=options_firefox
                     )
 
             elif browser == "chrome":
@@ -99,7 +103,7 @@ class SeleniumHelper:
                 else:
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_dns}:4444/wd/hub",
-                        options=options
+                        options=options_chrome
                     )
 
             # selenium local stack
