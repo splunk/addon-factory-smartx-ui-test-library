@@ -18,7 +18,7 @@ from selenium.webdriver.common.keys import Keys
 
 from ..base_component import Selector
 from .base_control import BaseControl
-
+from time import sleep
 
 class SingleSelect(BaseControl):
     """
@@ -88,6 +88,7 @@ class SingleSelect(BaseControl):
         for each in self.get_elements("values"):
             if each.text.strip().lower() == value.lower():
                 each.click()
+                sleep(0.25)
                 return True
         else:
             raise ValueError("{} not found in select list".format(value))
