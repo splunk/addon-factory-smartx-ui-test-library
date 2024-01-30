@@ -70,9 +70,11 @@ class SingleSelect(BaseControl):
             :return: Bool if successful in selection, else raises an error
         """
         if open_dropdown:
+            self.wait_to_be_clickable("root")
             self.root.click()
 
         if self.allow_new_values and self.get_value():
+            self.wait_to_be_clickable("cancel_selected")
             self.cancel_selected.click()
 
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
