@@ -88,7 +88,7 @@ class SingleSelect(BaseControl):
         for each in self.get_elements("values"):
             if each.text.strip().lower() == value.lower():
                 each.click()
-                sleep(0.25)
+                sleep(1)
                 return True
         else:
             raise ValueError("{} not found in select list".format(value))
