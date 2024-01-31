@@ -91,6 +91,7 @@ class Dropdown(BaseComponent):
         )
 
         for each in self.get_elements("values"):
+            self.wait_to_be_clickable(each)
             if each.text.strip().lower() == value.lower():
                 each.click()
                 return True
@@ -155,6 +156,7 @@ class Dropdown(BaseComponent):
         Returns a generator list for the options available in the add input dropdown
             :return: Returns Generator list of values
         """
+        self.wait_to_be_clickable("root")
         self.root.click()
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
