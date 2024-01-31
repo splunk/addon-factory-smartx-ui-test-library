@@ -22,7 +22,7 @@ from selenium.webdriver.common.keys import Keys
 
 from ..base_component import Selector
 from .base_control import BaseControl
-
+from time import sleep
 
 class SingleSelect(BaseControl):
     """
