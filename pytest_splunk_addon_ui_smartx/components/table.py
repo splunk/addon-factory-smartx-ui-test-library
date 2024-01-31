@@ -346,10 +346,12 @@ class Table(BaseComponent):
         # Click on action
         with self.wait_stale():
             _row = self._get_row(name)
+            time.sleep(0.5)
             _row.find_element(*list(self.elements["delete"]._asdict().values())).click()
 
             self.wait_for("delete_prompt")
             if cancel:
+                self.wait_to_be_clickable("delete_cancel")
                 self.delete_cancel.click()
                 self.wait_until("delete_cancel")
                 return True

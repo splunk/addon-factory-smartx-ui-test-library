@@ -102,6 +102,7 @@ class SingleSelect(BaseControl):
         """
         assert self.searchable, "Can not search, as the Singleselect is not searchable"
         if open_dropdown:
+            self.wait_to_be_clickable("root")
             self.root.click()
         if self.searchable:
             if self.allow_new_values:
@@ -138,6 +139,7 @@ class SingleSelect(BaseControl):
                     }
                 )
             else:
+                self.wait_to_be_clickable("root")
                 self.root.click()
                 popover_id = "#" + self.root.get_attribute("data-test-popover-id")
                 self.elements.update(
@@ -162,6 +164,7 @@ class SingleSelect(BaseControl):
             :return: List of the values that are visible
         """
         if open_dropdown:
+            self.wait_to_be_clickable("root")
             self.root.click()
 
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
@@ -226,6 +229,7 @@ class SingleSelect(BaseControl):
         Cancels the currently selected value in the SingleSelect
             :return: Bool whether canceling the selected item was successful, else raises an error
         """
+        self.wait_to_be_clickable("root")
         self.root.click()
         self.wait_to_be_clickable("cancel_selected")
         self.cancel_selected.click()
@@ -237,6 +241,7 @@ class SingleSelect(BaseControl):
             :return: list of options avaialble within the single select
         """
         selected_val = self.get_value()
+        self.wait_to_be_clickable("root")
         self.root.click()
         first_element = None
         list_of_values = []
