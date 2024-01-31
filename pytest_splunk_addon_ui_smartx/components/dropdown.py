@@ -56,6 +56,7 @@ class Dropdown(BaseComponent):
             :param value: The value in which we want to select
             :return: Returns True if successful, otherwise raises an error
         """
+        self.wait_to_be_clickable("pagination_dropdown")
         self.pagination_dropdown.click()
         popoverid = "#" + self.pagination_dropdown.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -83,7 +84,7 @@ class Dropdown(BaseComponent):
             :param value: The value in which we want to select
             :return: Returns True if successful, otherwise raises an error
         """
-
+        self.wait_to_be_clickable("add_input")
         self.add_input.click()
         popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -109,6 +110,7 @@ class Dropdown(BaseComponent):
             :return: Returns True if successful, otherwise raises an error
         """
         if open_dropdown:
+            self.wait_to_be_clickable("type_dropdown")
             self.type_dropdown.click()
         popoverid = "#" + self.type_dropdown.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -128,6 +130,7 @@ class Dropdown(BaseComponent):
         Returns a generator list for the options available in the add input dropdown
             :return: Returns Generator list of values
         """
+        self.wait_to_be_clickable("add_input")
         self.add_input.click()
         popoverid = "#" + self.add_input.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -142,6 +145,7 @@ class Dropdown(BaseComponent):
         Returns a generator list for the pagination text available in the add input dropdown
             :return: Returns Generator list of values
         """
+        self.wait_to_be_clickable("pagination_dropdown")
         self.pagination_dropdown.click()
         popoverid = "#" + self.pagination_dropdown.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -156,6 +160,7 @@ class Dropdown(BaseComponent):
         Returns a generator list for the input types available in the add input dropdown
             :return: Returns Generator list of values
         """
+        self.wait_to_be_clickable("type_dropdown")
         self.type_dropdown.click()
         popoverid = "#" + self.type_dropdown.get_attribute("data-test-popover-id")
         self.elements.update(

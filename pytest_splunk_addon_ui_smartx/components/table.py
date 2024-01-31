@@ -1,11 +1,11 @@
 #
-# Copyright 2021 Splunk Inc.
+# Copyright 2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -346,14 +346,17 @@ class Table(BaseComponent):
         # Click on action
         with self.wait_stale():
             _row = self._get_row(name)
+            time.sleep(0.5)
             _row.find_element(*list(self.elements["delete"]._asdict().values())).click()
 
             self.wait_for("delete_prompt")
             if cancel:
+                self.wait_to_be_clickable("delete_cancel")
                 self.delete_cancel.click()
                 self.wait_until("delete_cancel")
                 return True
             elif close:
+                self.wait_to_be_clickable("delete_close")
                 self.delete_close.click()
                 self.wait_until("delete_close")
                 return True
