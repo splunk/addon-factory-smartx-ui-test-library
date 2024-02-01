@@ -37,6 +37,7 @@ class AlertTextBox(ActionControls):
         """
         set value of the textbox
         """
+        self.wait_to_be_clickable("input")
         self.input.clear()
         self.input.send_keys(value)
 
