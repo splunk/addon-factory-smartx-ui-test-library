@@ -144,6 +144,8 @@ def ucc_smartx_configs(request):
     if request.config.getoption("--saucelabs"):
         saucelabs_run = True
         LOGGER.debug("--saucelabs")
+    else:
+        saucelabs_run = False
     
     LOGGER.info(
         "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run}), saucelabs={saucelabs_run}".format(
