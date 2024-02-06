@@ -91,7 +91,6 @@ class Dropdown(BaseComponent):
         )
 
         for each in self.get_elements("values"):
-            self.wait_to_be_clickable(each)
             if each.text.strip().lower() == value.lower():
                 each.click()
                 return True

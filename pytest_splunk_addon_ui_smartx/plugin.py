@@ -94,11 +94,15 @@ def pytest_addoption(parser):
     group.addoption(
         "--headless", action="store_true", help="Run the test case on headless mode"
     )
+    
+    group.addoption(
+        "--saucelabs", action="store_true", help="Run the tests using saucelabs"
+    )
 
 
 SmartConfigs = namedtuple(
     "SmartConfigs",
-    ["driver", "driver_version", "local_run", "retry_count", "headless_run"],
+    ["driver", "driver_version", "local_run", "retry_count", "headless_run", "saucelabs"],
 )
 
 
@@ -136,10 +140,14 @@ def ucc_smartx_configs(request):
         LOGGER.debug("--headless")
     else:
         headless_run = False
+        
+    if request.config.getoption("--saucuelabs"):
+        saucelabs_run = True
+        LOGGER.debug("--saucelabs")
     
     LOGGER.info(
-        "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
-            driver=driver, local_run=local_run, headless_run=headless_run
+        "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run}), saucelabs={saucelabs_run}".format(
+            driver=driver, local_run=local_run, headless_run=headless_run, saucelabs_run=saucelabs_run
         )
     )
     smartx_configs = SmartConfigs(
@@ -148,6 +156,7 @@ def ucc_smartx_configs(request):
         local_run=local_run,
         retry_count=retry_count,
         headless_run=headless_run,
+        saucelabs_run=saucelabs_run,
     )
     return smartx_configs
 
@@ -181,6 +190,7 @@ def ucc_smartx_selenium_helper(
                 debug=ucc_smartx_configs.local_run,
                 cred=(splunk["username"], splunk["password"]),
                 headless=ucc_smartx_configs.headless_run,
+                saucelabs=ucc_smartx_configs.saucelabs_run,
                 test_case=test_case,
             )
             break

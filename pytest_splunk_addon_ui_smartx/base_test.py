@@ -60,6 +60,7 @@ class SeleniumHelper:
         debug=False,
         cred=("admin", "Chang3d!"),
         headless=False,
+        saucelabs=False,
         test_case=None,
     ):
         self.splunk_web_url = splunk_web_url
@@ -93,7 +94,7 @@ class SeleniumHelper:
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_firefox
                     )
-                else:
+                elif saucelabs:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",
                         desired_capabilities=self.get_sauce_firefox_opts(
@@ -117,7 +118,7 @@ class SeleniumHelper:
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_chrome
                     )
-                else:
+                elif saucelabs:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",
                         desired_capabilities=self.get_sauce_chrome_opts(
