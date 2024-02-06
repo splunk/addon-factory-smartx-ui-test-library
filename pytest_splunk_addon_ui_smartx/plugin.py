@@ -94,7 +94,6 @@ def pytest_addoption(parser):
     group.addoption(
         "--headless", action="store_true", help="Run the test case on headless mode"
     )
-    
 
 
 SmartConfigs = namedtuple(
@@ -138,7 +137,6 @@ def ucc_smartx_configs(request):
     else:
         headless_run = False
     
-
     LOGGER.info(
         "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
             driver=driver, local_run=local_run, headless_run=headless_run
