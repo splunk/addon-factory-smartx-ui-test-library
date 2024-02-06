@@ -67,20 +67,15 @@ class SeleniumHelper:
         self.cred = cred
         self.test_case = test_case
         self.skip_saucelab_job = False
+        
+        selenium_dns = os.environ.get('SELENIUM_DNS', '')
 
         if "grid" in browser:
             self.skip_saucelab_job = True
             debug = True
-        options_chrome = webdriver.ChromeOptions()
-        options_chrome.add_argument('--ignore-ssl-errors=yes')
-        options_chrome.add_argument('--ignore-certificate-errors')
-        options_chrome.add_argument('--disable-dev-shm-usage')
-        options_firefox = webdriver.FirefoxOptions()
-        options_firefox.add_argument('--ignore-ssl-errors=yes')
-        options_firefox.add_argument('--ignore-certificate-errors')
-        options_firefox.add_argument('--disable-dev-shm-usage')
+        elif selenium_dns:
+            self.skip_saucelab_job = True
 
-        selenium_dns = os.environ.get('SELENIUM_DNS', '')
         try:
             if browser == "firefox":
                 if debug:
@@ -88,10 +83,22 @@ class SeleniumHelper:
                         firefox_options=self.get_local_firefox_opts(headless),
                         log_path="selenium.log",
                     )
-                else:
+                elif selenium_dns:
+                    options_firefox = webdriver.FirefoxOptions()
+                    options_firefox.add_argument('--ignore-ssl-errors=yes')
+                    options_firefox.add_argument('--ignore-certificate-errors')
+                    options_firefox.add_argument('--disable-dev-shm-usage')
+                    
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_firefox
+                    )
+                else:
+                    self.browser = webdriver.Remote(
+                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
+                        desired_capabilities=self.get_sauce_firefox_opts(
+                            browser_version
+                        ),
                     )
 
             elif browser == "chrome":
@@ -100,10 +107,22 @@ class SeleniumHelper:
                         chrome_options=self.get_local_chrome_opts(headless),
                         service_args=["--verbose", "--log-path=selenium.log"],
                     )
-                else:
+                elif selenium_dns:
+                    options_chrome = webdriver.ChromeOptions()
+                    options_chrome.add_argument('--ignore-ssl-errors=yes')
+                    options_chrome.add_argument('--ignore-certificate-errors')
+                    options_chrome.add_argument('--disable-dev-shm-usage')
+
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_chrome
+                    )
+                else:
+                    self.browser = webdriver.Remote(
+                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
+                        desired_capabilities=self.get_sauce_chrome_opts(
+                            browser_version
+                        ),
                     )
 
             # selenium local stack
