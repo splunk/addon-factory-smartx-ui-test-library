@@ -102,7 +102,7 @@ def pytest_addoption(parser):
 
 SmartConfigs = namedtuple(
     "SmartConfigs",
-    ["driver", "driver_version", "local_run", "retry_count", "headless_run", "saucelabs"],
+    ["driver", "driver_version", "local_run", "retry_count", "headless_run", "saucelabs_run"],
 )
 
 
