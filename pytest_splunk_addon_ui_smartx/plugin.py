@@ -141,7 +141,7 @@ def ucc_smartx_configs(request):
     else:
         headless_run = False
         
-    if request.config.getoption("--saucuelabs"):
+    if request.config.getoption("--saucelabs"):
         saucelabs_run = True
         LOGGER.debug("--saucelabs")
     

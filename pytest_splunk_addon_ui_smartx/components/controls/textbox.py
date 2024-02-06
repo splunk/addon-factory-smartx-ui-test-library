@@ -44,6 +44,7 @@ class TextBox(BaseControl):
         set value of the textbox
         """
         # first condition added for safari browser
+        self.wait_to_be_clickable("input")
         if self.browser.capabilities["browserName"] == "Safari":
             self.input.send_keys(Keys.COMMAND)
             self.input.send_keys("a")
