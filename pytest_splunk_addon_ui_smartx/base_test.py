@@ -94,6 +94,7 @@ class SeleniumHelper:
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_firefox
                     )
+                    self.browser.implicitly_wait(3)
                 elif saucelabs:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",
@@ -118,6 +119,7 @@ class SeleniumHelper:
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_chrome
                     )
+                    self.browser.implicitly_wait(3)
                 elif saucelabs:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",

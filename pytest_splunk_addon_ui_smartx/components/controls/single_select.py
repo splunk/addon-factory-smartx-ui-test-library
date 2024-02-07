@@ -365,7 +365,6 @@ class SingleSelect(BaseControl):
         """
         Returns True if the SingleSelect is editable, False otherwise
         """
-        self.wait_to_be_clickable("root")
         if (
             self.root.get_attribute("readonly")
             or self.root.get_attribute("readOnly")
