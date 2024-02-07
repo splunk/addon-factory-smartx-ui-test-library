@@ -93,6 +93,7 @@ class SeleniumHelper:
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_firefox
                     )
+                    self.browser.implicitly_wait(3)
 
             elif browser == "chrome":
                 if debug:
@@ -105,6 +106,7 @@ class SeleniumHelper:
                         command_executor=f"{selenium_dns}:4444/wd/hub",
                         options=options_chrome
                     )
+                    self.browser.implicitly_wait(3)
 
             # selenium local stack
             elif browser == "chrome_grid":
