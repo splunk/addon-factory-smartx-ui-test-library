@@ -39,8 +39,17 @@ class AlertCheckbox(ActionControls):
         """
         Toggles the checkbox value
         """
-        self.wait_to_be_clickable("checkbox")
-        self.checkbox.click()
+        before_toggle = self.is_checked()
+        after_toggle = self.is_checked()
+        try_count = 0
+        while before_toggle == after_toggle and try_count < 5:
+            try:
+                self.wait_to_be_clickable("checkbox")
+                self.checkbox.click()
+                after_toggle = self.is_checked()
+            except Exception as e:
+                print(f"Toggle checkbox failed with {e}")
+            try_count += 1
 
     def check(self):
         """
