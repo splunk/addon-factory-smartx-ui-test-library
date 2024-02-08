@@ -75,4 +75,5 @@ class AlertEntity(Entity):
         """
         Open the required page. Page(super) class opens the page by default.
         """
+        self.add_alert.wait_to_be_clickable()
         self.add_alert.click()
