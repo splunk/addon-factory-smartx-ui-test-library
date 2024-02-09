@@ -380,7 +380,7 @@ class TestInput(UccTester):
         """Verifies Back button after dropdown multilevel select"""
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         value_to_test = ["Example Input One", "Example Input Two", "Group One"]
-        input_page.create_new_input.select_sub_input(["Group One", "Back"])
+        input_page.create_new_input.select_nested(["Group One", "Back"])
         self.assert_util(input_page.create_new_input.get_inputs_list, value_to_test)
 
     @pytest.mark.execute_enterprise_cloud_true
@@ -395,7 +395,7 @@ class TestInput(UccTester):
             "Example Input Three",
             "Example Input Four",
         ]
-        input_page.create_new_input.select_sub_input(["Group One", "Example Input Three"])
+        input_page.create_new_input.select_nested(["Group One", "Example Input Three"])
         input_page.entity3.name.set_value("dummy_input_three")
         input_page.entity3.interval.set_value("50")
         input_page.entity3.save()

@@ -69,7 +69,7 @@ class SeleniumHelper:
         self.test_case = test_case
         self.skip_saucelab_job = False
         
-        selenium_dns = os.environ.get('SELENIUM_DNS', '')
+        selenium_dns = os.environ.get('SELENIUM_HOST', '')
 
         if "grid" in browser:
             self.skip_saucelab_job = True
