@@ -215,6 +215,7 @@ class SingleSelect(BaseControl):
                     }
                 )
             else:
+                self.wait_to_be_clickable("root")
                 self.root.click()
                 popover_id = "#" + self.root.get_attribute("data-test-popover-id")
                 self.elements.update(

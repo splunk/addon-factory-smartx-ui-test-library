@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 import time
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -42,12 +40,22 @@ class Checkbox(BaseControl):
             }
         )
 
-    def toggle(self):
+    def toggle(self, max_attempts=5):
         """
         Toggles the checkbox value
         """
-        self.wait_to_be_clickable("checkbox")
-        self.checkbox_btn.click()
+        before_toggle = self.is_checked()
+        for _ in range(max_attempts):
+            try:
+                self.wait_to_be_clickable("checkbox")
+                self.checkbox.click()
+                after_toggle = self.is_checked()
+                if before_toggle != after_toggle:
+                    return
+                time.sleep(0.25)
+            except Exception as e:
+                print(f"Toggle checkbox failed with {e}")
+        raise Exception("Toggle operation failed!")
 
     def check(self):
         """

@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+import time
 from .action_controls import ActionControls
 from .alert_base_component import Selector
 from .alert_base_control import AlertBaseControl
@@ -35,12 +36,22 @@ class AlertCheckbox(ActionControls):
             }
         )
 
-    def toggle(self):
+    def toggle(self, max_attempts=5):
         """
         Toggles the checkbox value
         """
-        self.wait_to_be_clickable("checkbox")
-        self.checkbox.click()
+        before_toggle = self.is_checked()
+        for _ in range(max_attempts):
+            try:
+                self.wait_to_be_clickable("checkbox")
+                self.checkbox.click()
+                after_toggle = self.is_checked()
+                if before_toggle != after_toggle:
+                    return
+                time.sleep(0.25)
+            except Exception as e:
+                print(f"Toggle checkbox failed with {e}")
+        raise Exception("Toggle operation failed!")
 
     def check(self):
         """
