@@ -68,8 +68,8 @@ class SeleniumHelper:
         self.cred = cred
         self.test_case = test_case
         self.skip_saucelab_job = False
-        
-        selenium_host = os.environ.get('SELENIUM_HOST', '')
+
+        selenium_host = os.environ.get("SELENIUM_HOST", "")
 
         if "grid" in browser:
             self.skip_saucelab_job = True
@@ -86,13 +86,13 @@ class SeleniumHelper:
                     )
                 elif selenium_host:
                     options_firefox = webdriver.FirefoxOptions()
-                    options_firefox.add_argument('--ignore-ssl-errors=yes')
-                    options_firefox.add_argument('--ignore-certificate-errors')
-                    options_firefox.add_argument('--disable-dev-shm-usage')
-                    
+                    options_firefox.add_argument("--ignore-ssl-errors=yes")
+                    options_firefox.add_argument("--ignore-certificate-errors")
+                    options_firefox.add_argument("--disable-dev-shm-usage")
+
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_host}:4444/wd/hub",
-                        options=options_firefox
+                        options=options_firefox,
                     )
                     self.browser.implicitly_wait(3)
                 elif saucelabs:
@@ -111,13 +111,13 @@ class SeleniumHelper:
                     )
                 elif selenium_host:
                     options_chrome = webdriver.ChromeOptions()
-                    options_chrome.add_argument('--ignore-ssl-errors=yes')
-                    options_chrome.add_argument('--ignore-certificate-errors')
-                    options_chrome.add_argument('--disable-dev-shm-usage')
+                    options_chrome.add_argument("--ignore-ssl-errors=yes")
+                    options_chrome.add_argument("--ignore-certificate-errors")
+                    options_chrome.add_argument("--disable-dev-shm-usage")
 
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_host}:4444/wd/hub",
-                        options=options_chrome
+                        options=options_chrome,
                     )
                     self.browser.implicitly_wait(3)
                 elif saucelabs:

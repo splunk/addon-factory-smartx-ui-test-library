@@ -19,6 +19,7 @@ from selenium.webdriver.common.keys import Keys
 from ..base_component import Selector
 from .base_control import BaseControl
 
+
 class SingleSelect(BaseControl):
     """
     Entity-Component: Select, ComboBox

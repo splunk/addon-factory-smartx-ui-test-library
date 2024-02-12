@@ -94,7 +94,7 @@ def pytest_addoption(parser):
     group.addoption(
         "--headless", action="store_true", help="Run the test case on headless mode"
     )
-    
+
     group.addoption(
         "--saucelabs", action="store_true", help="Run the tests using saucelabs"
     )
@@ -102,7 +102,14 @@ def pytest_addoption(parser):
 
 SmartConfigs = namedtuple(
     "SmartConfigs",
-    ["driver", "driver_version", "local_run", "retry_count", "headless_run", "saucelabs_run"],
+    [
+        "driver",
+        "driver_version",
+        "local_run",
+        "retry_count",
+        "headless_run",
+        "saucelabs_run",
+    ],
 )
 
 
@@ -140,16 +147,19 @@ def ucc_smartx_configs(request):
         LOGGER.debug("--headless")
     else:
         headless_run = False
-        
+
     if request.config.getoption("--saucelabs"):
         saucelabs_run = True
         LOGGER.debug("--saucelabs")
     else:
         saucelabs_run = False
-    
+
     LOGGER.info(
         "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run}), saucelabs={saucelabs_run}".format(
-            driver=driver, local_run=local_run, headless_run=headless_run, saucelabs_run=saucelabs_run
+            driver=driver,
+            local_run=local_run,
+            headless_run=headless_run,
+            saucelabs_run=saucelabs_run,
         )
     )
     smartx_configs = SmartConfigs(

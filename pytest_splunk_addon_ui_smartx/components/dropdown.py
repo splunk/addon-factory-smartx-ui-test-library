@@ -48,6 +48,7 @@ class Dropdown(BaseComponent):
             :param value: The value in which we want to select
             :return: Returns True if successful, otherwise raises an error
         """
+        self.wait_to_be_clickable("root")
         self.root.click()
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -75,7 +76,7 @@ class Dropdown(BaseComponent):
             :param value: The value in which we want to select
             :return: Returns True if successful, otherwise raises an error
         """
-
+        self.wait_to_be_clickable("root")
         self.root.click()
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -135,6 +136,7 @@ class Dropdown(BaseComponent):
             :return: Returns True if successful, otherwise raises an error
         """
         if open_dropdown:
+            self.wait_to_be_clickable("root")
             self.root.click()
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -165,12 +167,13 @@ class Dropdown(BaseComponent):
             }
         )
         return [each.text.strip() for each in self.get_elements("type_list")]
-    
+
     def get_pagination_list(self):
         """
         Returns a generator list for the pagination text available in the add input dropdown
             :return: Returns Generator list of values
         """
+        self.wait_to_be_clickable("root")
         self.root.click()
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
@@ -185,6 +188,7 @@ class Dropdown(BaseComponent):
         Returns a generator list for the input types available in the add input dropdown
             :return: Returns Generator list of values
         """
+        self.wait_to_be_clickable("root")
         self.root.click()
         popover_id = "#" + self.root.get_attribute("data-test-popover-id")
         self.elements.update(
