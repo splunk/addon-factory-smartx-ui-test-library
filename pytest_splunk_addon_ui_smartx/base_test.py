@@ -60,7 +60,6 @@ class SeleniumHelper:
         debug=False,
         cred=("admin", "Chang3d!"),
         headless=False,
-        saucelabs=False,
         test_case=None,
     ):
         self.splunk_web_url = splunk_web_url
@@ -76,8 +75,9 @@ class SeleniumHelper:
             debug = True
         elif selenium_host:
             self.skip_saucelab_job = True
-        if not debug or not selenium_host:
-            # Using Saucelabs
+        if debug or selenium_host:
+            pass
+        else:
             self.init_sauce_env_variables()
 
         try:

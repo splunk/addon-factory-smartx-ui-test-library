@@ -95,10 +95,6 @@ def pytest_addoption(parser):
         "--headless", action="store_true", help="Run the test case on headless mode"
     )
 
-    group.addoption(
-        "--saucelabs", action="store_true", help="Run the tests using saucelabs"
-    )
-
 
 SmartConfigs = namedtuple(
     "SmartConfigs",
@@ -108,7 +104,6 @@ SmartConfigs = namedtuple(
         "local_run",
         "retry_count",
         "headless_run",
-        "saucelabs_run",
     ],
 )
 
@@ -148,18 +143,11 @@ def ucc_smartx_configs(request):
     else:
         headless_run = False
 
-    if request.config.getoption("--saucelabs"):
-        saucelabs_run = True
-        LOGGER.debug("--saucelabs")
-    else:
-        saucelabs_run = False
-
     LOGGER.info(
-        "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run}), saucelabs={saucelabs_run}".format(
+        "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
             driver=driver,
             local_run=local_run,
             headless_run=headless_run,
-            saucelabs_run=saucelabs_run,
         )
     )
     smartx_configs = SmartConfigs(
@@ -168,7 +156,6 @@ def ucc_smartx_configs(request):
         local_run=local_run,
         retry_count=retry_count,
         headless_run=headless_run,
-        saucelabs_run=saucelabs_run,
     )
     return smartx_configs
 
@@ -177,7 +164,7 @@ def get_browser_scope(fixture_name, config):
     """
     Set the scope of the browser dynamically.
     """
-    if config.getoption("--persist-browser"):
+    if config.getoption("--local") and config.getoption("--persist-browser"):
         return "session"
     else:
         return "function"
@@ -202,7 +189,6 @@ def ucc_smartx_selenium_helper(
                 debug=ucc_smartx_configs.local_run,
                 cred=(splunk["username"], splunk["password"]),
                 headless=ucc_smartx_configs.headless_run,
-                saucelabs=ucc_smartx_configs.saucelabs_run,
                 test_case=test_case,
             )
             break
