@@ -69,13 +69,16 @@ class SeleniumHelper:
         self.test_case = test_case
         self.skip_saucelab_job = False
 
-        selenium_host = os.environ.get("SELENIUM_HOST", "")
+        selenium_host = os.environ.get("SELENIUM_HOST")
 
         if "grid" in browser:
             self.skip_saucelab_job = True
             debug = True
         elif selenium_host:
             self.skip_saucelab_job = True
+        if not debug or not selenium_host:
+            # Using Saucelabs
+            self.init_sauce_env_variables()
 
         try:
             if browser == "firefox":
@@ -95,7 +98,7 @@ class SeleniumHelper:
                         options=options_firefox,
                     )
                     self.browser.implicitly_wait(3)
-                elif saucelabs:
+                else:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",
                         desired_capabilities=self.get_sauce_firefox_opts(
@@ -120,7 +123,7 @@ class SeleniumHelper:
                         options=options_chrome,
                     )
                     self.browser.implicitly_wait(3)
-                elif saucelabs:
+                else:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",
                         desired_capabilities=self.get_sauce_chrome_opts(

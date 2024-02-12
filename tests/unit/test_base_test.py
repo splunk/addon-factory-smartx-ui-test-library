@@ -85,7 +85,9 @@ default_args_for_selenium_helper = {
 
 
 def test_selenium_helper_raise_exception_with_given_invalid_browser_version():
-    with pytest.raises(Exception, match="No valid browser found.") as e:
+    with pytest.raises(Exception, match="No valid browser found.") as e, patch(
+        "os.environ.get", lambda x: x if x != "SELENIUM_HOST" else None
+    ):
         SeleniumHelper(**{**default_args_for_selenium_helper, "browser": "aa"})
 
 
@@ -227,7 +229,7 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
 def test_desired_capabilities_for_saucelabs(browser, expected_config):
     importlib.reload(pytest_splunk_addon_ui_smartx.base_test)
     with patch("selenium.webdriver.Remote") as webdriver, patch(
-        "os.environ.get", lambda x: x
+        "os.environ.get", lambda x: x if x != "SELENIUM_HOST" else None
     ):
         pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper(
             **{
@@ -565,7 +567,7 @@ def test_update_sauce_job(status):
 
     importlib.reload(pytest_splunk_addon_ui_smartx.base_test)
     with patch("selenium.webdriver.Remote"), patch("requests.put") as req, patch(
-        "os.environ.get", lambda x: x
+        "os.environ.get", lambda x: x if x != "SELENIUM_HOST" else None
     ):
         selenium_helper = pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper(
             **{**default_args_for_selenium_helper, "debug": False}
