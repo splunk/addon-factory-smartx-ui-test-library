@@ -318,12 +318,14 @@ class SeleniumHelper:
         if headless_run:
             chrome_opts.add_argument("--headless")
             chrome_opts.add_argument("--window-size=1280,768")
+            chrome_opts.add_argument("--disable-dev-shm-usage")
         return chrome_opts
 
     def get_local_firefox_opts(self, headless_run):
         firefox_opts = webdriver.FirefoxOptions()
         firefox_opts.add_argument("--ignore-ssl-errors=yes")
         firefox_opts.add_argument("--ignore-certificate-errors")
+        firefox_opts.add_argument("--disable-dev-shm-usage")
         firefox_opts.log.level = "trace"
         if headless_run:
             firefox_opts.add_argument("--headless")
