@@ -51,7 +51,6 @@ class AlertCheckbox(ActionControls):
                 time.sleep(0.25)
             except Exception as e:
                 print(f"Toggle checkbox failed with {e}")
-        raise Exception("Toggle operation failed!")
 
     def check(self):
         """
@@ -61,9 +60,11 @@ class AlertCheckbox(ActionControls):
         try:
             if self.is_checked() == False:
                 self.toggle()
-            return True
-        except:
-            return "Checkbox is already checked"
+                return True
+            else:
+                return "Checkbox is already checked"
+        except Exception as e:
+            print(f"Check checkbox failed with {e}")
 
     def uncheck(self):
         """
@@ -73,9 +74,11 @@ class AlertCheckbox(ActionControls):
         try:
             if self.is_checked() == True:
                 self.toggle()
-            return True
-        except:
-            return "Checkbox is already unchecked"
+                return True
+            else:
+                return "Checkbox is already unchecked"
+        except Exception as e:
+            print(f"Uncheck checkbox failed with {e}")
 
     def is_checked(self):
         """
