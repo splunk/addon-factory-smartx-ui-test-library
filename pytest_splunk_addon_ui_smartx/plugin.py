@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Splunk Inc.
+# Copyright 2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -98,7 +98,13 @@ def pytest_addoption(parser):
 
 SmartConfigs = namedtuple(
     "SmartConfigs",
-    ["driver", "driver_version", "local_run", "retry_count", "headless_run"],
+    [
+        "driver",
+        "driver_version",
+        "local_run",
+        "retry_count",
+        "headless_run",
+    ],
 )
 
 
@@ -139,7 +145,9 @@ def ucc_smartx_configs(request):
 
     LOGGER.info(
         "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
-            driver=driver, local_run=local_run, headless_run=headless_run
+            driver=driver,
+            local_run=local_run,
+            headless_run=headless_run,
         )
     )
     smartx_configs = SmartConfigs(

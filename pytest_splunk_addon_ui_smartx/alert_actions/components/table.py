@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Splunk Inc.
+# Copyright 2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -277,10 +277,12 @@ class AlertTable(ActionControls):
 
             self.wait_for("delete_prompt")
             if cancel:
+                self.wait_to_be_clickable("delete_cancel")
                 self.delete_cancel.click()
                 self.wait_until("delete_cancel")
                 return True
             elif close:
+                self.wait_to_be_clickable("delete_close")
                 self.delete_close.click()
                 self.wait_until("delete_close")
                 return True
@@ -288,6 +290,7 @@ class AlertTable(ActionControls):
                 self.wait_for_text("delete_prompt")
                 return self.get_clear_text(self.delete_prompt)
             else:
+                self.wait_to_be_clickable("delete_btn")
                 self.delete_btn.click()
                 self.wait_for("app_listings")
 

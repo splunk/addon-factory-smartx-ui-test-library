@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Splunk Inc.
+# Copyright 2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+import time
 from .action_controls import ActionControls
 from .alert_base_component import Selector
 from .alert_base_control import AlertBaseControl
@@ -35,12 +36,21 @@ class AlertCheckbox(ActionControls):
             }
         )
 
-    def toggle(self):
+    def toggle(self, max_attempts=5):
         """
         Toggles the checkbox value
         """
-        self.wait_to_be_clickable("checkbox")
-        self.checkbox.click()
+        before_toggle = self.is_checked()
+        for _ in range(max_attempts):
+            try:
+                self.wait_to_be_clickable("checkbox")
+                self.checkbox.click()
+                after_toggle = self.is_checked()
+                if before_toggle != after_toggle:
+                    return
+                time.sleep(0.25)
+            except Exception as e:
+                print(f"Toggle checkbox failed with {e}")
 
     def check(self):
         """
@@ -50,9 +60,11 @@ class AlertCheckbox(ActionControls):
         try:
             if self.is_checked() == False:
                 self.toggle()
-            return True
-        except:
-            return "Checkbox is already checked"
+                return True
+            else:
+                return "Checkbox is already checked"
+        except Exception as e:
+            print(f"Check checkbox failed with {e}")
 
     def uncheck(self):
         """
@@ -62,9 +74,11 @@ class AlertCheckbox(ActionControls):
         try:
             if self.is_checked() == True:
                 self.toggle()
-            return True
-        except:
-            return "Checkbox is already unchecked"
+                return True
+            else:
+                return "Checkbox is already unchecked"
+        except Exception as e:
+            print(f"Uncheck checkbox failed with {e}")
 
     def is_checked(self):
         """

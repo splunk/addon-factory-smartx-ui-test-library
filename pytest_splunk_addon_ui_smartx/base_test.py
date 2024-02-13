@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Splunk Inc.
+# Copyright 2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +16,9 @@
 
 import logging
 import os
-import re
 import sys
 import time
-import traceback
 
-import pytest
 import requests
 from msedge.selenium_tools import Edge, EdgeOptions
 from msedge.selenium_tools.remote_connection import EdgeRemoteConnection
@@ -68,12 +65,16 @@ class SeleniumHelper:
         self.test_case = test_case
         self.skip_saucelab_job = False
 
+        selenium_host = os.environ.get("SELENIUM_HOST")
+
         if "grid" in browser:
             self.skip_saucelab_job = True
             debug = True
-
-        if not debug:
-            # Using Saucelabs
+        elif selenium_host:
+            self.skip_saucelab_job = True
+        if debug or selenium_host:
+            pass
+        else:
             self.init_sauce_env_variables()
 
         try:
@@ -83,6 +84,12 @@ class SeleniumHelper:
                         firefox_options=self.get_local_firefox_opts(headless),
                         log_path="selenium.log",
                     )
+                elif selenium_host:
+                    self.browser = webdriver.Remote(
+                        command_executor=f"{selenium_host}:4444/wd/hub",
+                        options=self.get_local_firefox_opts(headless_run=False),
+                    )
+                    self.browser.implicitly_wait(3)
                 else:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",
@@ -90,13 +97,18 @@ class SeleniumHelper:
                             browser_version
                         ),
                     )
-
             elif browser == "chrome":
                 if debug:
                     self.browser = webdriver.Chrome(
                         chrome_options=self.get_local_chrome_opts(headless),
                         service_args=["--verbose", "--log-path=selenium.log"],
                     )
+                elif selenium_host:
+                    self.browser = webdriver.Remote(
+                        command_executor=f"{selenium_host}:4444/wd/hub",
+                        options=self.get_local_chrome_opts(headless_run=False),
+                    )
+                    self.browser.implicitly_wait(3)
                 else:
                     self.browser = webdriver.Remote(
                         command_executor="https://ondemand.saucelabs.com:443/wd/hub",
@@ -104,7 +116,43 @@ class SeleniumHelper:
                             browser_version
                         ),
                     )
+            elif browser == "edge":
+                if debug:
+                    self.browser = Edge(
+                        executable_path="msedgedriver",
+                        desired_capabilities=self.get_local_edge_opts(headless),
+                        service_args=["--verbose", "--log-path=selenium.log"],
+                    )
+                else:
+                    command_executor = EdgeRemoteConnection(
+                        "https://ondemand.saucelabs.com:443/wd/hub"
+                    )
+                    options = EdgeOptions()
+                    options.use_chromium = True
+                    self.browser = webdriver.Remote(
+                        command_executor=command_executor,
+                        options=options,
+                        desired_capabilities=self.get_sauce_edge_opts(browser_version),
+                    )
 
+            elif browser == "IE":
+                if debug:
+                    self.browser = webdriver.Ie(capabilities=self.get_local_ie_opts())
+                else:
+                    self.browser = webdriver.Remote(
+                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
+                        desired_capabilities=self.get_sauce_ie_opts(browser_version),
+                    )
+            elif browser == "safari":
+                if debug:
+                    self.browser = webdriver.Safari()
+                else:
+                    self.browser = webdriver.Remote(
+                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
+                        desired_capabilities=self.get_sauce_safari_opts(
+                            browser_version
+                        ),
+                    )
             # selenium local stack
             elif browser == "chrome_grid":
                 google_cert_opts = {
@@ -155,47 +203,9 @@ class SeleniumHelper:
                         "firefox", firefox_cert_opts
                     ),
                 )
-
-            elif browser == "edge":
-                if debug:
-                    self.browser = Edge(
-                        executable_path="msedgedriver",
-                        desired_capabilities=self.get_local_edge_opts(headless),
-                        service_args=["--verbose", "--log-path=selenium.log"],
-                    )
-                else:
-                    command_executor = EdgeRemoteConnection(
-                        "https://ondemand.saucelabs.com:443/wd/hub"
-                    )
-                    options = EdgeOptions()
-                    options.use_chromium = True
-                    self.browser = webdriver.Remote(
-                        command_executor=command_executor,
-                        options=options,
-                        desired_capabilities=self.get_sauce_edge_opts(browser_version),
-                    )
-
-            elif browser == "IE":
-                if debug:
-                    self.browser = webdriver.Ie(capabilities=self.get_local_ie_opts())
-                else:
-                    self.browser = webdriver.Remote(
-                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
-                        desired_capabilities=self.get_sauce_ie_opts(browser_version),
-                    )
-            elif browser == "safari":
-                if debug:
-                    self.browser = webdriver.Safari()
-                else:
-                    self.browser = webdriver.Remote(
-                        command_executor="https://ondemand.saucelabs.com:443/wd/hub",
-                        desired_capabilities=self.get_sauce_safari_opts(
-                            browser_version
-                        ),
-                    )
             else:
                 raise Exception(
-                    "No valid browser found.! expected=[firefox, chrome, safari], got={}".format(
+                    "No valid browser found.! expected=[firefox, chrome, edge, IE, safari, chrome_grid, firefox_grid, chrome_k8s, firefox_k8s], got={}".format(
                         browser
                     )
                 )
@@ -305,6 +315,7 @@ class SeleniumHelper:
         chrome_opts = webdriver.ChromeOptions()
         chrome_opts.add_argument("--ignore-ssl-errors=yes")
         chrome_opts.add_argument("--ignore-certificate-errors")
+        chrome_opts.add_argument("--disable-dev-shm-usage")
         if headless_run:
             chrome_opts.add_argument("--headless")
             chrome_opts.add_argument("--window-size=1280,768")
@@ -312,6 +323,9 @@ class SeleniumHelper:
 
     def get_local_firefox_opts(self, headless_run):
         firefox_opts = webdriver.FirefoxOptions()
+        firefox_opts.add_argument("--ignore-ssl-errors=yes")
+        firefox_opts.add_argument("--ignore-certificate-errors")
+        firefox_opts.add_argument("--disable-dev-shm-usage")
         firefox_opts.log.level = "trace"
         if headless_run:
             firefox_opts.add_argument("--headless")

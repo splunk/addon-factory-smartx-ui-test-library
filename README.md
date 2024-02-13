@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
-#
-# SPDX-License-Identifier: Apache-2.0
-
 # SmartX
 
 UCC based Add-on UI automation framework 
@@ -18,7 +14,7 @@ ReadTheDocs Page link: https://addon-factory-smartx-ui-test-library.readthedocs.
 - [Build test cases using the framework](#build-test-cases-using-the-framework)
 - [Steps to test in Local environment](#steps-to-test-in-local-environment)
 - [Steps to test with Saucelabs](#steps-to-test-with-saucelabs)
- 
+
 ### Goal
 
 To test all the UI configuration page of the Splunk add-ons. All the add-ons are built with the same template. The configuration pages consist of an Input page and a configuration page that has different tabs to configure logging, proxy settings and add product account in the add-ons. To support the testing of all the add-ons, a generic framework should be made, which can be used in the test cases for all the add-ons. The framework should have methods that can interact with UI components and test the working of UI.
@@ -75,7 +71,7 @@ https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-conf
 2. Configure saucelabs credentials as environment variables
     SAUCE_USERNAME : <saucelabs_username>
     SAUCE_PASSWORD : <saucelabs_access_key>
-3. Execute the test cases
+3. Execute the test case
 ```script
 pytest -vv --browser={browser} --splunk-host={web_url} --splunk-port={mgmt_url} --setup-retry-count={retry-count} --splunk-user {username} --splunk-password {password}
 ```
