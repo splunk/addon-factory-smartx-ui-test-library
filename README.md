@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
-#
-# SPDX-License-Identifier: Apache-2.0
-
 # SmartX
 
 UCC based Add-on UI automation framework 
@@ -12,18 +8,13 @@ ReadTheDocs Page link: https://addon-factory-smartx-ui-test-library.readthedocs.
 
 ## Table of contents
 
-- [SPDX-FileCopyrightText: 2020 Splunk Inc.](#spdx-filecopyrighttext-2020-splunk-inc)
-- [](#)
-- [SPDX-License-Identifier: Apache-2.0](#spdx-license-identifier-apache-20)
-- [SmartX](#smartx)
-  - [Table of contents](#table-of-contents)
-    - [Goal](#goal)
-    - [Design](#design)
-    - [Features](#features)
-    - [Build test cases using the framework](#build-test-cases-using-the-framework)
-    - [Steps to test in Local environment](#steps-to-test-in-local-environment)
-    - [Steps to test with Saucelabs](#steps-to-test-with-saucelabs)
- 
+- [Goal](#goal)
+- [Design](#design)
+- [Features](#features)
+- [Build test cases using the framework](#build-test-cases-using-the-framework)
+- [Steps to test in Local environment](#steps-to-test-in-local-environment)
+- [Steps to test with Saucelabs](#steps-to-test-with-saucelabs)
+
 ### Goal
 
 To test all the UI configuration page of the Splunk add-ons. All the add-ons are built with the same template. The configuration pages consist of an Input page and a configuration page that has different tabs to configure logging, proxy settings and add product account in the add-ons. To support the testing of all the add-ons, a generic framework should be made, which can be used in the test cases for all the add-ons. The framework should have methods that can interact with UI components and test the working of UI.
