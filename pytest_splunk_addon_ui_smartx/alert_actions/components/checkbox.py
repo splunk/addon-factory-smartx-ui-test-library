@@ -44,7 +44,7 @@ class AlertCheckbox(ActionControls):
         for _ in range(max_attempts):
             try:
                 self.wait_to_be_clickable("checkbox")
-                self.checkbox_btn.click()
+                self.checkbox.click()
                 after_toggle = self.is_checked()
                 if before_toggle != after_toggle:
                     return
