@@ -87,7 +87,7 @@ class SeleniumHelper:
                 elif selenium_host:
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_host}:4444/wd/hub",
-                        options=self.get_local_firefox_opts(),
+                        options=self.get_local_firefox_opts(headless_run=False),
                     )
                     self.browser.implicitly_wait(3)
                 else:
@@ -106,7 +106,7 @@ class SeleniumHelper:
                 elif selenium_host:
                     self.browser = webdriver.Remote(
                         command_executor=f"{selenium_host}:4444/wd/hub",
-                        options=self.get_local_chrome_opts(),
+                        options=self.get_local_chrome_opts(headless_run=False),
                     )
                     self.browser.implicitly_wait(3)
                 else:
