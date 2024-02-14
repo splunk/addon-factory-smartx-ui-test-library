@@ -363,6 +363,7 @@ class Table(BaseComponent):
                 self.wait_for_text("delete_prompt")
                 return self.get_clear_text(self.delete_prompt)
             else:
+                self.wait_to_be_clickable("delete_btn")
                 self.delete_btn.click()
                 self.wait_until("waitspinner")
 
