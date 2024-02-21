@@ -16,6 +16,7 @@
 
 import time
 from .base_component import BaseComponent, Selector
+from selenium.common.exceptions import ElementClickInterceptedException
 
 
 class Dropdown(BaseComponent):
@@ -106,7 +107,6 @@ class Dropdown(BaseComponent):
         """
         if not isinstance(values, list):
             raise ValueError("{} has to be of type list".format(values))
-
         self.wait_to_be_clickable("root")
         self.root.click()
         popoverid = "#" + self.root.get_attribute("data-test-popover-id")
@@ -119,13 +119,17 @@ class Dropdown(BaseComponent):
             for each in self.get_elements("dropdown_options"):
                 if each.text.strip().lower() == value.lower():
                     found = True
-                    each.click()
+                    try:
+                        each.click()
+                    except ElementClickInterceptedException:
+                        self.hover_over_element("root") #avoid tooltip interception
+                        each.click()
                     time.sleep(
                         1
                     )  # sleep here prevents broken animation resulting in unclicable button
                     break
             if not found:
-                raise ValueError("{} not found in select list".format(value))
+                raise ValueError(f"{value} not found in select list. Values found {[_ for _.text.strip().lower in self.get_elements('values')]}")
         return True
 
     def select_input_type(self, value, open_dropdown=True):
