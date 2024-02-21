@@ -103,8 +103,14 @@ class MultiSelect(BaseControl):
                 try:
                     each.click()
                 except ElementClickInterceptedException:
-                    self.elements.update({value.lower(): Selector(
-                        select=popover_id + f' [data-test="option"][data-test-value="{value.lower()}"]')})
+                    self.elements.update(
+                        {
+                            value.lower(): Selector(
+                                select=popover_id
+                                + f' [data-test="option"][data-test-value="{value.lower()}"]'
+                            )
+                        }
+                    )
                     self.hover_over_element(f"{value.lower()}")
                     each.click()
                 self.wait_for("input")

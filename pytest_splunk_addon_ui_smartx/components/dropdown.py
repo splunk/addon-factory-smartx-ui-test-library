@@ -122,14 +122,16 @@ class Dropdown(BaseComponent):
                     try:
                         each.click()
                     except ElementClickInterceptedException:
-                        self.hover_over_element("root") #avoid tooltip interception
+                        self.hover_over_element("root")  # avoid tooltip interception
                         each.click()
                     time.sleep(
                         1
                     )  # sleep here prevents broken animation resulting in unclicable button
                     break
             if not found:
-                raise ValueError(f"{value} not found in select list. Values found {[_ for _.text.strip().lower in self.get_elements('values')]}")
+                raise ValueError(
+                    f"{value} not found in select list. Values found {[_ for _.text.strip().lower in self.get_elements('values')]}"
+                )
         return True
 
     def select_input_type(self, value, open_dropdown=True):
