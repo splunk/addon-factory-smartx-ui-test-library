@@ -869,6 +869,7 @@ class TestInput(UccTester):
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.table.edit_row("dummy_input_one")
         self.assert_util(input_page.entity1.name.is_editable, False)
+        self.assert_util(input_page.entity1.single_select_group_test.is_editable, False)
 
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
