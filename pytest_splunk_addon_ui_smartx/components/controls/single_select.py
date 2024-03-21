@@ -47,7 +47,9 @@ class SingleSelect(BaseControl):
             )
 
         self.element_selector = container.select + (
-            ' [data-test="combo-box"]' if self.allow_new_values else ' [data-test="select"]'
+            ' [data-test="combo-box"]'
+            if self.allow_new_values
+            else ' [data-test="select"]'
         )
 
         self.elements.update(
@@ -369,13 +371,13 @@ class SingleSelect(BaseControl):
         """
         if self.allow_new_values:
             return (
-                    not self.selected.get_attribute("readonly")
-                    and not self.selected.get_attribute("readOnly")
-                    and not self.selected.get_attribute("disabled")
+                not self.selected.get_attribute("readonly")
+                and not self.selected.get_attribute("readOnly")
+                and not self.selected.get_attribute("disabled")
             )
         else:
             return (
-                    not self.root.get_attribute("readonly")
-                    and not self.root.get_attribute("readOnly")
-                    and not self.root.get_attribute("disabled")
+                not self.root.get_attribute("readonly")
+                and not self.root.get_attribute("readOnly")
+                and not self.root.get_attribute("disabled")
             )
