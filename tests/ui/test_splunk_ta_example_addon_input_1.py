@@ -883,7 +883,6 @@ class TestInput(UccTester):
         input_page.table.edit_row("dummy_input_one")
         input_page.entity1.example_checkbox.uncheck()
         input_page.entity1.example_radio.select("No")
-        input_page.entity1.single_select_group_test.select("four")
         input_page.entity1.multiple_select_test.deselect("b")
         input_page.entity1.interval.set_value("3600")
         input_page.entity1.index.select("main")
@@ -919,7 +918,6 @@ class TestInput(UccTester):
         input_page.table.edit_row("dummy_input_one")
         input_page.entity1.example_checkbox.uncheck()
         input_page.entity1.example_radio.select("No")
-        input_page.entity1.single_select_group_test.select("Four")
         input_page.entity1.multiple_select_test.deselect("b")
         input_page.entity1.interval.set_value("3600")
         input_page.entity1.index.select("main")
@@ -942,7 +940,7 @@ class TestInput(UccTester):
             "object": "edit_object",
             "object_fields": "edit_field",
             "order_by": "LastDate",
-            "singleSelectTest": "four",
+            "singleSelectTest": "two",
             "start_date": "2020-20-20T20:20:20.000z",
             "disabled": 0,
             "example_textarea_field": "line3\nline4",
