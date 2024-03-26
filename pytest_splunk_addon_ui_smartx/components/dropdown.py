@@ -130,7 +130,7 @@ class Dropdown(BaseComponent):
                     break
             if not found:
                 raise ValueError(
-                    f"{value} not found in select list. Values found {[_ for _.text.strip().lower in self.get_elements('values')]}"
+                    f"{value} not found in select list. Values found {[_.text.strip().lower() for _ in self.get_elements('dropdown_options')]}"
                 )
         return True
 

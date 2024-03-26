@@ -47,9 +47,7 @@ class SingleSelect(BaseControl):
             )
 
         self.element_selector = container.select + (
-            ' [data-test="combo-box"]'
-            if self.allow_new_values
-            else ' [data-test="select"]'
+            ' [data-test="combo-box"]' if allow_new_values else ' [data-test="select"]'
         )
 
         self.elements.update(
