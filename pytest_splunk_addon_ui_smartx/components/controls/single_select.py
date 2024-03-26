@@ -367,11 +367,15 @@ class SingleSelect(BaseControl):
         """
         Returns True if the SingleSelect is editable, False otherwise
         """
-        if (
-            self.root.get_attribute("readonly")
-            or self.root.get_attribute("readOnly")
-            or self.root.get_attribute("disabled")
-        ):
-            return False
+        if self.allow_new_values:
+            return (
+                not self.selected.get_attribute("readonly")
+                and not self.selected.get_attribute("readOnly")
+                and not self.selected.get_attribute("disabled")
+            )
         else:
-            return True
+            return (
+                not self.root.get_attribute("readonly")
+                and not self.root.get_attribute("readOnly")
+                and not self.root.get_attribute("disabled")
+            )
