@@ -40,18 +40,18 @@ selenium = "*"
 webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
-lxml = "^4.8.0"
+lxml = "^5.0.0"
 pytest-splunk-addon = "^5.0.0"
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=5.4, <7.3"
+pytest = ">=8.1, <9"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-panels = "*"
-splunk-add-on-ucc-framework = "5.28.5"
+splunk-add-on-ucc-framework = "5.40.0"
 pytest-rerunfailures = "^12.0"
 
 [build-system]
