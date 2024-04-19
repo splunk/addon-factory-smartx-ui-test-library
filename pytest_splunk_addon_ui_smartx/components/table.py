@@ -70,6 +70,7 @@ class Table(BaseComponent):
                 ),
                 "edit": Selector(select=".editBtn"),
                 "clone": Selector(select=".cloneBtn"),
+                "search": Selector(select=".searchBtn"),
                 "delete": Selector(select=".deleteBtn"),
                 "delete_prompt": Selector(select=".deletePrompt"),  # [data-test="body"]
                 "delete_btn": Selector(select='[data-test="button"][label="Delete"]'),
@@ -264,6 +265,8 @@ class Table(BaseComponent):
                         table[row_name][each_col] = "Edit"
                     if self.clone != None:
                         table[row_name][each_col] += " | Clone"
+                    if self.search != None:
+                        table[row_name][each_col] += " | Search"
                     if self.delete != None:
                         table[row_name][each_col] += " | Delete"
                     continue
