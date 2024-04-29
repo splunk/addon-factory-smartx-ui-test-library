@@ -316,6 +316,8 @@ class Table(BaseComponent):
             value_list.append("Edit")
         if _row.find_element(*list(self.elements["clone"]._asdict().values())) != None:
             value_list.append("Clone")
+        if _row.find_element(*list(self.elements["search"]._asdict().values())) != None:
+            value_list.append("Search")
         if _row.find_element(*list(self.elements["delete"]._asdict().values())) != None:
             value_list.append("Delete")
 
@@ -336,6 +338,14 @@ class Table(BaseComponent):
         """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["clone"]._asdict().values())).click()
+
+    def search_row_results(self, name):
+        """
+        Search the results of the selected input. It will open the search and its results in a new tab.
+            :param name: row_name of the table
+        """
+        _row = self._get_row(name)
+        _row.find_element(*list(self.elements["search"]._asdict().values())).click()
 
     def delete_row(self, name, cancel=False, close=False, prompt_msg=False):
         """
