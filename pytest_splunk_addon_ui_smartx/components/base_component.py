@@ -222,10 +222,6 @@ class BaseComponent:
             return self.get_element(key)
         except KeyError:
             raise
-        except TimeoutException:
-            # in case when the element isn't found, return None
-            # so that checks based on this class's properties are in sync.
-            return None
 
     def hover_over_element(self, key):
         """

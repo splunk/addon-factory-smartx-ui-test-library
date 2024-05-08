@@ -560,3 +560,22 @@ class Table(BaseComponent):
             return True
         except exceptions.NoSuchElementException:
             return False
+
+    def __getattr__(self, key):
+        """
+        Makes the web-elements to be accessible directly.
+        - For example self.elements = {"textbox": Selector(by=..., select=...),
+            Access the element by doing self.textbox directly.
+        - It also has implicit wait while finding the element.
+            :param key: The key of the element mentioned in self.elements
+            :returns: The webelement we are accessing
+        """
+        # NOTE: Overriding the implementation for only table component.
+        try:
+            return self.get_element(key)
+        except KeyError:
+            raise
+        except exceptions.TimeoutException:
+            # in case when the element isn't found, return None
+            # so that checks based on this class's properties are in sync.
+            return None
