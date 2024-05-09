@@ -41,13 +41,17 @@ class MultiSelect(BaseControl):
         self.elements.update(
             {
                 "selected": Selector(
-                    select=root_selector + ' [data-test="selected-option"]'
+                    # changes w.r.t. splunk-ui 4.30.0
+                    select=root_selector
+                    + ' [data-test="selected-option"] div[data-test="label"]'
                 ),
                 """
                 Click on selected element deselects it
                 """
                 "deselect": Selector(
-                    select=root_selector + ' [data-test="selected-option"]'
+                    # changes w.r.t. splunk-ui 4.30.0
+                    select=root_selector
+                    + ' [data-test="selected-option"] div[data-test="label"]'
                 ),
                 "input": Selector(select=root_selector + ' [data-test="textbox"]'),
             }

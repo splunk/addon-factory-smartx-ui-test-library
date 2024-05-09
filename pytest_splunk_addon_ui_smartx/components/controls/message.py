@@ -39,7 +39,11 @@ class Message(BaseControl):
         super().__init__(browser, container)
         self.elements.update(
             {
-                "msg_text": Selector(select=container.select + '[data-test="message"]'),
+                # changes w.r.t. splunk-ui 4.30.0
+                "msg_text": Selector(
+                    select=container.select
+                    + '[data-test="message"] div[data-test="content"]'
+                ),
             }
         )
 
