@@ -70,6 +70,7 @@ class Table(BaseComponent):
                 ),
                 "edit": Selector(select=".editBtn"),
                 "clone": Selector(select=".cloneBtn"),
+                "search": Selector(select=".searchBtn"),
                 "delete": Selector(select=".deleteBtn"),
                 "delete_prompt": Selector(select=".deletePrompt"),  # [data-test="body"]
                 "delete_btn": Selector(select='[data-test="button"][label="Delete"]'),
@@ -264,6 +265,8 @@ class Table(BaseComponent):
                         table[row_name][each_col] = "Edit"
                     if self.clone != None:
                         table[row_name][each_col] += " | Clone"
+                    if self.search != None:
+                        table[row_name][each_col] += " | Search"
                     if self.delete != None:
                         table[row_name][each_col] += " | Delete"
                     continue
@@ -313,6 +316,8 @@ class Table(BaseComponent):
             value_list.append("Edit")
         if _row.find_element(*list(self.elements["clone"]._asdict().values())) != None:
             value_list.append("Clone")
+        if _row.find_element(*list(self.elements["search"]._asdict().values())) != None:
+            value_list.append("Search")
         if _row.find_element(*list(self.elements["delete"]._asdict().values())) != None:
             value_list.append("Delete")
 
@@ -333,6 +338,14 @@ class Table(BaseComponent):
         """
         _row = self._get_row(name)
         _row.find_element(*list(self.elements["clone"]._asdict().values())).click()
+
+    def search_row_results(self, name):
+        """
+        Search the results of the selected input. It will open the search and its results in a new tab.
+            :param name: row_name of the table
+        """
+        _row = self._get_row(name)
+        _row.find_element(*list(self.elements["search"]._asdict().values())).click()
 
     def delete_row(self, name, cancel=False, close=False, prompt_msg=False):
         """
@@ -547,3 +560,22 @@ class Table(BaseComponent):
             return True
         except exceptions.NoSuchElementException:
             return False
+
+    def __getattr__(self, key):
+        """
+        Makes the web-elements to be accessible directly.
+        - For example self.elements = {"textbox": Selector(by=..., select=...),
+            Access the element by doing self.textbox directly.
+        - It also has implicit wait while finding the element.
+            :param key: The key of the element mentioned in self.elements
+            :returns: The webelement we are accessing
+        """
+        # NOTE: Overriding the implementation for only table component.
+        try:
+            return self.get_element(key)
+        except KeyError:
+            raise
+        except exceptions.TimeoutException:
+            # in case when the element isn't found, return None
+            # so that checks based on this class's properties are in sync.
+            return None
