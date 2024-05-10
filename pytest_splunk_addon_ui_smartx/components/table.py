@@ -312,15 +312,27 @@ class Table(BaseComponent):
         """
         value_list = []
         _row = self._get_row(name)
-        # use `find_elements` over `find_element` to avoid NoSuchElementException exception when 
+        # use `find_elements` over `find_element` to avoid NoSuchElementException exception when
         # the action isn't present + to verify only 1 icon of the action is present
-        if len(_row.find_elements(*list(self.elements["edit"]._asdict().values()))) == 1:
+        if (
+            len(_row.find_elements(*list(self.elements["edit"]._asdict().values())))
+            == 1
+        ):
             value_list.append("Edit")
-        if len(_row.find_elements(*list(self.elements["clone"]._asdict().values()))) == 1:
+        if (
+            len(_row.find_elements(*list(self.elements["clone"]._asdict().values())))
+            == 1
+        ):
             value_list.append("Clone")
-        if len(_row.find_elements(*list(self.elements["search"]._asdict().values()))) == 1:
+        if (
+            len(_row.find_elements(*list(self.elements["search"]._asdict().values())))
+            == 1
+        ):
             value_list.append("Search")
-        if len(_row.find_elements(*list(self.elements["delete"]._asdict().values()))) == 1:
+        if (
+            len(_row.find_elements(*list(self.elements["delete"]._asdict().values())))
+            == 1
+        ):
             value_list.append("Delete")
 
         return value_list
