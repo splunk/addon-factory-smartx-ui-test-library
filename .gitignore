@@ -101,9 +101,9 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+# ignore all venv with different Py versions
+.venv*
 env/
-venv/
 ENV/
 env.bak/
 venv.bak/

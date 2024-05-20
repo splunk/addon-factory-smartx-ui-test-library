@@ -1,0 +1,77 @@
+#
+# Copyright 2024 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+site_name: SmartX
+site_author: Splunk
+site_url: "https://github.com/splunk/addon-factory-smartx-ui-test-library/"
+edit_uri: "tree/main/docs/"
+remote_branch: gh-pages
+
+repo_name: Splunk SmartX UI Test Framework
+repo_url: "https://github.com/splunk/addon-factory-smartx-ui-test-library"
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - smarty
+  - fenced_code
+  - sane_lists
+  - codehilite
+  - pymdownx.superfences
+
+theme:
+  name: "material"
+  palette:
+    primary: "black"
+    accent: "orange"
+  features:
+    - content.code.copy
+    - navigation.indexes
+    - navigation.expand
+
+plugins:
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_docstring_classes: true
+          show_docstring_functions: true
+          show_docstring_attributes: true
+          show_docstring_parameters: true
+          show_docstring_other_parameters: true
+          show_inheritance_diagram: true
+          docstring_style: sphinx
+          docstring_options:
+            ignore_init_summary: true
+          merge_init_into_class: true
+
+nav:
+  - Home: "index.md"
+  - Overview: "overview.md"
+  - How To Use: "how_to_use.md"
+  - Getting Started:
+    - "getting_started/index.md"
+    - Setup: "getting_started/setup.md"
+    - Test Page Creation: "getting_started/test_page.md"
+    - Test Cases Creation: "getting_started/test_case.md"
+  - API Reference: 
+    - "api_reference/index.md"
+    - backend_conf: "api_reference/backend_confs.md"
+    - base_test: "api_reference/base_test.md"
+    - plugin: "api_reference/plugin.md"
+    - utils: "api_reference/utils.md"
+    - Pages: "api_reference/pages/index.md"
+    - Components: "api_reference/components/index.md"
+    - Controls: "api_reference/components/controls/index.md"
