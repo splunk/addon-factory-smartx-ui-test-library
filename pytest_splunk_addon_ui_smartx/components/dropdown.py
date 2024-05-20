@@ -29,7 +29,6 @@ class Dropdown(BaseComponent):
         """
         :param browser: The selenium webdriver
         :param container: Container in which the table is located. Of type dictionary: {"by":..., "select":...}
-        :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
         super().__init__(browser, container)
         self.elements.update(
