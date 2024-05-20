@@ -1,0 +1,44 @@
+site_name: SmartX
+site_author: Splunk
+site_url: "https://github.com/splunk/addon-factory-smartx-ui-test-library/"
+edit_uri: "tree/main/docs/"
+remote_branch: gh-pages
+
+repo_name: Splunk SmartX UI Test Framework
+repo_url: "https://github.com/splunk/addon-factory-smartx-ui-test-library"
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - smarty
+  - fenced_code
+  - sane_lists
+  - codehilite
+  - pymdownx.superfences
+
+theme:
+  name: "material"
+  palette:
+    primary: "black"
+    accent: "orange"
+  features:
+    - content.code.copy
+    - navigation.indexes
+
+plugins:
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_docstring_functions: true
+
+nav:
+  - Home: "index.md"
+  - Overview: "overview.md"
+  - How To Use: "how_to_use.md"
+  - Getting Started:
+    - "getting_started/index.md"
+    - Setup: "getting_started/setup.md"
+    - Test Page Creation: "getting_started/test_page.md"
+    - Test Cases Creation: "getting_started/test_case.md"
+  - API Reference: "api_reference.html"

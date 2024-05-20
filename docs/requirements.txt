@@ -1,8 +1,0 @@
-filelock
-pytest
-future
-pytest-splunk-addon
-selenium
-Sphinx
-sphinx_rtd_theme
-sphinx-panels
