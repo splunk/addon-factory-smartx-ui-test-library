@@ -19,7 +19,7 @@ There are two ways to install SmartX:
 5. poetry install
 ```
 
-2. Download SmartX from PyPi: [SmartX PyPI](https://pypi.org/project/pytest-splunk-addon-ui-smartx/)
+2. Download SmartX from PyPI: [SmartX PyPI](https://pypi.org/project/pytest-splunk-addon-ui-smartx/)
 
 ```console
 pip install pytest-splunk-addon-ui-smartx

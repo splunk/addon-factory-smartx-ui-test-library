@@ -1,16 +1,39 @@
-% pytest_splunk_addon_ui_smartx documentation master file, created by
-% sphinx-quickstart on Fri Oct  9 15:31:49 2020.
-% You can adapt this file completely to your liking, but it should at least
-% contain the root `toctree` directive.
-
 # Welcome to pytest_splunk_addon_ui_smartx's documentation!
 
-```{toctree}
-:caption: 'Contents:'
-:maxdepth: 3
-
-overview
-how_to_use
-getting_started
-api_reference
-```
+## Contents:
+- [Overview](overview.md)
+- [How To Use](how_to_use.md)
+- [Getting Started](getting_started/index.md)
+    + [Setup](getting_started/setup.md)
+    + [Test Page Creation](getting_started/test_page.md)
+    + [Test Cases Creation](getting_started/test_case.md)
+- [API Reference](api_reference/index.md)
+    + [backend_conf](api_reference/backend_confs.md)
+    + [base_test](api_reference/base_test.md)
+    + [plugin](api_reference/plugin.md)
+    + [utils](api_reference/utils.md)
+    + [Pages](api_reference/pages/index.md)
+        * [Logging](api_reference/pages/logging.md)
+        * [Login](api_reference/pages/login.md)
+        * [Page](api_reference/pages/page.md)
+        * [Proxy](api_reference/pages/proxy.md)
+    + [Components](api_reference/components/index.md)
+        * [Base Component](api_reference/components/base_component.md)
+        * [Conf Table](api_reference/components/conf_table.md)
+        * [Dropdown](api_reference/components/dropdown.md)
+        * [Entity](api_reference/components/entity.md)
+        * [Input table](api_reference/components/input_table.md)
+        * [Login](api_reference/components/login.md)
+        * [Table](api_reference/components/table.md)
+        * [Tabs](api_reference/components/tabs.md)
+        * [Controls](api_reference/components/controls/index.md)
+            - [Base Control](api_reference/components/controls/base_control.md)
+            - [Button](api_reference/components/controls/button.md)
+            - [Checkbox](api_reference/components/controls/checkbox.md)
+            - [Learn More](api_reference/components/controls/learn_more.md)
+            - [Message](api_reference/components/controls/message.md)
+            - [Multi Select](api_reference/components/controls/multi_select.md)
+            - [Oauth Select](api_reference/components/controls/oauth_select.md)
+            - [Single Select](api_reference/components/controls/single_select.md)
+            - [Textbox](api_reference/components/controls/textbox.md)
+            - [Toggle](api_reference/components/controls/toggle.md)

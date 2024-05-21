@@ -1,10 +1,6 @@
 # Overview
 
-UCC based Add-on UI automation framework
-Confluence Page link:
-[SmartX Repo](https://confluence.splunk.com/display/PROD/SmartX+UI+Automation+Framework+for+Ucc+based+Add-ons)
-
-The goal of SmartX is to be a UI testing framework to test the UCC UI pages for Splunk Add-ons.
+UCC based Add-on UI automation framework: The goal of SmartX is to be a UI testing framework to test the UCC UI pages for Splunk Add-ons.
 All the add-ons are built with the same template, and such contain consistent input and configuration pages specified for each. To test all of the add-ons easily, a generic framework was created, which can be used to test all the add-ons.
 
 ## Design
@@ -54,17 +50,7 @@ The general workflow of SmartX UI Test Framework is as follows:
 ## Installation
 
 
-The Framework could be cloned from here: [SmartX Repo](https://github.com/splunk/addon-factory-smartx-ui-test-library)
-
-```console
-1. git clone https://github.com/splunk/addon-factory-smartx-ui-test-library.git
-2. python3 -m venv .venv
-3. source .venv/bin/activate
-4. cd addon-factory-smartx-ui-test-library
-5. poetry install
-```
-
-You could also download SmartX from PyPi as well: [SmartX PyPI](https://pypi.org/project/pytest-splunk-addon-ui-smartx/)
+You can download SmartX from PyPI: [SmartX PyPI](https://pypi.org/project/pytest-splunk-addon-ui-smartx/)
 
 ```console
 1. python3 -m venv .venv
