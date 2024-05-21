@@ -4,14 +4,8 @@
 
 **1. Install the framework**
 
-The Framework could be cloned from here: [SmartX Repo](https://github.com/splunk/addon-factory-smartx-ui-test-library)
-
-```console
-1. git clone https://github.com/splunk/addon-factory-smartx-ui-test-library.git
-2. python3 -m venv .venv
-3. source .venv/bin/activate
-4. cd addon-factory-smartx-ui-test-library
-5. pip install .
+```bash
+pip install pytest-splunk-addon-ui-smartx
 ```
 
 **2. Download Browser Drivers**
@@ -56,25 +50,6 @@ The parameters are as follows:
   - \--setup-retry-count: The number of times the browser should try to connect to the SeleniumBrowser (Default: 1)
   - \--headless: Run the test case on headless mode
   - \--splunk-type=external
-
-## Steps to test in Saucelabs
-
-Saucelabs is a cloud service that allows engineers/systems to provision any platform + browser combination to run some tests. The Saucelab app can be found (here)[https://app.saucelabs.com/dashboard/builds].
-
-**1. Install the framework**
-
-The Framework could be cloned from here: [SmartX Repo](https://github.com/splunk/addon-factory-smartx-ui-test-library)
-
-**2. Configure Saucelabs credentials as environment variables**
-
-  - SAUCE_USERNAME : &lt;saucelabs_username&gt;
-  - SAUCE_PASSWORD : &lt;saucelabs_access_key&gt;
-
-**3. Execute the test cases**
-
-```console
-pytest -vv --browser={browser} --splunk-host={web_url} --splunk-port={mgmt_url} --splunk-user {username} --splunk-password {password} --local
-```
 
 ## General workflow for writing test cases using the Framework
 1. Clone and install the framework inside test/ui

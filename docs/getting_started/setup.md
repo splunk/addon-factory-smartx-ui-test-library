@@ -9,19 +9,7 @@ Generally, you would want to install the SmartX framework as part of a Virtual E
 2. source .venv/bin/activate
 ```
 
-There are two ways to install SmartX:
-
-1. The Framework could be cloned from GitHub: [SmartX Repo](https://github.com/splunk/addon-factory-smartx-ui-test-library)
-
-```console
-1. git clone https://github.com/splunk/addon-factory-smartx-ui-test-library.git
-4. cd addon-factory-smartx-ui-test-library
-5. poetry install
-```
-
-2. Download SmartX from PyPI: [SmartX PyPI](https://pypi.org/project/pytest-splunk-addon-ui-smartx/)
-
-```console
+```bash
 pip install pytest-splunk-addon-ui-smartx
 ```
 

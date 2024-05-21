@@ -1,14 +1,14 @@
-# Controls
+# controls
 
 The following is the API Reference for SmartX Controls:
 
-+ [Base Control](base_control.md)
-+ [Button](button.md)
-+ [Checkbox](checkbox.md)
-+ [Learn More](learn_more.md)
-+ [Message](message.md)
-+ [Multi Select](multi_select.md)
-+ [Oauth Select](oauth_select.md)
-+ [Single Select](single_select.md)
-+ [Textbox](textbox.md)
-+ [Toggle](toggle.md)
++ [base_control](base_control.md)
++ [button](button.md)
++ [checkbox](checkbox.md)
++ [learn_more](learn_more.md)
++ [message](message.md)
++ [multi_select](multi_select.md)
++ [oauth_select](oauth_select.md)
++ [single_select](single_select.md)
++ [textbox](textbox.md)
++ [toggle](toggle.md)
