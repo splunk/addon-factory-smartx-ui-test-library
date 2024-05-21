@@ -1,0 +1,100 @@
+#
+# Copyright 2024 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+site_name: SmartX
+site_author: Splunk
+site_url: "https://splunk.github.io/addon-factory-smartx-ui-test-library/"
+edit_uri: "tree/main/docs/"
+remote_branch: gh-pages
+
+repo_name: Splunk SmartX UI Test Framework
+repo_url: "https://github.com/splunk/addon-factory-smartx-ui-test-library"
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - smarty
+  - fenced_code
+  - sane_lists
+  - codehilite
+  - pymdownx.superfences
+
+theme:
+  name: "material"
+  palette:
+    primary: "black"
+    accent: "orange"
+  features:
+    - content.code.copy
+    - navigation.indexes
+
+plugins:
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_docstring_classes: true
+          show_docstring_functions: true
+          show_docstring_attributes: true
+          show_docstring_parameters: true
+          show_docstring_other_parameters: true
+          show_inheritance_diagram: true
+          docstring_style: sphinx
+          docstring_options:
+            ignore_init_summary: true
+          merge_init_into_class: true
+
+nav:
+  - Home: "index.md"
+  - How To Use: "how_to_use.md"
+  - Getting Started:
+    - "getting_started/index.md"
+    - Setup: "getting_started/setup.md"
+    - Test Page Creation: "getting_started/test_page.md"
+    - Test Cases Creation: "getting_started/test_case.md"
+  - API Reference: 
+    - "api_reference/index.md"
+    - backend_conf: "api_reference/backend_confs.md"
+    - base_test: "api_reference/base_test.md"
+    - plugin: "api_reference/plugin.md"
+    - utils: "api_reference/utils.md"
+    - pages:
+      - "api_reference/pages/index.md"
+      - Logging: "api_reference/pages/logging.md"
+      - Login: "api_reference/pages/login.md"
+      - Page: "api_reference/pages/page.md"
+      - Proxy: "api_reference/pages/proxy.md"
+    - components:
+      - "api_reference/components/index.md"
+      - base_component: "api_reference/components/base_component.md"
+      - conf_table: "api_reference/components/conf_table.md"
+      - dropdown: "api_reference/components/dropdown.md"
+      - entity: "api_reference/components/entity.md"
+      - input_table: "api_reference/components/input_table.md"
+      - login: "api_reference/components/login.md"
+      - table: "api_reference/components/table.md"
+      - tabs: "api_reference/components/tabs.md"
+      - controls:
+        - "api_reference/components/controls/index.md"
+        - base_control: "api_reference/components/controls/base_control.md"
+        - button: "api_reference/components/controls/button.md"
+        - checkbox: "api_reference/components/controls/checkbox.md"
+        - learn_more: "api_reference/components/controls/learn_more.md"
+        - message: "api_reference/components/controls/message.md"
+        - multi_select: "api_reference/components/controls/multi_select.md"
+        - oauth_elect: "api_reference/components/controls/oauth_select.md"
+        - single_select: "api_reference/components/controls/single_select.md"
+        - textbox: "api_reference/components/controls/textbox.md"
+        - toggle: "api_reference/components/controls/toggle.md"

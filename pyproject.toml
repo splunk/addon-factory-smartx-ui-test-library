@@ -48,9 +48,6 @@ pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=5.4, <7.3"
-Sphinx = "*"
-sphinx_rtd_theme = "*"
-sphinx-panels = "*"
 splunk-add-on-ucc-framework = "5.28.5"
 pytest-rerunfailures = "^12.0"
 

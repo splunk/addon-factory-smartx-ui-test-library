@@ -36,9 +36,10 @@ class Proxy(Entity):
         ucc_smartx_rest_helper=None,
     ):
         """
-        :param ucc_smartx_configs: Fixture with selenium driver, urls(web, mgmt) and session key
         :param ta_name: Name of TA
         :param ta_conf: Name of conf file
+        :param ucc_smartx_selenium_helper: Fixture with selenium driver, urls(web, mgmt) and session key
+        :param ucc_smartx_rest_helper: Fixture with selenium driver, urls(mgmt)
         """
         self.ta_name = ta_name
         self.ta_proxy_url = ta_proxy_url
