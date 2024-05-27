@@ -229,7 +229,7 @@ jobs:
           poetry build
           poetry publish -n -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_TOKEN }}
 
-    update-semver:
+  update-semver:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: publish
     runs-on: ubuntu-latest
