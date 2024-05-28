@@ -17,15 +17,12 @@
 import logging
 import os
 import sys
-import time
 
 import requests
-from msedge.selenium_tools import Edge, EdgeOptions
-from msedge.selenium_tools.remote_connection import EdgeRemoteConnection
+from msedge.selenium_tools import Edge
 from selenium import webdriver
 from selenium.common.exceptions import ElementNotInteractableException, TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .pages.login import LoginPage
@@ -41,12 +38,6 @@ class SeleniumHelper:
     """
     The helper class provides the Remote Browser
     """
-
-    sauce_username = None
-    sauce_access_key = None
-    sauce_tunnel_id = None
-    sauce_tunnel_parent = None
-    jenkins_build = None
 
     def __init__(
         self,
@@ -82,7 +73,7 @@ class SeleniumHelper:
                     self.browser.implicitly_wait(3)
                 else:
                     raise Exception(
-                        f"Firefox tests have to be run either with --local-run or in CI environment with selenium host!"
+                        f"Firefox tests have to be run either with --local or in CI environment with selenium host!"
                     )
 
             elif browser == "chrome":
@@ -101,7 +92,7 @@ class SeleniumHelper:
                     self.browser.implicitly_wait(3)
                 else:
                     raise Exception(
-                        f"Chrome tests have to be run either with --local-run or in CI environment with selenium host!"
+                        f"Chrome tests have to be run either with --local or in CI environment with selenium host!"
                     )
             elif browser == "edge":
                 if local_run:
@@ -114,7 +105,7 @@ class SeleniumHelper:
                     )
                 else:
                     raise Exception(
-                        f"Edge tests are available only with --local-run option"
+                        f"Edge tests are available only with --local option"
                     )
             elif browser == "IE":
                 if local_run:
@@ -123,14 +114,14 @@ class SeleniumHelper:
                     )
                 else:
                     raise Exception(
-                        f"IE tests are available only with --local-run option"
+                        f"IE tests are available only with --local option"
                     )
             elif browser == "safari":
                 if local_run:
                     self.browser = webdriver.Safari()
                 else:
                     raise Exception(
-                        f"Safari tests are available only with --local-run option"
+                        f"Safari tests are available only with --local option"
                     )
             else:
                 raise Exception(

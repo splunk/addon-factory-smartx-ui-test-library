@@ -65,9 +65,7 @@ def pytest_addoption(parser):
         "--browser",
         action="store",
         help=(
-            "The browser on which the test should run. supported_values: (firefox, chrome, edge, safari)."
-            " You can also provide browser version if the tests are running on Saucelabs. "
-            "ex, <browser>:<version>. default version is latest."
+            "The browser on which the test should run. supported_values: (firefox, chrome, edge, IE, safari)."
         ),
     )
 
@@ -205,22 +203,6 @@ def ucc_smartx_selenium_helper(
 
     LOGGER.info("Quiting browser..")
     selenium_helper.browser.quit()
-
-    if not ucc_smartx_configs.local_run:
-        LOGGER.debug("Notifying the status of the testcase to SauceLabs...")
-        try:
-            if hasattr(request.node, "report"):
-                selenium_helper.update_saucelab_job(request.node.report.failed)
-            else:
-                LOGGER.info(
-                    "Could not notify to sauce labs because scope of fixture is not set to function"
-                )
-        except:
-            LOGGER.warning(
-                "Could not notify to Saucelabs \nTRACEBACK::{}".format(
-                    traceback.format_exc()
-                )
-            )
 
 
 @pytest.fixture(scope="session")
