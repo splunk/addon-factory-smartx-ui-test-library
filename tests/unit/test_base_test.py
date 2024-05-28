@@ -67,9 +67,7 @@ def test_capabilities_for_firefox_local():
                 "browser": "firefox",
             }
         )
-        webdriver_.assert_called_with(
-            firefox_options="firefox_opts"
-        )
+        webdriver_.assert_called_with(firefox_options="firefox_opts")
         selenium_helper.get_local_firefox_opts.assert_called_with(False)
 
 

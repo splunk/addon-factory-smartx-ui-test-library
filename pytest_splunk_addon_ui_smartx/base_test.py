@@ -113,9 +113,7 @@ class SeleniumHelper:
                         capabilities=SeleniumHelper.get_local_ie_opts()
                     )
                 else:
-                    raise Exception(
-                        f"IE tests are available only with --local option"
-                    )
+                    raise Exception(f"IE tests are available only with --local option")
             elif browser == "safari":
                 if local_run:
                     self.browser = webdriver.Safari()
