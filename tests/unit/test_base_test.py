@@ -55,12 +55,46 @@ def test_constructor_selenium_helper(browser, webdriver, local_run):
         )
 
 
+@pytest.mark.parametrize(
+    "headless_run", [True, False], ids=["headless_run-True", "headless_run-False"]
+)
+@pytest.mark.parametrize(
+    "platform,system",
+    [("darwin", "MAC"), ("win", "WINDOWS"), ("cygwin", "WINDOWS"), ("unknow", "LINUX")],
+)
+def test_get_local_edge_opts(headless_run, platform, system):
+    with patch("pytest_splunk_addon_ui_smartx.base_test.Edge"), patch(
+        "sys.platform", platform
+    ):
+        assert SeleniumHelper.get_local_edge_opts(headless_run)["platform"] == system
+        expected = deepcopy(expected_edge_opts)
+        expected = {**expected, "platform": system}
+        if headless_run:
+            expected["ms:edgeOptions"]["args"].append("--headless")
+            expected["ms:edgeOptions"]["args"].append("--window-size=1280,768")
+
+        assert SeleniumHelper.get_local_edge_opts(headless_run) == expected
+
+
+@pytest.mark.parametrize(
+    "headless_run", [True, False], ids=["headless_run-True", "headless_run-False"]
+)
+def test_get_local_chrome_opts(headless_run):
+    local_chrome_opts = SeleniumHelper.get_local_chrome_opts(headless_run)
+    assert isinstance(local_chrome_opts, selenium.webdriver.chrome.options.Options)
+    assert "--ignore-ssl-errors=yes" in local_chrome_opts.arguments
+    assert "--ignore-certificate-errors" in local_chrome_opts.arguments
+    if headless_run:
+        assert "--headless" in local_chrome_opts.arguments
+        assert "--window-size=1280,768" in local_chrome_opts.arguments
+
+
 def test_capabilities_for_firefox_local():
     with patch("selenium.webdriver.Firefox") as webdriver_, patch(
         "os.environ.get", lambda x: x
     ):
         selenium_helper = pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper
-        selenium_helper.get_local_firefox_opts = MagicMock(return_value=f"firefox_opts")
+        SeleniumHelper.get_local_firefox_opts = MagicMock(return_value=f"firefox_opts")
         selenium_helper(
             **{
                 **default_args_for_selenium_helper,
@@ -320,41 +354,6 @@ expected_edge_opts = {
     },
     "ms:edgeChromium": True,
 }
-
-
-@pytest.mark.parametrize(
-    "headless_run", [True, False], ids=["headless_run-True", "headless_run-False"]
-)
-@pytest.mark.parametrize(
-    "platform,system",
-    [("darwin", "MAC"), ("win", "WINDOWS"), ("cygwin", "WINDOWS"), ("unknow", "LINUX")],
-)
-def test_get_local_edge_opts(headless_run, platform, system):
-    with patch("pytest_splunk_addon_ui_smartx.base_test.Edge"), patch(
-        "sys.platform", platform
-    ):
-        assert SeleniumHelper.get_local_edge_opts(headless_run)["platform"] == system
-        expected = deepcopy(expected_edge_opts)
-        expected = {**expected, "platform": system}
-        if headless_run:
-            expected["ms:edgeOptions"]["args"].append("--headless")
-            expected["ms:edgeOptions"]["args"].append("--window-size=1280,768")
-
-        assert SeleniumHelper.get_local_edge_opts(headless_run) == expected
-
-
-# @pytest.mark.parametrize(
-#     "headless_run", [True, False], ids=["headless_run-True", "headless_run-False"]
-# )
-# def test_get_local_chrome_opts(headless_run):
-#     with patch("selenium.webdriver.Chrome"):
-#         local_chrome_opts = SeleniumHelper.get_local_chrome_opts(headless_run)
-#         assert isinstance(local_chrome_opts, selenium.webdriver.chrome.options.Options)
-#         assert "--ignore-ssl-errors=yes" in local_chrome_opts.arguments
-#         assert "--ignore-certificate-errors" in local_chrome_opts.arguments
-#         if headless_run:
-#             assert "--headless" in local_chrome_opts.arguments
-#             assert "--window-size=1280,768" in local_chrome_opts.arguments
 
 
 def test_login_to_splunk():
