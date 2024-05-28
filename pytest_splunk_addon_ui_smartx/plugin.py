@@ -127,7 +127,7 @@ def ucc_smartx_configs(request):
 
     if request.config.getoption("--local"):
         local_run = True
-        LOGGER.debug("--debug")
+        LOGGER.debug("--local")
     else:
         local_run = False
 
@@ -144,11 +144,7 @@ def ucc_smartx_configs(request):
         headless_run = False
 
     LOGGER.info(
-        "Calling SeleniumHelper with:: browser={driver}, debug={local_run}, headless={headless_run})".format(
-            driver=driver,
-            local_run=local_run,
-            headless_run=headless_run,
-        )
+        f"Calling SeleniumHelper with:: browser={driver}, local-run={local_run}, headless={headless_run})"
     )
     smartx_configs = SmartConfigs(
         driver=driver,
@@ -186,7 +182,7 @@ def ucc_smartx_selenium_helper(
                 ucc_smartx_configs.driver_version,
                 splunk_web_uri,
                 splunk_rest_uri,
-                debug=ucc_smartx_configs.local_run,
+                local_run=ucc_smartx_configs.local_run,
                 cred=(splunk["username"], splunk["password"]),
                 headless=ucc_smartx_configs.headless_run,
                 test_case=test_case,
