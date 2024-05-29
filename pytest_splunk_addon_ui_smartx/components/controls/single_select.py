@@ -202,29 +202,6 @@ class SingleSelect(BaseControl):
             else:
                 return False
 
-    def get_placeholder_value(self):
-        """
-        get placeholder value from the single select
-        """
-        if self.searchable:
-            if self.allow_new_values:
-                self.elements.update(
-                    {
-                        "input": Selector(
-                            select=self.container.select + ' [data-test="textbox"]'
-                        )
-                    }
-                )
-            else:
-                self.wait_to_be_clickable("root")
-                self.root.click()
-                popover_id = "#" + self.root.get_attribute("data-test-popover-id")
-                self.elements.update(
-                    {"input": Selector(select=popover_id + ' [data-test="textbox"]')}
-                )
-
-        return self.input.get_attribute("placeholder").strip()
-
     def cancel_selected_value(self):
         """
         Cancels the currently selected value in the SingleSelect

@@ -22,7 +22,6 @@ from selenium.common import exceptions
 
 from .action_controls import ActionControls
 from .alert_base_component import Selector
-from .alert_base_control import AlertBaseControl
 
 
 class AlertTable(ActionControls):
