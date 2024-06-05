@@ -45,7 +45,7 @@ class SeleniumHelper:
         browser_version,
         splunk_web_url,
         splunk_mgmt_url,
-        local_run=False,
+        debug=False,
         cred=("admin", "Chang3d!"),
         headless=False,
         test_case=None,
@@ -59,7 +59,7 @@ class SeleniumHelper:
 
         try:
             if browser == "firefox":
-                if local_run:
+                if debug:
                     self.browser = webdriver.Firefox(
                         firefox_options=SeleniumHelper.get_local_firefox_opts(headless)
                     )
@@ -77,7 +77,7 @@ class SeleniumHelper:
                     )
 
             elif browser == "chrome":
-                if local_run:
+                if debug:
                     self.browser = webdriver.Chrome(
                         chrome_options=SeleniumHelper.get_local_chrome_opts(headless),
                         service_args=["--verbose"],
@@ -95,7 +95,7 @@ class SeleniumHelper:
                         f"Chrome tests have to be run either with --local or in CI environment with selenium host!"
                     )
             elif browser == "edge":
-                if local_run:
+                if debug:
                     self.browser = Edge(
                         executable_path="msedgedriver",
                         desired_capabilities=SeleniumHelper.get_local_edge_opts(
@@ -108,14 +108,14 @@ class SeleniumHelper:
                         f"Edge tests are available only with --local option"
                     )
             elif browser == "IE":
-                if local_run:
+                if debug:
                     self.browser = webdriver.Ie(
                         capabilities=SeleniumHelper.get_local_ie_opts()
                     )
                 else:
                     raise Exception(f"IE tests are available only with --local option")
             elif browser == "safari":
-                if local_run:
+                if debug:
                     self.browser = webdriver.Safari()
                 else:
                     raise Exception(

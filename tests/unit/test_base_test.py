@@ -17,7 +17,7 @@ default_args_for_selenium_helper = {
     "browser_version": "88",
     "splunk_web_url": "https://localhost:8000",
     "splunk_mgmt_url": "https://localhost:8089",
-    "local_run": True,
+    "debug": True,
     "cred": ("admin", "Chang3d!"),
     "headless": False,
     "test_case": None,
@@ -32,7 +32,7 @@ def test_selenium_helper_raise_exception_with_given_invalid_browser_version():
 
 
 @pytest.mark.parametrize(
-    "browser,webdriver, local_run",
+    "browser,webdriver, debug",
     [
         ("firefox", "selenium.webdriver.Firefox", [True, False]),
         ("chrome", "selenium.webdriver.Chrome", [True, False]),
@@ -41,15 +41,15 @@ def test_selenium_helper_raise_exception_with_given_invalid_browser_version():
         ("edge", "pytest_splunk_addon_ui_smartx.base_test.Edge", True),
     ],
 )
-def test_constructor_selenium_helper(browser, webdriver, local_run):
-    with patch(webdriver if local_run else "selenium.webdriver.Remote"), patch(
+def test_constructor_selenium_helper(browser, webdriver, debug):
+    with patch(webdriver if debug else "selenium.webdriver.Remote"), patch(
         "os.environ.get", lambda x: x
     ):
         pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper(
             **{
                 **default_args_for_selenium_helper,
                 "browser": browser,
-                "local_run": local_run,
+                "debug": debug,
                 "browser_version": 11,
             }
         )

@@ -125,7 +125,7 @@ def ucc_smartx_configs(request):
 
     if request.config.getoption("--local"):
         local_run = True
-        LOGGER.debug("--local")
+        LOGGER.debug("--debug")
     else:
         local_run = False
 
@@ -180,7 +180,7 @@ def ucc_smartx_selenium_helper(
                 ucc_smartx_configs.driver_version,
                 splunk_web_uri,
                 splunk_rest_uri,
-                local_run=ucc_smartx_configs.local_run,
+                debug=ucc_smartx_configs.local_run,
                 cred=(splunk["username"], splunk["password"]),
                 headless=ucc_smartx_configs.headless_run,
                 test_case=test_case,
