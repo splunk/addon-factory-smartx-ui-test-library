@@ -49,12 +49,6 @@ class TextArea(TextBox):
         """
         return self.input.get_attribute("value")
 
-    def get_placeholder_value(self):
-        """
-        get placeholder value from the textbox
-            :return: Str Value of the placeholder
-        """
-        return self.input.get_attribute("placeholder")
 
     def get_textarea_height(self) -> int:
         """
