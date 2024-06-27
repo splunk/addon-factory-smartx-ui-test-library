@@ -49,7 +49,6 @@ class TextArea(TextBox):
         """
         return self.input.get_attribute("value")
 
-
     def get_textarea_height(self) -> int:
         """
         Get the height of the displayed textarea.
