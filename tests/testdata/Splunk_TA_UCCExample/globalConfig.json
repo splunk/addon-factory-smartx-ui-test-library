@@ -38,9 +38,6 @@
                                     "pattern": "^[a-zA-Z]\\w*$"
                                 }
                             ],
-                            "options": {
-                                "placeholder": "Required"
-                            },
                             "field": "name",
                             "help": "Enter a unique name for this account.",
                             "required": true
@@ -349,10 +346,7 @@
                                     "minLength": 5
                                 }
                             ],
-                            "required": true,
-                            "options": {
-                                "placeholder": "Required"
-                            }
+                            "required": true
                         },
                         {
                             "field": "test_number",
@@ -367,10 +361,7 @@
                                     ]
                                 }
                             ],
-                            "required": true,
-                            "options": {
-                                "placeholder": "Required"
-                            }
+                            "required": true
                         },
                         {
                             "field": "test_regex",
