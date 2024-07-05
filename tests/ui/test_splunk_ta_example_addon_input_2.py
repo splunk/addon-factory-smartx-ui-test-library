@@ -388,8 +388,8 @@ class TestInput(UccTester):
             "This is an example radio button for the input two entity",
         )
         self.assert_util(
-            input_page.entity1.query_start_date.get_help_text,
-            'The datetime after which to query and index records, in this format: "YYYY-MM-DDThh:mm:ss.000z". Defaults to 90 days earlier from now.',
+            input_page.entity2.query_start_date.get_help_text,
+            'The date and time, in "YYYY-MM-DDThh:mm:ss.000z" format, after which to query and index records. The default is 90 days before today.',
         )
 
     @pytest.mark.execute_enterprise_cloud_true
