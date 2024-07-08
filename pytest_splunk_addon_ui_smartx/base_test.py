@@ -84,7 +84,7 @@ class SeleniumHelper:
                     )
                 elif selenium_host:
                     self.browser = webdriver.Remote(
-                        command_executor=f"{selenium_host}:4444/wd/hub",
+                        command_executor=f"{selenium_host}:4444",
                         options=SeleniumHelper.get_local_chrome_opts(
                             headless_run=False
                         ),
