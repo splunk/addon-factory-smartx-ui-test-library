@@ -62,32 +62,25 @@ class InputTable(Table):
             :return: Bool whether or not enabling or disabling the field was successful, If the field was already in the state we wanted it in, then it will return an exception
         """
         _row = self._get_row(name)
-        input_status = _row.find_element(
-            *list(self.elements["input_status"]._asdict().values())
-        )
-        status = (
-            input_status.find_element_by_css_selector('[data-test="status"]')
-            .text.strip()
-            .lower()
-        )
         status_button = _row.find_element(
             *list(self.elements["status_toggle"]._asdict().values())
         )
+        input_enabled = (
+            True
+            if status_button.get_attribute("data-selected").lower().strip() == "true"
+            else False
+        )
         if enable:
-            if status == "enabled":
-                raise Exception(
-                    "The input is already {}".format(self.input_status.text.strip())
-                )
-            elif status == "disabled":
+            if input_enabled:
+                raise Exception("The input is already enabled")
+            else:
                 status_button.click()
                 self.wait_until("switch_button_status")
                 return True
         else:
-            if status == "disabled":
-                raise Exception(
-                    "The input is already {}".format(self.input_status.text.strip())
-                )
-            elif status == "enabled":
+            if not input_enabled:
+                raise Exception("The input is already disabled")
+            else:
                 status_button.click()
                 self.wait_until("switch_button_status")
                 return True
