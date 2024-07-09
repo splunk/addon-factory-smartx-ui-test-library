@@ -65,21 +65,21 @@ class InputTable(Table):
         status_button = _row.find_element(
             *list(self.elements["status_toggle"]._asdict().values())
         )
-        input_enabled = status_button.get_attribute("data-selected")
+        input_enabled = (
+            True
+            if status_button.get_attribute("data-selected").lower().strip() == "true"
+            else False
+        )
         if enable:
             if input_enabled:
-                raise Exception(
-                    "The input is already enabled"
-                )
+                raise Exception("The input is already enabled")
             elif not input_enabled:
                 status_button.click()
                 self.wait_until("switch_button_status")
                 return True
         else:
             if not input_enabled:
-                raise Exception(
-                    "The input is already disabled"
-                )
+                raise Exception("The input is already disabled")
             elif input_enabled:
                 status_button.click()
                 self.wait_until("switch_button_status")
