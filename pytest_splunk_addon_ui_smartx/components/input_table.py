@@ -73,14 +73,14 @@ class InputTable(Table):
         if enable:
             if input_enabled:
                 raise Exception("The input is already enabled")
-            elif not input_enabled:
+            else:
                 status_button.click()
                 self.wait_until("switch_button_status")
                 return True
         else:
             if not input_enabled:
                 raise Exception("The input is already disabled")
-            elif input_enabled:
+            else:
                 status_button.click()
                 self.wait_until("switch_button_status")
                 return True
