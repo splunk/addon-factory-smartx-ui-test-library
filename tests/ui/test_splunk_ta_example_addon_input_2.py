@@ -219,7 +219,7 @@ class TestInput(UccTester):
         input_page.entity2.interval.set_value("abc")
         self.assert_util(
             input_page.entity2.save,
-            r"Interval must be an integer.",
+            r"Interval must be either a non-negative number or -1",
             left_args={"expect_error": True},
         )
 
