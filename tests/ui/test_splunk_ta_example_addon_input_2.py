@@ -219,7 +219,7 @@ class TestInput(UccTester):
         input_page.entity2.interval.set_value("abc")
         self.assert_util(
             input_page.entity2.save,
-            r"Interval must be an integer.",
+            r"Interval must be either a non-negative number or -1.",
             left_args={"expect_error": True},
         )
 
@@ -386,6 +386,10 @@ class TestInput(UccTester):
         self.assert_util(
             input_page.entity2.example_radio.get_help_text,
             "This is an example radio button for the input two entity",
+        )
+        self.assert_util(
+            input_page.entity2.query_start_date.get_help_text,
+            'The date and time, in "YYYY-MM-DDThh:mm:ss.000z" format, after which to query and index records. The default is 90 days before today.',
         )
 
     @pytest.mark.execute_enterprise_cloud_true

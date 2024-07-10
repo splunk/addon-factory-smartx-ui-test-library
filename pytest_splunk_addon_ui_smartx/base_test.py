@@ -154,9 +154,9 @@ class SeleniumHelper:
         chrome_opts.add_argument("--ignore-ssl-errors=yes")
         chrome_opts.add_argument("--ignore-certificate-errors")
         chrome_opts.add_argument("--disable-dev-shm-usage")
+        chrome_opts.add_argument("--window-size=1280,768")
         if headless_run:
             chrome_opts.add_argument("--headless")
-            chrome_opts.add_argument("--window-size=1280,768")
         return chrome_opts
 
     @staticmethod

@@ -98,3 +98,4 @@ nav:
         - single_select: "api_reference/components/controls/single_select.md"
         - textbox: "api_reference/components/controls/textbox.md"
         - toggle: "api_reference/components/controls/toggle.md"
+  - Changelog: "change_log.md"
