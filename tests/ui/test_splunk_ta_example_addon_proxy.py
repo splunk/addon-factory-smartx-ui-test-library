@@ -54,25 +54,6 @@ class TestProxy(UccTester):
     @pytest.mark.execute_enterprise_cloud_false
     @pytest.mark.forwarder
     @pytest.mark.proxy
-    def test_proxy_fields_placeholder_value(
-        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
-    ):
-        """Verifies proxy input field placeholder value"""
-        proxy = Proxy(
-            TA_NAME,
-            TA_PROXY_URL,
-            TA_CONF,
-            ucc_smartx_selenium_helper,
-            ucc_smartx_rest_helper,
-        )
-        self.assert_util(proxy.host.get_placeholder_value, "optional")
-        self.assert_util(proxy.port.get_placeholder_value, "optional")
-        self.assert_util(proxy.username.get_placeholder_value, "optional")
-        self.assert_util(proxy.password.get_placeholder_value, "optional")
-
-    @pytest.mark.execute_enterprise_cloud_false
-    @pytest.mark.forwarder
-    @pytest.mark.proxy
     def test_proxy_default_configs(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):

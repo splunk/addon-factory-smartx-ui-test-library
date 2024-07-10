@@ -154,12 +154,6 @@ class AlertAccountSelect(ActionControls):
         except:
             return False
 
-    def get_placeholder_value(self):
-        """
-        get placeholder value from the single select
-        """
-        return self.input.get_attribute("placeholder").strip()
-
     def cancel_selected_value(self):
         """
         Cancels the currently selected value in the SingleSelect
