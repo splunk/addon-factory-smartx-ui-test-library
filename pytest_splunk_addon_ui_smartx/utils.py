@@ -33,3 +33,26 @@ def backend_retry(retry_count):
         return retry_method
 
     return backend_retry_decorator
+
+
+def get_browser_logs(browser):
+    """
+    Retrieve browser console logs.
+    This method should be called with a WebDriver instance as an argument.
+
+    :param browser: WebDriver instance
+    :return: List of log entry dictionaries or empty list if not supported/error
+
+    Each log entry dictionary contains:
+    - level: str (e.g., 'INFO', 'DEBUG', 'WARNING', 'SEVERE')
+    - source: str (e.g., 'network', 'console-api')
+    - message: str
+    - timestamp: int
+    """
+    try:
+        if browser.name.lower() == "chrome":
+            return browser.get_log("browser")
+        else:
+            return []
+    except Exception as e:
+        return []

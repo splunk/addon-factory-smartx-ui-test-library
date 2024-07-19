@@ -151,6 +151,7 @@ class SeleniumHelper:
     @staticmethod
     def get_local_chrome_opts(headless_run):
         chrome_opts = webdriver.ChromeOptions()
+        chrome_opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
         chrome_opts.add_argument("--ignore-ssl-errors=yes")
         chrome_opts.add_argument("--ignore-certificate-errors")
         chrome_opts.add_argument("--disable-dev-shm-usage")
