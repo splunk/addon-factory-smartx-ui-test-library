@@ -147,6 +147,16 @@ class TestInput(UccTester):
             left_args={"expect_error": True},
         )
 
+        info_console_logs = get_browser_logs(
+            ucc_smartx_selenium_helper.browser,
+            log_level=LogLevel.INFO,
+            log_source=LogSource.CONSOLE_API,
+        )
+        ucc_framework_logs = [
+            log for log in info_console_logs if "UCC Framework" in log.message
+        ]
+        assert ucc_framework_logs, "No INFO log entry containing 'UCC Framework' found"
+
         severe_console_logs = get_browser_logs(
             ucc_smartx_selenium_helper.browser,
             log_level=LogLevel.SEVERE,
