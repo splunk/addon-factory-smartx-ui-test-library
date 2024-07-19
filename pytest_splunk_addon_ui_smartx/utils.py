@@ -50,6 +50,7 @@ class LogLevel(Enum):
 class LogSource(Enum):
     NETWORK = "network"
     CONSOLE_API = "console-api"
+    RECOMMENDATION = "recommendation"
 
 
 class LogEntry(NamedTuple):
@@ -67,26 +68,23 @@ def get_browser_logs(
     """
     Retrieve and optionally filter browser console logs.
     """
-    try:
-        if browser.name.lower() == "chrome":
-            logs = browser.get_log("browser")
-            filtered_logs = []
-
-            for log in logs:
-                entry = LogEntry(
-                    level=LogLevel[log["level"]],
-                    message=log["message"],
-                    source=LogSource(log["source"]),
-                    timestamp=log["timestamp"],
-                )
-
-                if (log_level is None or entry.level == log_level) and (
-                    log_source is None or entry.source == log_source
-                ):
-                    filtered_logs.append(entry)
-
-            return filtered_logs
-        else:
-            return []
-    except Exception as e:
+    if browser.name.lower() != "chrome":
         return []
+
+    logs = browser.get_log("browser")
+    filtered_logs: List[LogEntry] = []
+
+    for log in logs:
+        entry = LogEntry(
+            level=LogLevel[log["level"]],
+            message=log["message"],
+            source=LogSource(log["source"]),
+            timestamp=log["timestamp"],
+        )
+
+        if (log_level is None or entry.level == log_level) and (
+            log_source is None or entry.source == log_source
+        ):
+            filtered_logs.append(entry)
+
+    return filtered_logs
