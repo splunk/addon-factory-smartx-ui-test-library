@@ -1,4 +1,5 @@
 from pytest_splunk_addon_ui_smartx.base_test import UccTester
+from pytest_splunk_addon_ui_smartx.utils import get_browser_logs, LogLevel, LogSource
 from .Example_UccLib.account import AccountPage
 from .Example_UccLib.input_page import InputPage
 import pytest
@@ -145,6 +146,15 @@ class TestInput(UccTester):
             r"Field Name is required",
             left_args={"expect_error": True},
         )
+
+        severe_console_logs = get_browser_logs(
+            ucc_smartx_selenium_helper.browser,
+            log_level=LogLevel.SEVERE,
+            log_source=LogSource.CONSOLE_API,
+        )
+        assert (
+            not severe_console_logs
+        ), f"Unexpected severe console logs found: {severe_console_logs}"
 
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder

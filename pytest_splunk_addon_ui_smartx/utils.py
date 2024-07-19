@@ -13,6 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+from typing import List, NamedTuple, Optional
+from enum import Enum, auto
+
+
 def backend_retry(retry_count):
     # The decorator itself
     def backend_retry_decorator(method):
@@ -35,23 +40,52 @@ def backend_retry(retry_count):
     return backend_retry_decorator
 
 
-def get_browser_logs(browser):
+class LogLevel(Enum):
+    INFO = auto()
+    DEBUG = auto()
+    WARNING = auto()
+    SEVERE = auto()
+
+
+class LogSource(Enum):
+    NETWORK = "network"
+    CONSOLE_API = "console-api"
+
+
+class LogEntry(NamedTuple):
+    level: LogLevel
+    message: str
+    source: LogSource
+    timestamp: int
+
+
+def get_browser_logs(
+    browser,
+    log_level: Optional[LogLevel] = None,
+    log_source: Optional[LogSource] = None,
+) -> List[LogEntry]:
     """
-    Retrieve browser console logs.
-    This method should be called with a WebDriver instance as an argument.
-
-    :param browser: WebDriver instance
-    :return: List of log entry dictionaries or empty list if not supported/error
-
-    Each log entry dictionary contains:
-    - level: str (e.g., 'INFO', 'DEBUG', 'WARNING', 'SEVERE')
-    - source: str (e.g., 'network', 'console-api')
-    - message: str
-    - timestamp: int
+    Retrieve and optionally filter browser console logs.
     """
     try:
         if browser.name.lower() == "chrome":
-            return browser.get_log("browser")
+            logs = browser.get_log("browser")
+            filtered_logs = []
+
+            for log in logs:
+                entry = LogEntry(
+                    level=LogLevel[log["level"]],
+                    message=log["message"],
+                    source=LogSource(log["source"]),
+                    timestamp=log["timestamp"],
+                )
+
+                if (log_level is None or entry["level"] == log_level) and (
+                    log_source is None or entry["source"] == log_source
+                ):
+                    filtered_logs.append(entry)
+
+            return filtered_logs
         else:
             return []
     except Exception as e:
