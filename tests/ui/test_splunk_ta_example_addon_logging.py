@@ -3,6 +3,8 @@ from pytest_splunk_addon_ui_smartx.pages.logging import Logging
 import pytest
 import random
 
+from pytest_splunk_addon_ui_smartx.utils import LogSource, LogLevel, get_browser_logs
+
 TA_NAME = "Splunk_TA_UCCExample"
 TA_CONF = "splunk_ta_uccexample_settings"
 
@@ -31,4 +33,24 @@ class TestLogging(UccTester):
         level = random.choice(levels)
         logging.log_level.select(level)
         logging.save()
+
         self.assert_util(logging.log_level.get_value().lower(), level.lower())
+
+        info_console_logs = get_browser_logs(
+            ucc_smartx_selenium_helper.browser,
+            log_level=LogLevel.INFO,
+            log_source=LogSource.CONSOLE_API,
+        )
+        ucc_framework_logs = [
+            log for log in info_console_logs if "UCC Framework" in log.message
+        ]
+        assert ucc_framework_logs, "No INFO log entry containing 'UCC Framework' found"
+
+        severe_console_logs = get_browser_logs(
+            ucc_smartx_selenium_helper.browser,
+            log_level=LogLevel.SEVERE,
+            log_source=LogSource.CONSOLE_API,
+        )
+        assert (
+            not severe_console_logs
+        ), f"Unexpected severe console logs found: {severe_console_logs}"

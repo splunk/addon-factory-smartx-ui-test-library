@@ -80,8 +80,8 @@ def get_browser_logs(
                     timestamp=log["timestamp"],
                 )
 
-                if (log_level is None or entry["level"] == log_level) and (
-                    log_source is None or entry["source"] == log_source
+                if (log_level is None or entry.level == log_level) and (
+                    log_source is None or entry.source == log_source
                 ):
                     filtered_logs.append(entry)
 
