@@ -153,6 +153,7 @@ class SeleniumHelper:
         chrome_opts = webdriver.ChromeOptions()
         chrome_opts.add_argument("--ignore-ssl-errors=yes")
         chrome_opts.add_argument("--ignore-certificate-errors")
+        chrome_opts.add_argument("--allow-insecure-localhost")
         chrome_opts.add_argument("--disable-dev-shm-usage")
         chrome_opts.add_argument("--window-size=1280,768")
         if headless_run:
