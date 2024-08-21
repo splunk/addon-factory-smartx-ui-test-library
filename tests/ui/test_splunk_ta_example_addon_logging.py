@@ -44,7 +44,9 @@ class TestLogging(UccTester):
         ucc_framework_logs = [
             log for log in info_console_logs if "UCC Framework" in log.message
         ]
-        assert ucc_framework_logs, "No INFO log entry containing 'UCC Framework' found"
+        assert (
+            len(ucc_framework_logs) > 0
+        ), "No INFO log entry containing 'UCC Framework' found"
 
         severe_console_logs = get_browser_logs(
             ucc_smartx_selenium_helper.browser,
@@ -52,5 +54,5 @@ class TestLogging(UccTester):
             log_source=LogSource.CONSOLE_API,
         )
         assert (
-            not severe_console_logs
+            len(severe_console_logs) == 0
         ), f"Unexpected severe console logs found: {severe_console_logs}"
