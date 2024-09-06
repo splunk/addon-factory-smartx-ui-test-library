@@ -9,7 +9,7 @@ import copy
 
 ACCOUNT_CONFIG = {
     "name": "TestAccount",
-    "example_file": "./testdata/example_file.txt",
+    "example_file": "tests/ui/testdata/example_file.txt",
     "account_checkbox": 1,
     "account_multiple_select": "one",
     "account_radio": "yes",
@@ -25,9 +25,9 @@ ACCOUNT_CONFIG = {
     "example_help_link": "",
 }
 
-INVALID_FILE = "./testdata/invalid_file.json"
-LARGE_SIZE_FILE = "./testdata/large_file.txt"
-INVALID_FILE_CONTENT = "./testdata/invalid_file_content.conf"
+INVALID_FILE = "tests/ui/testdata/invalid_file.json"
+LARGE_SIZE_FILE = "tests/ui/testdata/large_file.txt"
+INVALID_FILE_CONTENT = "tests/ui/testdata/invalid_file_content.conf"
 
 
 @pytest.fixture
