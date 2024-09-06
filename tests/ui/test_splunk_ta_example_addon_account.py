@@ -61,7 +61,8 @@ def add_account(ucc_smartx_rest_helper):
         ucc_smartx_rest_helper=ucc_smartx_rest_helper, open_page=False
     )
     url = account._get_account_endpoint()
-    kwargs = ACCOUNT_CONFIG
+    kwargs = copy.deepcopy(ACCOUNT_CONFIG)
+    kwargs["example_file"] = "Example file content"
     yield account.backend_conf.post_stanza(url, kwargs)
 
 
@@ -74,6 +75,7 @@ def add_multiple_account(ucc_smartx_rest_helper):
     for i in range(12):
         kwargs = copy.deepcopy(ACCOUNT_CONFIG)
         kwargs["name"] = kwargs["name"] + str(i)
+        kwargs["example_file"] = "Example file content"
         account.backend_conf.post_stanza(url, kwargs)
 
 
@@ -1109,7 +1111,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": "TestEditPassword",
             "token": "TestEditToken",
-            "example_file": ACCOUNT_CONFIG["example_file"],
+            "example_file": "Example file content",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
@@ -1142,7 +1144,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": "TestEditPassword",
             "token": "TestEditToken",
-            "example_file": ACCOUNT_CONFIG["example_file"],
+            "example_file": "Example file content",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
