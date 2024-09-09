@@ -476,7 +476,7 @@ class TestAccount(UccTester):
         account.entity.file.set_value(os.path.abspath(INVALID_FILE))
         self.assert_util(
             account.entity.file.get_error_text,
-            "The file must be in one of these formats: log, txt",
+            "The file must be in one of these formats: conf, txt",
         )
         self.assert_util(account.entity.file.cancel_selected_value, True)
         # test for file size limit
@@ -565,9 +565,7 @@ class TestAccount(UccTester):
         self.assert_util(
             account.entity.name.get_help_text, "Enter a unique name for this account."
         )
-        self.assert_util(
-            account.entity.file.get_help_text, "Upload service account's certificate"
-        )
+        self.assert_util(account.entity.file.get_help_text, "Upload example file")
         self.assert_util(
             account.entity.file.get_support_message, "Example Support message"
         )
@@ -1078,7 +1076,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": ACCOUNT_CONFIG["password"],
             "token": ACCOUNT_CONFIG["token"],
-            "example_file": ACCOUNT_CONFIG["example_file"],
+            "example_file": "Example test file for testing file component",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
@@ -1111,7 +1109,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": "TestEditPassword",
             "token": "TestEditToken",
-            "example_file": "Example file content",
+            "example_file": "Example test file for testing file component",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
@@ -1144,7 +1142,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": "TestEditPassword",
             "token": "TestEditToken",
-            "example_file": "Example file content",
+            "example_file": "Example test file for testing file component",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
