@@ -486,7 +486,7 @@ class TestAccount(UccTester):
         )
         self.assert_util(account.entity.file.cancel_selected_value, True)
         # test for invalid file content
-        account.entity.file.set_value(INVALID_FILE_CONTENT)
+        account.entity.file.set_value(os.path.abspath(INVALID_FILE_CONTENT))
         self.assert_util(account.entity.file.get_value, "invalid_file_content.conf")
         account.entity.environment.select("Value2")
         account.entity.multiple_select.select("Option Two")
