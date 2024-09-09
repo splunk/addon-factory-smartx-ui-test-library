@@ -496,7 +496,7 @@ class TestAccount(UccTester):
         account.entity.account_radio.select("No")
         self.assert_util(
             account.entity.save,
-            "The file is invalid",
+            "Field Example File does not match regular expression ^Example*",
             left_args={"expect_error": True},
         )
 
