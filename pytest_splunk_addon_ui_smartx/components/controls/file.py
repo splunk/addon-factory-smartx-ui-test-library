@@ -63,8 +63,7 @@ class File(BaseControl):
             :return: Str The name of the selected file
         """
         try:
-            if self.selected.is_displayed():
-                return self.selected.get_attribute("innerText").strip()
+            return self.selected.get_attribute("innerText").strip()
         except TimeoutException:
             pass
         return ""
@@ -74,12 +73,7 @@ class File(BaseControl):
         get the file support message
             :return: Str file support message
         """
-        try:
-            if self.support_message.is_displayed():
-                return self.get_clear_text(self.support_message)
-        except TimeoutException:
-            pass
-        return ""
+        return self.support_message.get_attribute("innerText").strip()
 
     def get_error_text(self):
         """
@@ -87,8 +81,7 @@ class File(BaseControl):
             :return: Str error message of the file validation
         """
         try:
-            if self.selected.is_displayed():
-                return self.get_clear_text(self.error_text)
+            return self.error_text.get_attribute("innerText").strip()
         except TimeoutException:
             pass
         return ""
