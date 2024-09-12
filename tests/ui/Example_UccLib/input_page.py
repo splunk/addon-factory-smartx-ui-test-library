@@ -1,4 +1,6 @@
-from pytest_splunk_addon_ui_smartx.components.controls.checkboxgroup import CheckboxGroup
+from pytest_splunk_addon_ui_smartx.components.controls.checkboxgroup import (
+    CheckboxGroup,
+)
 from pytest_splunk_addon_ui_smartx.pages.page import Page
 from pytest_splunk_addon_ui_smartx.components.base_component import Selector
 from pytest_splunk_addon_ui_smartx.components.base_component import BaseComponent
@@ -17,6 +19,7 @@ from pytest_splunk_addon_ui_smartx.backend_confs import ListBackendConf
 from pytest_splunk_addon_ui_smartx.components.controls.toggle import Toggle
 
 from selenium.webdriver.common.by import By
+
 
 class ExampleInputOne(Entity):
     """

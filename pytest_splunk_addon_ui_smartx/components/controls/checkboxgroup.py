@@ -21,6 +21,7 @@ from .button import Button
 from .checkbox import Checkbox
 from .textbox import TextBox
 
+
 class CheckboxGroup(BaseControl):
     """
     Entity_Component : CheckboxGroup
@@ -49,15 +50,23 @@ class CheckboxGroup(BaseControl):
         Returns:
             bool: True if the group is expanded, False otherwise.
         """
-        self.elements.update({
-            f"{group_name}_button": Selector(
-                by=By.XPATH,
-                select=self.elements.get("container").select + f'//span[text()="{group_name}"]/ancestor::button'
-            )
-        })
-        return getattr(self, f"{group_name}_button").get_attribute("aria-expanded") == "true"
+        self.elements.update(
+            {
+                f"{group_name}_button": Selector(
+                    by=By.XPATH,
+                    select=self.elements.get("container").select
+                    + f'//span[text()="{group_name}"]/ancestor::button',
+                )
+            }
+        )
+        return (
+            getattr(self, f"{group_name}_button").get_attribute("aria-expanded")
+            == "true"
+        )
 
-    def select_checkbox_and_set_value(self, checkbox_name: str, checkbox_value: str) -> None:
+    def select_checkbox_and_set_value(
+        self, checkbox_name: str, checkbox_value: str
+    ) -> None:
         """
         Selects a checkbox and sets a value for the checkbox.
 
@@ -69,15 +78,17 @@ class CheckboxGroup(BaseControl):
             self.browser,
             Selector(
                 by=By.XPATH,
-                select=self.elements.get("container").select + f"//div[@data-test-field='{checkbox_name}']/parent::div"
-            )
+                select=self.elements.get("container").select
+                + f"//div[@data-test-field='{checkbox_name}']/parent::div",
+            ),
         ).check()
         TextBox(
             self.browser,
             Selector(
                 by=By.XPATH,
-                select=self.elements.get("container").select + f"//div[@data-test-field='{checkbox_name}' and @data-test='number']"
-            )
+                select=self.elements.get("container").select
+                + f"//div[@data-test-field='{checkbox_name}' and @data-test='number']",
+            ),
         ).set_value(checkbox_value)
 
     def select(self, group_name: str, checkbox_name: str, checkbox_value: str) -> None:
@@ -90,7 +101,9 @@ class CheckboxGroup(BaseControl):
             checkbox_value (str): The value to set for the checkbox.
         """
         self.expand_group(group_name)
-        self.select_checkbox_and_set_value(checkbox_name=checkbox_name, checkbox_value=checkbox_value)
+        self.select_checkbox_and_set_value(
+            checkbox_name=checkbox_name, checkbox_value=checkbox_value
+        )
 
     def deselect(self, group_name: str, checkbox_name: str) -> None:
         """
@@ -105,8 +118,9 @@ class CheckboxGroup(BaseControl):
             self.browser,
             Selector(
                 by=By.XPATH,
-                select=self.elements.get("container").select + f"//div[@data-test-field='{checkbox_name}']/parent::div"
-            )
+                select=self.elements.get("container").select
+                + f"//div[@data-test-field='{checkbox_name}']/parent::div",
+            ),
         ).uncheck()
 
     def get_checkbox_value(self, group_name: str, checkbox_name: str) -> str:
@@ -125,8 +139,9 @@ class CheckboxGroup(BaseControl):
             self.browser,
             Selector(
                 by=By.XPATH,
-                select=self.elements.get("container").select + f"//div[@data-test-field='{checkbox_name}' and @data-test='number']"
-            )
+                select=self.elements.get("container").select
+                + f"//div[@data-test-field='{checkbox_name}' and @data-test='number']",
+            ),
         ).get_value()
 
     def expand_group(self, group_name: str) -> None:

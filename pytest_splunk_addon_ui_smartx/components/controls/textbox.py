@@ -39,9 +39,13 @@ class TextBox(BaseControl):
         self.container = container
         self.browser = browser
         if container.by == "xpath":
-            self.elements.update({"input": Selector(by=By.XPATH, select=container.select + "//input")})
+            self.elements.update(
+                {"input": Selector(by=By.XPATH, select=container.select + "//input")}
+            )
         else:
-            self.elements.update({"input": Selector(select=container.select + " input")})
+            self.elements.update(
+                {"input": Selector(select=container.select + " input")}
+            )
 
     def set_value(self, value):
         """

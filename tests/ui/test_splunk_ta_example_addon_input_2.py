@@ -109,7 +109,7 @@ def add_input_two(ucc_smartx_rest_helper):
         "index": "main",
         "start_date": "2016-10-10T12:10:15.000z",
         "disabled": 0,
-        "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100"
+        "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100",
     }
     yield input_page.backend_conf.post_stanza(url, kwargs)
 
@@ -546,7 +546,7 @@ class TestInput(UccTester):
             "input_two_multiple_select": "one,two",
             "start_date": "2020-12-11T20:00:32.000z",
             "disabled": 0,
-            "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100"
+            "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100",
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_two://dummy_input"
@@ -628,7 +628,7 @@ class TestInput(UccTester):
             "input_two_multiple_select": "two",
             "start_date": "2020-20-20T20:20:20.000z",
             "disabled": 0,
-            "apis": "ec2_volumes/3600,vpcs/1000"
+            "apis": "ec2_volumes/3600,vpcs/1000",
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_two://dummy_input_two"

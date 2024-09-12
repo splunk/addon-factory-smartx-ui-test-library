@@ -295,7 +295,41 @@
                     "title": "Proxy"
                 },
                 {
-                    "type": "loggingTab"
+                    "name": "logging",
+                    "entity": [
+                        {
+                            "type": "singleSelect",
+                            "label": "Log level",
+                            "options": {
+                                "disableSearch": true,
+                                "autoCompleteFields": [
+                                    {
+                                        "value": "DEBUG",
+                                        "label": "DEBUG"
+                                    },
+                                    {
+                                        "value": "INFO",
+                                        "label": "INFO"
+                                    },
+                                    {
+                                        "value": "WARNING",
+                                        "label": "WARNING"
+                                    },
+                                    {
+                                        "value": "ERROR",
+                                        "label": "ERROR"
+                                    },
+                                    {
+                                        "value": "CRITICAL",
+                                        "label": "CRITICAL"
+                                    }
+                                ]
+                            },
+                            "defaultValue": "INFO",
+                            "field": "loglevel"
+                        }
+                    ],
+                    "title": "Logging"
                 },
                 {
                     "name": "custom_tab",
@@ -547,9 +581,16 @@
                             }
                         },
                         {
-                            "type": "interval",
-                            "field": "interval",
+                            "type": "text",
                             "label": "Interval",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "errorMsg": "Interval must be an integer.",
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ],
+                            "field": "interval",
                             "help": "Time interval of the data input, in seconds.",
                             "required": true
                         },
@@ -708,9 +749,16 @@
                             "required": true
                         },
                         {
-                            "type": "interval",
-                            "field": "interval",
+                            "type": "text",
                             "label": "Interval",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "errorMsg": "Interval must be an integer.",
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ],
+                            "field": "interval",
                             "help": "Time interval of the data input, in seconds .",
                             "required": true
                         },
@@ -998,9 +1046,16 @@
                             "required": true
                         },
                         {
-                            "type": "interval",
-                            "field": "interval",
+                            "type": "text",
                             "label": "Interval",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "errorMsg": "Interval must be an integer.",
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ],
+                            "field": "interval",
                             "help": "Time interval of the data input, in seconds.",
                             "required": true
                         }
@@ -1031,9 +1086,16 @@
                             "required": true
                         },
                         {
-                            "type": "interval",
-                            "field": "interval",
+                            "type": "text",
                             "label": "Interval",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "errorMsg": "Interval must be an integer.",
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ],
+                            "field": "interval",
                             "help": "Time interval of the data input, in seconds.",
                             "required": true
                         }
@@ -1144,7 +1206,7 @@
             "name": "test_alert",
             "label": "Test Alert",
             "description": "Description for test Alert Action",
-            "adaptiveResponse": {
+            "activeResponse": {
                 "task": [
                     "Create",
                     "Update"
@@ -1167,8 +1229,7 @@
                     }
                 ],
                 "drilldownUri": "search?q=search%20index%3D\"_internal\"&earliest=0&latest=",
-                "sourcetype": "test:incident",
-                "supportsCloud": true
+                "sourcetype": "test:incident"
             },
             "entity": [
                 {
@@ -1245,7 +1306,6 @@
         "restRoot": "splunk_ta_uccexample",
         "version": "0.0.1",
         "displayName": "Splunk UCC test Add-on",
-        "schemaVersion": "0.0.8",
-        "_uccVersion": "5.48.0"
+        "schemaVersion": "0.0.3"
     }
 }

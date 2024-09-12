@@ -31,12 +31,17 @@ class Checkbox(BaseControl):
         if container.by == "xpath":
             self.elements.update(
                 {
-                    "internal_container": Selector(by=By.XPATH,
-                        select=container.select + '//div[@data-test="switch"]'
+                    "internal_container": Selector(
+                        by=By.XPATH,
+                        select=container.select + '//div[@data-test="switch"]',
                     ),
-                    "checkbox": Selector(by=By.XPATH,select=container.select + '//div[@data-test="switch"]'),
-                    "checkbox_btn": Selector(by=By.XPATH,
-                        select=container.select + '//button[@role="checkbox"]'
+                    "checkbox": Selector(
+                        by=By.XPATH,
+                        select=container.select + '//div[@data-test="switch"]',
+                    ),
+                    "checkbox_btn": Selector(
+                        by=By.XPATH,
+                        select=container.select + '//button[@role="checkbox"]',
                     ),
                 }
             )
@@ -46,9 +51,12 @@ class Checkbox(BaseControl):
                     "internal_container": Selector(
                         select=container.select + ' [data-test="switch"]'
                     ),
-                    "checkbox": Selector(select=container.select + ' [data-test="switch"]'),
+                    "checkbox": Selector(
+                        select=container.select + ' [data-test="switch"]'
+                    ),
                     "checkbox_btn": Selector(
-                        select=container.select + ' [data-test="button"][role="checkbox"]'
+                        select=container.select
+                        + ' [data-test="button"][role="checkbox"]'
                     ),
                 }
             )
