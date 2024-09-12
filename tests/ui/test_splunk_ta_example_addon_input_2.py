@@ -1,3 +1,5 @@
+import time
+
 from pytest_splunk_addon_ui_smartx.base_test import UccTester
 from .Example_UccLib.account import AccountPage
 from .Example_UccLib.input_page import InputPage
@@ -107,6 +109,7 @@ def add_input_two(ucc_smartx_rest_helper):
         "index": "main",
         "start_date": "2016-10-10T12:10:15.000z",
         "disabled": 0,
+        "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100"
     }
     yield input_page.backend_conf.post_stanza(url, kwargs)
 
@@ -528,6 +531,8 @@ class TestInput(UccTester):
         input_page.entity2.example_multiple_select.select("Option Two")
         input_page.entity2.index.select("main")
         input_page.entity2.interval.set_value("90")
+        input_page.entity2.checkboxgroup.select("EC2", "ec2_instances", "100")
+        input_page.entity2.checkboxgroup.select("ELB", "classic_load_balancers", "100")
         input_page.entity2.example_account.select("test_input")
         input_page.entity2.query_start_date.set_value("2020-12-11T20:00:32.000z")
         self.assert_util(input_page.entity2.save, True)
@@ -541,6 +546,7 @@ class TestInput(UccTester):
             "input_two_multiple_select": "one,two",
             "start_date": "2020-12-11T20:00:32.000z",
             "disabled": 0,
+            "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100"
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_two://dummy_input"
@@ -608,6 +614,9 @@ class TestInput(UccTester):
         input_page.entity2.example_multiple_select.deselect("Option One")
         input_page.entity2.interval.set_value("3600")
         input_page.entity2.query_start_date.set_value("2020-20-20T20:20:20.000z")
+        input_page.entity2.checkboxgroup.deselect("EC2", "ec2_instances")
+        input_page.entity2.checkboxgroup.deselect("ELB", "classic_load_balancers")
+        input_page.entity2.checkboxgroup.select("VPC", "vpcs", "1000")
         self.assert_util(input_page.entity2.save, True)
         input_page.table.wait_for_rows_to_appear(1)
         value_to_test = {
@@ -619,6 +628,7 @@ class TestInput(UccTester):
             "input_two_multiple_select": "two",
             "start_date": "2020-20-20T20:20:20.000z",
             "disabled": 0,
+            "apis": "ec2_volumes/3600,vpcs/1000"
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_two://dummy_input_two"

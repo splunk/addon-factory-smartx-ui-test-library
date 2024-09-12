@@ -28,17 +28,30 @@ class Checkbox(BaseControl):
 
     def __init__(self, browser, container, searchable=True):
         super().__init__(browser, container)
-        self.elements.update(
-            {
-                "internal_container": Selector(
-                    select=container.select + ' [data-test="switch"]'
-                ),
-                "checkbox": Selector(select=container.select + ' [data-test="switch"]'),
-                "checkbox_btn": Selector(
-                    select=container.select + ' [data-test="button"][role="checkbox"]'
-                ),
-            }
-        )
+        if container.by == "xpath":
+            self.elements.update(
+                {
+                    "internal_container": Selector(by=By.XPATH,
+                        select=container.select + '//div[@data-test="switch"]'
+                    ),
+                    "checkbox": Selector(by=By.XPATH,select=container.select + '//div[@data-test="switch"]'),
+                    "checkbox_btn": Selector(by=By.XPATH,
+                        select=container.select + '//button[@role="checkbox"]'
+                    ),
+                }
+            )
+        else:
+            self.elements.update(
+                {
+                    "internal_container": Selector(
+                        select=container.select + ' [data-test="switch"]'
+                    ),
+                    "checkbox": Selector(select=container.select + ' [data-test="switch"]'),
+                    "checkbox_btn": Selector(
+                        select=container.select + ' [data-test="button"][role="checkbox"]'
+                    ),
+                }
+            )
 
     def toggle(self, max_attempts=5):
         """

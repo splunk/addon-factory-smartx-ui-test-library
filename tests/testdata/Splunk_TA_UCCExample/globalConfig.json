@@ -295,41 +295,7 @@
                     "title": "Proxy"
                 },
                 {
-                    "name": "logging",
-                    "entity": [
-                        {
-                            "type": "singleSelect",
-                            "label": "Log level",
-                            "options": {
-                                "disableSearch": true,
-                                "autoCompleteFields": [
-                                    {
-                                        "value": "DEBUG",
-                                        "label": "DEBUG"
-                                    },
-                                    {
-                                        "value": "INFO",
-                                        "label": "INFO"
-                                    },
-                                    {
-                                        "value": "WARNING",
-                                        "label": "WARNING"
-                                    },
-                                    {
-                                        "value": "ERROR",
-                                        "label": "ERROR"
-                                    },
-                                    {
-                                        "value": "CRITICAL",
-                                        "label": "CRITICAL"
-                                    }
-                                ]
-                            },
-                            "defaultValue": "INFO",
-                            "field": "loglevel"
-                        }
-                    ],
-                    "title": "Logging"
+                    "type": "loggingTab"
                 },
                 {
                     "name": "custom_tab",
@@ -581,16 +547,9 @@
                             }
                         },
                         {
-                            "type": "text",
-                            "label": "Interval",
-                            "validators": [
-                                {
-                                    "type": "regex",
-                                    "errorMsg": "Interval must be an integer.",
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
-                                }
-                            ],
+                            "type": "interval",
                             "field": "interval",
+                            "label": "Interval",
                             "help": "Time interval of the data input, in seconds.",
                             "required": true
                         },
@@ -749,16 +708,9 @@
                             "required": true
                         },
                         {
-                            "type": "text",
-                            "label": "Interval",
-                            "validators": [
-                                {
-                                    "type": "regex",
-                                    "errorMsg": "Interval must be an integer.",
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
-                                }
-                            ],
+                            "type": "interval",
                             "field": "interval",
+                            "label": "Interval",
                             "help": "Time interval of the data input, in seconds .",
                             "required": true
                         },
@@ -860,6 +812,164 @@
                                 "text": "Help Link",
                                 "link": "https://docs.splunk.com/Documentation"
                             }
+                        },
+                        {
+                            "field": "apis",
+                            "label": "APIs/Interval (in seconds)",
+                            "type": "checkboxGroup",
+                            "options": {
+                                "groups": [
+                                    {
+                                        "label": "EC2",
+                                        "options": {
+                                            "isExpandable": true
+                                        },
+                                        "fields": [
+                                            "ec2_volumes",
+                                            "ec2_instances",
+                                            "ec2_reserved_instances",
+                                            "ebs_snapshots",
+                                            "rds_instances",
+                                            "rds_reserved_instances",
+                                            "ec2_key_pairs",
+                                            "ec2_security_groups",
+                                            "ec2_images",
+                                            "ec2_addresses"
+                                        ]
+                                    },
+                                    {
+                                        "label": "ELB",
+                                        "options": {
+                                            "isExpandable": true
+                                        },
+                                        "fields": [
+                                            "classic_load_balancers",
+                                            "application_load_balancers"
+                                        ]
+                                    },
+                                    {
+                                        "label": "VPC",
+                                        "options": {
+                                            "isExpandable": true
+                                        },
+                                        "fields": [
+                                            "vpcs",
+                                            "vpc_network_acls",
+                                            "vpc_subnets"
+                                        ]
+                                    }
+                                ],
+                                "rows": [
+                                    {
+                                        "field": "ec2_volumes",
+                                        "checkbox": {
+                                            "defaultValue": true
+                                        },
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "ec2_instances",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "ec2_reserved_instances",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "ebs_snapshots",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "rds_instances",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "rds_reserved_instances",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "ec2_key_pairs",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "ec2_security_groups",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "ec2_images",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "ec2_addresses",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "classic_load_balancers",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "application_load_balancers",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "vpcs",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "vpc_network_acls",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "field": "vpc_subnets",
+                                        "input": {
+                                            "defaultValue": 3600,
+                                            "required": true
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "title": "Example Input Two"
@@ -888,16 +998,9 @@
                             "required": true
                         },
                         {
-                            "type": "text",
-                            "label": "Interval",
-                            "validators": [
-                                {
-                                    "type": "regex",
-                                    "errorMsg": "Interval must be an integer.",
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
-                                }
-                            ],
+                            "type": "interval",
                             "field": "interval",
+                            "label": "Interval",
                             "help": "Time interval of the data input, in seconds.",
                             "required": true
                         }
@@ -928,16 +1031,9 @@
                             "required": true
                         },
                         {
-                            "type": "text",
-                            "label": "Interval",
-                            "validators": [
-                                {
-                                    "type": "regex",
-                                    "errorMsg": "Interval must be an integer.",
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
-                                }
-                            ],
+                            "type": "interval",
                             "field": "interval",
+                            "label": "Interval",
                             "help": "Time interval of the data input, in seconds.",
                             "required": true
                         }
@@ -1048,7 +1144,7 @@
             "name": "test_alert",
             "label": "Test Alert",
             "description": "Description for test Alert Action",
-            "activeResponse": {
+            "adaptiveResponse": {
                 "task": [
                     "Create",
                     "Update"
@@ -1071,7 +1167,8 @@
                     }
                 ],
                 "drilldownUri": "search?q=search%20index%3D\"_internal\"&earliest=0&latest=",
-                "sourcetype": "test:incident"
+                "sourcetype": "test:incident",
+                "supportsCloud": true
             },
             "entity": [
                 {
@@ -1148,6 +1245,7 @@
         "restRoot": "splunk_ta_uccexample",
         "version": "0.0.1",
         "displayName": "Splunk UCC test Add-on",
-        "schemaVersion": "0.0.3"
+        "schemaVersion": "0.0.8",
+        "_uccVersion": "5.48.0"
     }
 }
