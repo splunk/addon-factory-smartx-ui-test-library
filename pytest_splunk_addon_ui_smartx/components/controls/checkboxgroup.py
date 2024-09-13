@@ -28,6 +28,7 @@ class CheckboxGroup(BaseControl):
 
     This class represents a group of checkboxes, allowing for expanding groups,
     selecting/deselecting checkboxes, and setting or retrieving values.
+    Note: Please use xpath as locator for this component.
     """
 
     def __init__(self, browser, container) -> None:
