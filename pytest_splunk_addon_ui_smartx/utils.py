@@ -51,6 +51,8 @@ class LogSource(Enum):
     NETWORK = "network"
     CONSOLE_API = "console-api"
     RECOMMENDATION = "recommendation"
+    SECURITY = "security"
+    INTERVENTION = "intervention"
 
 
 class LogEntry(NamedTuple):
