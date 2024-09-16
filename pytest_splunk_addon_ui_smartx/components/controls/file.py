@@ -23,14 +23,12 @@ class File(BaseControl):
     Entity-Component: File
     """
 
-    def __init__(self, browser, container):
+    def __init__(self, browser, container) -> None:
         """
         :param browser: The selenium webdriver
         :param container: The locator of the container where the control is located in.
         """
         super().__init__(browser, container)
-        self.container = container
-        self.browser = browser
         self.elements.update(
             {
                 "input": Selector(select=container.select + " input"),
@@ -50,14 +48,14 @@ class File(BaseControl):
             }
         )
 
-    def set_value(self, value):
+    def set_value(self, value: str) -> None:
         """
         set value of the File input
         """
         self.wait_for("input")
         self.input.send_keys(value)
 
-    def get_value(self):
+    def get_value(self) -> str:
         """
         get the name of the selected file
             :return: Str The name of the selected file
@@ -68,14 +66,14 @@ class File(BaseControl):
             pass
         return ""
 
-    def get_support_message(self):
+    def get_support_message(self) -> str:
         """
         get the file support message
             :return: Str file support message
         """
         return self.support_message.get_attribute("innerText").strip()
 
-    def get_error_text(self):
+    def get_error_text(self) -> str:
         """
         get the file validation error text
             :return: Str error message of the file validation
@@ -86,7 +84,7 @@ class File(BaseControl):
             pass
         return ""
 
-    def cancel_selected_value(self):
+    def cancel_selected_value(self) -> bool:
         """
         Cancels the currently selected value in the File component
             :return: Bool whether canceling the selected item was successful, else raises an error
