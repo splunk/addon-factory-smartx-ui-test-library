@@ -531,8 +531,12 @@ class TestInput(UccTester):
         input_page.entity2.example_multiple_select.select("Option Two")
         input_page.entity2.index.select("main")
         input_page.entity2.interval.set_value("90")
-        input_page.entity2.checkboxgroup.select("EC2", "ec2_instances", "100")
-        input_page.entity2.checkboxgroup.select("ELB", "classic_load_balancers", "100")
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "EC2", "ec2_instances", "100"
+        )
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "ELB", "classic_load_balancers", "100"
+        )
         input_page.entity2.example_account.select("test_input")
         input_page.entity2.query_start_date.set_value("2020-12-11T20:00:32.000z")
         self.assert_util(input_page.entity2.save, True)
@@ -616,7 +620,15 @@ class TestInput(UccTester):
         input_page.entity2.query_start_date.set_value("2020-20-20T20:20:20.000z")
         input_page.entity2.checkboxgroup.deselect("EC2", "ec2_instances")
         input_page.entity2.checkboxgroup.deselect("ELB", "classic_load_balancers")
-        input_page.entity2.checkboxgroup.select("VPC", "vpcs", "1000")
+        self.assert_util(
+            input_page.entity2.checkboxgroup.get_textbox(
+                "ELB", "classic_load_balancers"
+            ).is_editable(),
+            False,
+        )
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "VPC", "vpcs", "1000"
+        )
         self.assert_util(input_page.entity2.save, True)
         input_page.table.wait_for_rows_to_appear(1)
         value_to_test = {

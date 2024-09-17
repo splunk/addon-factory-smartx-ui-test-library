@@ -17,7 +17,6 @@ from selenium.webdriver.common.by import By
 
 from ..base_component import Selector
 from .base_control import BaseControl
-from .button import Button
 from .checkbox import Checkbox
 from .textbox import TextBox
 
@@ -65,34 +64,19 @@ class CheckboxGroup(BaseControl):
             == "true"
         )
 
-    def select_checkbox_and_set_value(
-        self, checkbox_name: str, checkbox_value: str
-    ) -> None:
-        """
-        Selects a checkbox and sets a value for the checkbox.
-
-        Args:
-            checkbox_name (str): The name of the checkbox to select.
-            checkbox_value (str): The value to set for the checkbox.
-        """
-        Checkbox(
+    def get_checkbox(self, checkbox_name: str) -> Checkbox:
+        return Checkbox(
             self.browser,
             Selector(
                 by=By.XPATH,
                 select=self.elements.get("container").select
                 + f"//div[@data-test-field='{checkbox_name}']/parent::div",
             ),
-        ).check()
-        TextBox(
-            self.browser,
-            Selector(
-                by=By.XPATH,
-                select=self.elements.get("container").select
-                + f"//div[@data-test-field='{checkbox_name}' and @data-test='number']",
-            ),
-        ).set_value(checkbox_value)
+        )
 
-    def select(self, group_name: str, checkbox_name: str, checkbox_value: str) -> None:
+    def select_checkbox_and_set_value(
+        self, group_name: str, checkbox_name: str, checkbox_value: str = None
+    ) -> None:
         """
         Expands a group and selects a checkbox, then sets the specified value.
 
@@ -102,9 +86,9 @@ class CheckboxGroup(BaseControl):
             checkbox_value (str): The value to set for the checkbox.
         """
         self.expand_group(group_name)
-        self.select_checkbox_and_set_value(
-            checkbox_name=checkbox_name, checkbox_value=checkbox_value
-        )
+        self.get_checkbox(checkbox_name).check()
+        if checkbox_value:
+            self.get_textbox(checkbox_name).set_value(checkbox_value)
 
     def deselect(self, group_name: str, checkbox_name: str) -> None:
         """
@@ -115,18 +99,21 @@ class CheckboxGroup(BaseControl):
             checkbox_name (str): The name of the checkbox to deselect.
         """
         self.expand_group(group_name)
-        Checkbox(
+        self.get_checkbox(checkbox_name).uncheck()
+
+    def get_textbox(self, checkbox_name: str) -> TextBox:
+        return TextBox(
             self.browser,
             Selector(
                 by=By.XPATH,
                 select=self.elements.get("container").select
-                + f"//div[@data-test-field='{checkbox_name}']/parent::div",
+                + f"//div[@data-test-field='{checkbox_name}' and @data-test='number']",
             ),
-        ).uncheck()
+        )
 
-    def get_checkbox_value(self, group_name: str, checkbox_name: str) -> str:
+    def get_checkbox_text_value(self, group_name: str, checkbox_name: str) -> str:
         """
-        Expands a group and retrieves the value of the specified checkbox.
+        Expands a group and retrieves the text value of the specified checkbox.
 
         Args:
             group_name (str): The name of the group to expand.
@@ -136,14 +123,7 @@ class CheckboxGroup(BaseControl):
             str: The value of the checkbox.
         """
         self.expand_group(group_name)
-        return TextBox(
-            self.browser,
-            Selector(
-                by=By.XPATH,
-                select=self.elements.get("container").select
-                + f"//div[@data-test-field='{checkbox_name}' and @data-test='number']",
-            ),
-        ).get_value()
+        return self.get_textbox(checkbox_name).get_value()
 
     def expand_group(self, group_name: str) -> None:
         """
