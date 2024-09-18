@@ -622,7 +622,7 @@ class TestInput(UccTester):
         input_page.entity2.checkboxgroup.deselect("ELB", "classic_load_balancers")
         self.assert_util(
             input_page.entity2.checkboxgroup.get_textbox(
-                "ELB", "classic_load_balancers"
+                "classic_load_balancers"
             ).is_editable(),
             False,
         )
