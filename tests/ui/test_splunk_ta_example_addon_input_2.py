@@ -979,7 +979,16 @@ class TestInput(UccTester):
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.create_new_input.select("Example Input Two")
         input_page.entity2.example_account.wait_for_values()
-        input_page.entity2.checkboxgroup.select_checkbox_and_set_value("EC2", "ec2_instances","100")
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "EC2", "ec2_instances", "100"
+        )
         input_page.entity2.checkboxgroup.collapse_group("EC2")
-        self.assert_util(input_page.entity2.checkboxgroup.is_group_expanded("EC2"), False)
-        self.assert_util(input_page.entity2.checkboxgroup.get_checkbox_text_value("EC2", "ec2_instances"), "100")
+        self.assert_util(
+            input_page.entity2.checkboxgroup.is_group_expanded("EC2"), False
+        )
+        self.assert_util(
+            input_page.entity2.checkboxgroup.get_checkbox_text_value(
+                "EC2", "ec2_instances"
+            ),
+            "100",
+        )

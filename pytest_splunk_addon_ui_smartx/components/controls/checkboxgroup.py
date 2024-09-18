@@ -60,7 +60,9 @@ class CheckboxGroup(BaseControl):
             }
         )
         return (
-            getattr(self, f"{checkbox_group_name}_button").get_attribute("aria-expanded")
+            getattr(self, f"{checkbox_group_name}_button").get_attribute(
+                "aria-expanded"
+            )
             == "true"
         )
 
@@ -111,7 +113,9 @@ class CheckboxGroup(BaseControl):
             ),
         )
 
-    def get_checkbox_text_value(self, checkbox_group_name: str, checkbox_name: str) -> str:
+    def get_checkbox_text_value(
+        self, checkbox_group_name: str, checkbox_name: str
+    ) -> str:
         """
         Expands a group and retrieves the text value of the specified checkbox.
 
