@@ -1,3 +1,5 @@
+import time
+
 from pytest_splunk_addon_ui_smartx.base_test import UccTester
 from .Example_UccLib.account import AccountPage
 from .Example_UccLib.input_page import InputPage
@@ -107,6 +109,7 @@ def add_input_two(ucc_smartx_rest_helper):
         "index": "main",
         "start_date": "2016-10-10T12:10:15.000z",
         "disabled": 0,
+        "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100",
     }
     yield input_page.backend_conf.post_stanza(url, kwargs)
 
@@ -528,6 +531,12 @@ class TestInput(UccTester):
         input_page.entity2.example_multiple_select.select("Option Two")
         input_page.entity2.index.select("main")
         input_page.entity2.interval.set_value("90")
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "EC2", "ec2_instances", "100"
+        )
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "ELB", "classic_load_balancers", "100"
+        )
         input_page.entity2.example_account.select("test_input")
         input_page.entity2.query_start_date.set_value("2020-12-11T20:00:32.000z")
         self.assert_util(input_page.entity2.save, True)
@@ -541,6 +550,7 @@ class TestInput(UccTester):
             "input_two_multiple_select": "one,two",
             "start_date": "2020-12-11T20:00:32.000z",
             "disabled": 0,
+            "apis": "ec2_volumes/3600,ec2_instances/100,classic_load_balancers/100",
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_two://dummy_input"
@@ -608,6 +618,17 @@ class TestInput(UccTester):
         input_page.entity2.example_multiple_select.deselect("Option One")
         input_page.entity2.interval.set_value("3600")
         input_page.entity2.query_start_date.set_value("2020-20-20T20:20:20.000z")
+        input_page.entity2.checkboxgroup.deselect("EC2", "ec2_instances")
+        input_page.entity2.checkboxgroup.deselect("ELB", "classic_load_balancers")
+        self.assert_util(
+            input_page.entity2.checkboxgroup.get_textbox(
+                "classic_load_balancers"
+            ).is_editable(),
+            False,
+        )
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "VPC", "vpcs", "1000"
+        )
         self.assert_util(input_page.entity2.save, True)
         input_page.table.wait_for_rows_to_appear(1)
         value_to_test = {
@@ -619,6 +640,7 @@ class TestInput(UccTester):
             "input_two_multiple_select": "two",
             "start_date": "2020-20-20T20:20:20.000z",
             "disabled": 0,
+            "apis": "ec2_volumes/3600,vpcs/1000",
         }
         backend_stanza = input_page.backend_conf.get_stanza(
             "example_input_two://dummy_input_two"
@@ -945,4 +967,28 @@ class TestInput(UccTester):
         prompt_message = input_page.table.delete_row("dummy_input_two", prompt_msg=True)
         self.assert_util(
             prompt_message, 'Are you sure you want to delete "{}" ?'.format(input_name)
+        )
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.input
+    def test_example_input_two_checkboxgroup_validation(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """Verifies the checkboxgroup component'"""
+        input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        input_page.create_new_input.select("Example Input Two")
+        input_page.entity2.example_account.wait_for_values()
+        input_page.entity2.checkboxgroup.select_checkbox_and_set_value(
+            "EC2", "ec2_instances", "100"
+        )
+        input_page.entity2.checkboxgroup.collapse_group("EC2")
+        self.assert_util(
+            input_page.entity2.checkboxgroup.is_group_expanded("EC2"), False
+        )
+        self.assert_util(
+            input_page.entity2.checkboxgroup.get_checkbox_text_value(
+                "EC2", "ec2_instances"
+            ),
+            "100",
         )

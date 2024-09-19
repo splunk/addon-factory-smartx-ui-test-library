@@ -16,6 +16,7 @@
 import platform
 
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 
 from ..base_component import Selector
 from .base_control import BaseControl
@@ -37,7 +38,14 @@ class TextBox(BaseControl):
         self.encrypted = encrypted
         self.container = container
         self.browser = browser
-        self.elements.update({"input": Selector(select=container.select + " input")})
+        if container.by == "xpath":
+            self.elements.update(
+                {"input": Selector(by=By.XPATH, select=container.select + "//input")}
+            )
+        else:
+            self.elements.update(
+                {"input": Selector(select=container.select + " input")}
+            )
 
     def set_value(self, value):
         """
