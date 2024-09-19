@@ -12,6 +12,7 @@ def add_account(ucc_smartx_rest_helper):
     url = account._get_account_endpoint()
     kwargs = {
         "name": "test_input",
+        "example_file": "Example file content",
         "account_checkbox": 1,
         "account_multiple_select": "one",
         "account_radio": "yes",

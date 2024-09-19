@@ -2,12 +2,14 @@ from pytest_splunk_addon_ui_smartx.base_test import UccTester
 from .Example_UccLib.account import AccountPage
 from .Example_UccLib.input_page import InputPage
 
+import os
 import pytest
 import copy
 
 
 ACCOUNT_CONFIG = {
     "name": "TestAccount",
+    "example_file": "tests/ui/testdata/example_file.txt",
     "account_checkbox": 1,
     "account_multiple_select": "one",
     "account_radio": "yes",
@@ -22,6 +24,10 @@ ACCOUNT_CONFIG = {
     "endpoint": "",
     "example_help_link": "",
 }
+
+INVALID_FILE = "tests/ui/testdata/invalid_file.json"
+LARGE_SIZE_FILE = "tests/ui/testdata/large_file.txt"
+INVALID_FILE_CONTENT = "tests/ui/testdata/invalid_file_content.conf"
 
 
 @pytest.fixture
@@ -55,7 +61,8 @@ def add_account(ucc_smartx_rest_helper):
         ucc_smartx_rest_helper=ucc_smartx_rest_helper, open_page=False
     )
     url = account._get_account_endpoint()
-    kwargs = ACCOUNT_CONFIG
+    kwargs = copy.deepcopy(ACCOUNT_CONFIG)
+    kwargs["example_file"] = "Example file content"
     yield account.backend_conf.post_stanza(url, kwargs)
 
 
@@ -68,6 +75,7 @@ def add_multiple_account(ucc_smartx_rest_helper):
     for i in range(12):
         kwargs = copy.deepcopy(ACCOUNT_CONFIG)
         kwargs["name"] = kwargs["name"] + str(i)
+        kwargs["example_file"] = "Example file content"
         account.backend_conf.post_stanza(url, kwargs)
 
 
@@ -81,7 +89,6 @@ def delete_accounts(ucc_smartx_rest_helper):
 
 
 class TestAccount(UccTester):
-
     ############################
     ### TEST CASES FOR TABLE ###
     ############################
@@ -365,6 +372,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.environment.select("Value2")
         account.entity.multiple_select.select("Option Two")
         account.entity.password.set_value("TestEditPassword")
@@ -386,6 +394,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.environment.select("Value2")
         account.entity.multiple_select.select("Option Two")
         account.entity.username.set_value("TestEditUser")
@@ -418,6 +427,7 @@ class TestAccount(UccTester):
         """Verifies required field name"""
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.environment.select("Value2")
         account.entity.multiple_select.select("Option Two")
         account.entity.username.set_value("TestEditUser")
@@ -433,6 +443,66 @@ class TestAccount(UccTester):
     @pytest.mark.execute_enterprise_cloud_true
     @pytest.mark.forwarder
     @pytest.mark.account
+    def test_account_required_field_example_file(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """Verifies required field example_file"""
+        account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        account.entity.open()
+        account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.environment.select("Value2")
+        account.entity.multiple_select.select("Option Two")
+        account.entity.username.set_value("TestEditUser")
+        account.entity.password.set_value("TestEditPassword")
+        account.entity.security_token.set_value("TestEditToken")
+        account.entity.account_radio.select("No")
+        self.assert_util(
+            account.entity.save,
+            "Field Example File is required",
+            left_args={"expect_error": True},
+        )
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.account
+    @pytest.mark.forwarder
+    def test_account_example_file_validations(
+        self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
+    ):
+        """Verifies the file input validations"""
+        account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
+        account.entity.open()
+        account.entity.name.set_value(ACCOUNT_CONFIG.get("name"))
+        # test for invalid file format
+        account.entity.file.set_value(os.path.abspath(INVALID_FILE))
+        self.assert_util(
+            account.entity.file.get_error_text,
+            "The file must be in one of these formats: conf, txt",
+        )
+        self.assert_util(account.entity.file.cancel_selected_value, True)
+        # test for file size limit
+        account.entity.file.set_value(os.path.abspath(LARGE_SIZE_FILE))
+        self.assert_util(
+            account.entity.file.get_error_text, "The file size should not exceed 1 KB"
+        )
+        self.assert_util(account.entity.file.cancel_selected_value, True)
+        # test for invalid file content
+        account.entity.file.set_value(os.path.abspath(INVALID_FILE_CONTENT))
+        self.assert_util(account.entity.file.get_value, "invalid_file_content.conf")
+        account.entity.environment.select("Value2")
+        account.entity.multiple_select.select("Option Two")
+        account.entity.username.set_value("TestEditUser")
+        account.entity.password.set_value("TestEditPassword")
+        account.entity.security_token.set_value("TestEditToken")
+        account.entity.account_radio.select("No")
+        self.assert_util(
+            account.entity.save,
+            "Field Example File does not match regular expression ^Example*",
+            left_args={"expect_error": True},
+        )
+
+    @pytest.mark.execute_enterprise_cloud_true
+    @pytest.mark.forwarder
+    @pytest.mark.account
     def test_account_basic_fields_label_entity(
         self, ucc_smartx_selenium_helper, ucc_smartx_rest_helper
     ):
@@ -440,6 +510,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         self.assert_util(account.entity.name.get_input_label, "Name")
+        self.assert_util(account.entity.file.get_input_label, "Example File")
         self.assert_util(
             account.entity.environment.get_input_label, "Example Environment"
         )
@@ -494,6 +565,10 @@ class TestAccount(UccTester):
         self.assert_util(
             account.entity.name.get_help_text, "Enter a unique name for this account."
         )
+        self.assert_util(account.entity.file.get_help_text, "Upload example file")
+        self.assert_util(
+            account.entity.file.get_support_message, "Example Support message"
+        )
         self.assert_util(
             account.entity.example_checkbox.get_help_text,
             "This is an example checkbox for the account entity",
@@ -532,6 +607,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.multiple_select.select("Option Two")
         account.entity.username.set_value("TestEditUser")
         account.entity.password.set_value("TestEditPassword")
@@ -554,6 +630,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.environment.select("Value2")
         account.entity.username.set_value("TestEditUser")
         account.entity.password.set_value("TestEditPassword")
@@ -575,6 +652,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.environment.select("Value2")
         account.entity.account_radio.select("No")
         account.entity.multiple_select.select("Option Two")
@@ -596,6 +674,7 @@ class TestAccount(UccTester):
         account.entity.open()
         account.entity.auth_key.select("OAuth 2.0 Authentication")
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.multiple_select.select("Option One")
         account.entity.account_radio.select("No")
         account.entity.client_id.set_value("TestClientId")
@@ -627,6 +706,7 @@ class TestAccount(UccTester):
         """Verifies whether adding special characters, number in starting of name field displays validation error"""
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.username.set_value(ACCOUNT_CONFIG["username"])
         account.entity.password.set_value(ACCOUNT_CONFIG["password"])
         account.entity.name.set_value("123TestAccount")
@@ -645,6 +725,7 @@ class TestAccount(UccTester):
         """Verifies the name field should not be more than 50 characters"""
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.username.set_value(ACCOUNT_CONFIG["username"])
         account.entity.password.set_value(ACCOUNT_CONFIG["password"])
         account.entity.name.set_value("t" * 51)
@@ -796,6 +877,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.multiple_select.select("Option One")
         account.entity.username.set_value(ACCOUNT_CONFIG["username"])
         account.entity.password.set_value(ACCOUNT_CONFIG["password"])
@@ -849,6 +931,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": "******",
             "token": "******",
+            "example_file": "******",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
@@ -862,6 +945,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.username.set_value(ACCOUNT_CONFIG["username"])
         account.entity.multiple_select.select("Option One")
         account.entity.password.set_value(ACCOUNT_CONFIG["password"])
@@ -887,6 +971,7 @@ class TestAccount(UccTester):
         """Verifies the frontend edit functionality"""
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.table.edit_row(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.environment.select("Value2")
         account.entity.multiple_select.select("Option Two")
         account.entity.username.set_value("TestEditUser")
@@ -932,6 +1017,7 @@ class TestAccount(UccTester):
         account.table.wait_for_rows_to_appear(1)
         account.table.clone_row(ACCOUNT_CONFIG["name"])
         account.entity.name.set_value("TestAccount2")
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.username.set_value("TestUserClone")
         account.entity.password.set_value("TestPasswordClone")
         account.entity.security_token.set_value("TestTokenClone")
@@ -956,6 +1042,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.table.clone_row(ACCOUNT_CONFIG["name"])
         self.assert_util(account.entity.name.get_value, "")
+        self.assert_util(account.entity.file.get_value, "Previous File")
         self.assert_util(account.entity.username.get_value, "TestUser")
         self.assert_util(account.entity.multiple_select.get_values, ["Option One"])
         self.assert_util(account.entity.auth_key.get_value, "basic")
@@ -971,6 +1058,7 @@ class TestAccount(UccTester):
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.entity.open()
         account.entity.name.set_value(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.username.set_value(ACCOUNT_CONFIG["username"])
         account.entity.multiple_select.select("Option One")
         account.entity.password.set_value(ACCOUNT_CONFIG["password"])
@@ -988,6 +1076,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": ACCOUNT_CONFIG["password"],
             "token": ACCOUNT_CONFIG["token"],
+            "example_file": "Example test file for testing file component",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
@@ -1000,6 +1089,7 @@ class TestAccount(UccTester):
         """Verifies the account in backend after editing account from frontend"""
         account = AccountPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         account.table.edit_row(ACCOUNT_CONFIG["name"])
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.multiple_select.select("Option Two")
         account.entity.username.set_value("TestEditUser")
         account.entity.password.set_value("TestEditPassword")
@@ -1019,6 +1109,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": "TestEditPassword",
             "token": "TestEditToken",
+            "example_file": "Example test file for testing file component",
         }
 
     @pytest.mark.execute_enterprise_cloud_true
@@ -1033,6 +1124,7 @@ class TestAccount(UccTester):
         account.table.wait_for_rows_to_appear(1)
         account.table.clone_row(ACCOUNT_CONFIG["name"])
         account.entity.name.set_value("TestAccountClone")
+        account.entity.file.set_value(os.path.abspath(ACCOUNT_CONFIG["example_file"]))
         account.entity.multiple_select.select("Option Two")
         account.entity.username.set_value("TestCloneUser")
         account.entity.password.set_value("TestEditPassword")
@@ -1050,6 +1142,7 @@ class TestAccount(UccTester):
             "disabled": False,
             "password": "TestEditPassword",
             "token": "TestEditToken",
+            "example_file": "Example test file for testing file component",
         }
 
     @pytest.mark.execute_enterprise_cloud_true

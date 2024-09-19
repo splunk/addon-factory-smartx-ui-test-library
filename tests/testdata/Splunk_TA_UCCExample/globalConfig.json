@@ -43,6 +43,26 @@
                             "required": true
                         },
                         {
+                            "type": "file",
+                            "label": "Example File",
+                            "help": "Upload example file",
+                            "field": "example_file",
+                            "options": {
+                                "fileSupportMessage": "Example Support message",
+                                "supportedFileTypes": ["conf", "txt"],
+                                "maxFileSize": 1,
+                                "useBase64Encoding": false
+                            },
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "pattern": "^Example*"
+                                }
+                            ],
+                            "encrypted": true,
+                            "required": true
+                        },
+                        {
                             "type": "singleSelect",
                             "label": "Example Environment",
                             "options": {

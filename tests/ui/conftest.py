@@ -24,6 +24,7 @@ def add_account(ucc_smartx_rest_helper):
         "redirect_url": "",
         "endpoint": "",
         "example_help_link": "",
+        "example_file": "Example file content",
     }
     yield account.backend_conf.post_stanza(url, kwargs)
     account.backend_conf.delete_all_stanzas()

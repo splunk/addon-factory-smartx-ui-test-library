@@ -9,6 +9,7 @@ from pytest_splunk_addon_ui_smartx.components.controls.oauth_select import OAuth
 from pytest_splunk_addon_ui_smartx.components.controls.multi_select import MultiSelect
 from pytest_splunk_addon_ui_smartx.components.controls.checkbox import Checkbox
 from pytest_splunk_addon_ui_smartx.components.controls.textbox import TextBox
+from pytest_splunk_addon_ui_smartx.components.controls.file import File
 from pytest_splunk_addon_ui_smartx.components.controls.learn_more import LearnMore
 from pytest_splunk_addon_ui_smartx.components.controls.toggle import Toggle
 from pytest_splunk_addon_ui_smartx.components.controls.message import Message
@@ -39,6 +40,10 @@ class AccountEntity(Entity):
         # Controls
         self.name = TextBox(
             browser, Selector(select='[data-test="control-group"][data-name="name"]')
+        )
+        self.file = File(
+            browser,
+            Selector(select='[data-test="control-group"][data-name="example_file"]'),
         )
         self.environment = SingleSelect(
             browser,
