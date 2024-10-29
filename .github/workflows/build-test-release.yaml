@@ -53,12 +53,12 @@ jobs:
       - uses: apache/skywalking-eyes@v0.5.0
 
   pre-commit:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: "3.12"
       - uses: pre-commit/action@v3.0.0
 
   semgrep:
