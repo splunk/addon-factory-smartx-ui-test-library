@@ -40,15 +40,15 @@ selenium = "*"
 webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
-lxml = "^4.8.0"
+lxml = "^5.0.0"
 pytest-splunk-addon = "^5.0.0"
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=5.4, <7.3"
-splunk-add-on-ucc-framework = "5.48.0"
+pytest = ">=8.3, <9"
+splunk-add-on-ucc-framework = "5.52.0"
 pytest-rerunfailures = "^12.0"
 
 [build-system]
