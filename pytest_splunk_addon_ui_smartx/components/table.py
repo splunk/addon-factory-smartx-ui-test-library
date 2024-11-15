@@ -487,15 +487,19 @@ class Table(BaseComponent):
         row_count = self.get_count_title()
         return int(re.search(r"\d+", row_count).group())
 
-    def get_more_info(self, name, cancel=True):
+    def get_more_info(self, name, cancel=True, expand_row=True):
         """
         Returns the text from the more info field within a tables row
             :param name: Str row name
             :param cancel: Bool Whether or not to click cancel after getting the info
+            :param expand_row: Bool which specifies whether to expand `more_info` or not.
             :return: Dict The information found when opening the info table on a row in the table
         """
         _row = self._get_row(name)
-        _row.find_element(*list(self.elements["more_info"]._asdict().values())).click()
+        if expand_row:
+            _row.find_element(
+                *list(self.elements["more_info"]._asdict().values())
+            ).click()
         keys = self.more_info_row.find_elements(
             *list(self.elements["more_info_key"]._asdict().values())
         )
