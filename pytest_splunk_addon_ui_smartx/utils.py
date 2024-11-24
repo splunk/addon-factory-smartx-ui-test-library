@@ -53,6 +53,7 @@ class LogSource(Enum):
     RECOMMENDATION = "recommendation"
     SECURITY = "security"
     INTERVENTION = "intervention"
+    JAVASCRIPT = "javascript"
 
 
 class LogEntry(NamedTuple):
