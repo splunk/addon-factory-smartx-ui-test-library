@@ -40,7 +40,7 @@ selenium = "*"
 webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
-lxml = "^4.8.0"
+lxml = "5.3.0"
 pytest-splunk-addon = "^5.0.0"
 
 [tool.poetry.plugins]
