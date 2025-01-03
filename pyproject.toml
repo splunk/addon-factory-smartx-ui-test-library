@@ -24,6 +24,12 @@ classifiers = [
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
 ]
@@ -40,7 +46,7 @@ selenium = "*"
 webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
-lxml = "5.3.0"
+lxml = "^5.1.0"
 pytest-splunk-addon = "^5.0.0"
 
 [tool.poetry.plugins]
