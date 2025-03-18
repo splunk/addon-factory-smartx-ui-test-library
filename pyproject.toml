@@ -47,7 +47,7 @@ webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
 lxml = "^5.1.0"
-pytest-splunk-addon = "^5.0.0"
+pytest-splunk-addon = "^6.0.0"
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
