@@ -37,7 +37,7 @@ jobs:
           fossa report attribution --format text > /tmp/THIRDPARTY
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: THIRDPARTY
           path: /tmp/THIRDPARTY
@@ -118,7 +118,7 @@ jobs:
             --config=tests/testdata/Splunk_TA_UCCExample/globalConfig.json \
             --ta-version=0.0.1
         if: always()
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: output
           path: output/*
@@ -155,7 +155,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: output
           path: output/
@@ -180,7 +180,7 @@ jobs:
           ./run_splunk.sh ${{ matrix.splunk.version }}
           until curl -Lsk "https://localhost:8088/services/collector/health" &>/dev/null ; do echo -n "Waiting for HEC-" && sleep 5 ; done
       - run: poetry run pytest tests/ui -k "${{ matrix.test_suite }}" --headless --junitxml=test-results/junit.xml
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results-${{ matrix.splunk.version }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
