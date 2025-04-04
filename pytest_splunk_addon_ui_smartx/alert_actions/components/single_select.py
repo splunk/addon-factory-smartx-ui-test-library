@@ -14,11 +14,11 @@
 # limitations under the License.
 #
 
-from selenium.webdriver.support.ui import Select
 
 from .action_controls import ActionControls
 from .alert_base_component import AlertBaseComponent, Selector
 from .alert_base_control import AlertBaseControl
+from pytest_splunk_addon_ui_smartx.alert_actions.components.splunk_select import SplunkSelect
 
 
 class AlertSingleSelect(ActionControls):
@@ -31,7 +31,7 @@ class AlertSingleSelect(ActionControls):
         )
 
     def select(self, value, open_dropdown=True):
-        select_obj = Select(self.internal_container)
+        select_obj = SplunkSelect(self.internal_container)
         select_obj.select_by_visible_text(value)
         return True
 
@@ -39,14 +39,14 @@ class AlertSingleSelect(ActionControls):
         """
         Gets the selected value
         """
-        select_obj = Select(self.internal_container)
+        select_obj = SplunkSelect(self.internal_container)
         return self.get_clear_text(select_obj.first_selected_option)
 
     def list_of_values(self):
         """
         Gets the list of value from the Single Select
         """
-        select_obj = Select(self.internal_container)
+        select_obj = SplunkSelect(self.internal_container)
         value_list = []
         for each_obj in select_obj.options:
             value_list.append(self.get_clear_text(each_obj))
