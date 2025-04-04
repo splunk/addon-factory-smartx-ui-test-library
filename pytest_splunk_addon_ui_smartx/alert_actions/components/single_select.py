@@ -18,7 +18,9 @@
 from .action_controls import ActionControls
 from .alert_base_component import AlertBaseComponent, Selector
 from .alert_base_control import AlertBaseControl
-from pytest_splunk_addon_ui_smartx.alert_actions.components.splunk_select import SplunkSelect
+from pytest_splunk_addon_ui_smartx.alert_actions.components.splunk_select import (
+    SplunkSelect,
+)
 
 
 class AlertSingleSelect(ActionControls):
