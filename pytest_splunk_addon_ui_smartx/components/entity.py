@@ -24,6 +24,7 @@ from .controls.message import Message
 from .dropdown import Dropdown
 
 import warnings
+import time
 
 
 class Entity(BaseComponent):
@@ -102,21 +103,49 @@ class Entity(BaseComponent):
             DeprecationWarning,
             stacklevel=2,
         )
+
+        save_start = time.time()
+
         self.save_btn.wait_to_be_clickable()
         self.save_btn.click()
+
+        error_start = time.time()
         try:
             error_message = self.get_error()
+            error_end = time.time()
         except selenium.common.exceptions.TimeoutException:
             error_message = ""
+            error_end = time.time()
+
         if error_message != "":
+            print(f"Save method error check took {error_end - error_start} seconds")
             return error_message
+        print(f"  Error check took {error_end - error_start} seconds")
+
+        warning_start = time.time()
         try:
             warning_message = self.get_warning()
+            warning_end = time.time()
         except selenium.common.exceptions.TimeoutException:
             warning_message = ""
+            warning_end = time.time()
+
         if warning_message != "":
+            print(
+                f"Save method warning check took {warning_end - warning_start} seconds"
+            )
             return warning_message
+        print(f"  Warning check took {warning_end - warning_start} seconds")
+
+        loading_start = time.time()
         self.loading.wait_loading()
+        loading_end = time.time()
+        print(f"  Loading took {loading_end - loading_start} seconds")
+
+        save_end = time.time()
+
+        print(f"Overall save method took {save_end - save_start} seconds")
+
         return True
 
     def cancel(self):
