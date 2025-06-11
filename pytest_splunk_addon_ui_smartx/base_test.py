@@ -156,6 +156,7 @@ class SeleniumHelper:
         chrome_opts.add_argument("--ignore-certificate-errors")
         chrome_opts.add_argument("--disable-dev-shm-usage")
         chrome_opts.add_argument("--window-size=1280,768")
+        chrome_opts.add_argument("--guest")
         if headless_run:
             chrome_opts.add_argument("--headless")
         return chrome_opts
