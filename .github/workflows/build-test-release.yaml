@@ -90,7 +90,6 @@ jobs:
     name: build
     runs-on: ubuntu-22.04
     needs:
-      - fossa-scan
       - compliance-copyrights
       - pre-commit
       - run-unit-tests
@@ -129,8 +128,6 @@ jobs:
       - meta
       - build
     runs-on: ubuntu-22.04
-    if: |
-      !contains(github.event.issue.labels.*.name, 'skip-ui-tests')
     permissions:
       id-token: write
       contents: read
