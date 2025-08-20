@@ -39,7 +39,7 @@ The general file structure of pytest_splunk_addon_ui_smartx is as follows:
 Support
 -------
 
-* **Python**: 3.7
+* **Python**: 3.9
 * **Platforms**: Linux, Windows, and MacOS
 
 Features
