@@ -57,13 +57,6 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
 @pytest.mark.parametrize(
     "headless_run", [True, False], ids=["headless_run-True", "headless_run-False"]
 )
-@pytest.mark.parametrize(
-    "platform,system",
-    [("darwin", "MAC"), ("win", "WINDOWS"), ("cygwin", "WINDOWS"), ("unknow", "LINUX")],
-)
-@pytest.mark.parametrize(
-    "headless_run", [True, False], ids=["headless_run-True", "headless_run-False"]
-)
 def test_get_local_chrome_opts(headless_run):
     local_chrome_opts = SeleniumHelper.get_local_chrome_opts(headless_run)
     assert isinstance(local_chrome_opts, selenium.webdriver.chrome.options.Options)
