@@ -272,8 +272,7 @@ class Table(BaseComponent):
                     continue
                 if each_col == "status":
                     table[row_name][each_col] = each_row.find_element(
-                        By.CSS_SELECTOR,
-                        '[data-test="status"]'
+                        By.CSS_SELECTOR, '[data-test="status"]'
                     ).text
                     continue
                 if each_col:
