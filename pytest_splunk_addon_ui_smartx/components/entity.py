@@ -62,7 +62,9 @@ class Entity(BaseComponent):
         )
         self.cancel_btn = Button(
             browser,
-            Selector(select=container.select + ' [data-test="button"][label="Cancel"]'),
+            Selector(
+                by=By.XPATH, select='//span[@data-test="label" and text()="Cancel"]'
+            ),
         )
         self.close_btn = Button(
             browser, Selector(select=container.select + ' button[data-test="close"]')

@@ -41,7 +41,7 @@ class InputTable(Table):
             {
                 "switch_button_status": Selector(select='[data-disabled="true"]'),
                 "status_toggle": Selector(
-                    select='button[data-test="button"][role="switch"]'
+                    select='button[data-test="toggle"][role="switch"]'
                 ),
                 "switch_to_page": Selector(
                     select=container.select + " [data-test-page]"

@@ -15,6 +15,7 @@
 #
 
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 
 from ..base_component import Selector
 from .base_control import BaseControl
@@ -198,6 +199,11 @@ class SingleSelect(BaseControl):
             if self.root.get_attribute(
                 "data-test-loading"
             ) == "false" and self.root.get_attribute("data-test-value"):
+                nested_span_element = self.root.find_element(
+                    By.CSS_SELECTOR, "span > span"
+                )
+                if nested_span_element:
+                    return nested_span_element.text
                 return self.root.get_attribute("label")
             else:
                 return False

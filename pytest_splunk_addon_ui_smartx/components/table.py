@@ -73,9 +73,13 @@ class Table(BaseComponent):
                 "search": Selector(select=".searchBtn"),
                 "delete": Selector(select=".deleteBtn"),
                 "delete_prompt": Selector(select=".deletePrompt"),  # [data-test="body"]
-                "delete_btn": Selector(select='[data-test="button"][label="Delete"]'),
+                "delete_btn": Selector(
+                    by=By.XPATH,
+                    select='//button[@data-test="button" and .//span[text()="Delete"]]',
+                ),
                 "delete_cancel": Selector(
-                    select='[data-test="button"][label="Cancel"]'
+                    by=By.XPATH,
+                    select='//button[@data-test="button" and .//span[text()="Cancel"]]',
                 ),
                 "delete_close": Selector(select='[data-test="close"]'),
                 "delete_loading": Selector(select='button[data-test="wait-spinner"]'),
@@ -126,11 +130,7 @@ class Table(BaseComponent):
             :return: Generator for Str list The headers in the table
         """
         headers = []
-        GET_PARENT_ELEMENT = (
-            "var parent = arguments[0].firstChild.firstChild;if(parent.hasChildNodes()){var r='';var C=parent.childNodes;"
-            "for(var n=0;n<C.length;n++){if(C[n].nodeType==Node.TEXT_NODE){r+=' '+C[n].nodeValue}}"
-            "return r.trim()}else{return parent.innerText}"
-        )
+        GET_PARENT_ELEMENT = "return arguments[0].innerText.trim();"
         for each in self.get_elements("header"):
             parent_text = self.browser.execute_script(GET_PARENT_ELEMENT, each)
             headers.append(parent_text)
