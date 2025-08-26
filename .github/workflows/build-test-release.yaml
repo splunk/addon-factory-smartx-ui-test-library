@@ -90,7 +90,6 @@ jobs:
     name: build
     runs-on: ubuntu-22.04
     needs:
-      - fossa-scan
       - compliance-copyrights
       - pre-commit
       - run-unit-tests
