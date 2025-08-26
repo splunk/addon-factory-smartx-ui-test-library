@@ -40,9 +40,8 @@ class InputTable(Table):
         self.elements.update(
             {
                 "switch_button_status": Selector(select='[data-disabled="true"]'),
-                "status_toggle": Selector(
-                    select='button[data-test="toggle"][role="switch"]'
-                ),
+                # It works as both selectors never exist simultaneously, if it does new_selector will get picked.
+                "status_toggle": Selector(select='button[data-test="toggle"][role="switch"], button[data-test="button"][role="switch"]'),
                 "switch_to_page": Selector(
                     select=container.select + " [data-test-page]"
                 ),

@@ -1269,8 +1269,8 @@ class TestInput(UccTester):
         """
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.table.edit_row("dummy_input_one")
-        min_textarea_height = 71
-        max_textarea_height = 311
+        min_textarea_height = 61
+        max_textarea_height = 301
         long_input = ""
         self.assert_util(
             min_textarea_height, input_page.entity1.text_area.get_textarea_height
