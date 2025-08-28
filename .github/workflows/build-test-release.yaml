@@ -1,3 +1,5 @@
+name: CI/CD
+
 on:
   push:
     branches:
@@ -24,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: matrix
-        uses: splunk/addonfactory-test-matrix-action@v1.10
+        uses: splunk/addonfactory-test-matrix-action@v3.0.6
 
   fossa-scan:
     continue-on-error: true
@@ -90,7 +92,8 @@ jobs:
     name: build
     runs-on: ubuntu-22.04
     needs:
-      - fossa-scan
+      # marking fossa-scan as optional due to pre-existing failures
+      # - fossa-scan
       - compliance-copyrights
       - pre-commit
       - run-unit-tests

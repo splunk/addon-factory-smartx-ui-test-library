@@ -56,7 +56,7 @@ class Checkbox(BaseControl):
                     ),
                     "checkbox_btn": Selector(
                         select=container.select
-                        + ' [data-test="button"][role="checkbox"]'
+                        + ' div[data-test="controls"] button[role="checkbox"]'
                     ),
                 }
             )

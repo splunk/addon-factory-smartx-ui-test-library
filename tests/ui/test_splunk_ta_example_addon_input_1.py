@@ -1269,17 +1269,22 @@ class TestInput(UccTester):
         """
         input_page = InputPage(ucc_smartx_selenium_helper, ucc_smartx_rest_helper)
         input_page.table.edit_row("dummy_input_one")
-        min_textarea_height = 71
-        max_textarea_height = 311
+        # adding two different heights for different Splunk versions
+        min_textarea_height = [61, 71]
+        max_textarea_height = [301, 311]
         long_input = ""
         self.assert_util(
-            min_textarea_height, input_page.entity1.text_area.get_textarea_height
+            left=input_page.entity1.text_area.get_textarea_height,
+            right=min_textarea_height,
+            operator="in",
         )
         for i in range(1, 50):
             long_input += f"{str(i)}\n"
         input_page.entity1.text_area.append_value(long_input)
         self.assert_util(
-            max_textarea_height, input_page.entity1.text_area.get_textarea_height
+            left=input_page.entity1.text_area.get_textarea_height,
+            right=max_textarea_height,
+            operator="in",
         )
 
     @pytest.mark.execute_enterprise_cloud_true
