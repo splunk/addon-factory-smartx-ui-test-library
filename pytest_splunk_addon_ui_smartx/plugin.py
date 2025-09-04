@@ -65,7 +65,7 @@ def pytest_addoption(parser):
         "--browser",
         action="store",
         help=(
-            "The browser on which the test should run. supported_values: (firefox, chrome, edge, IE, safari)."
+            "The browser on which the test should run. supported_values: (firefox, chrome, IE, safari)."
         ),
     )
 

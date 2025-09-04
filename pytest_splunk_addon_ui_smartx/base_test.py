@@ -19,7 +19,6 @@ import os
 import sys
 
 import requests
-from msedge.selenium_tools import Edge
 from selenium import webdriver
 from selenium.common.exceptions import ElementNotInteractableException, TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -94,19 +93,6 @@ class SeleniumHelper:
                     raise Exception(
                         f"Chrome tests have to be run either with --local or in CI environment with selenium host!"
                     )
-            elif browser == "edge":
-                if debug:
-                    self.browser = Edge(
-                        executable_path="msedgedriver",
-                        desired_capabilities=SeleniumHelper.get_local_edge_opts(
-                            headless
-                        ),
-                        service_args=["--verbose"],
-                    )
-                else:
-                    raise Exception(
-                        f"Edge tests are available only with --local option"
-                    )
             elif browser == "IE":
                 if debug:
                     self.browser = webdriver.Ie(
@@ -123,7 +109,7 @@ class SeleniumHelper:
                     )
             else:
                 raise Exception(
-                    f"No valid browser found.! expected=[firefox, chrome, edge, IE, safari], got={browser}"
+                    f"No valid browser found.! expected=[firefox, chrome, IE, safari], got={browser}"
                 )
         except Exception as e:
             raise e
@@ -172,30 +158,6 @@ class SeleniumHelper:
             firefox_opts.add_argument("--headless")
             firefox_opts.add_argument("--window-size=1280,768")
         return firefox_opts
-
-    @staticmethod
-    def get_local_edge_opts(headless_run):
-        if sys.platform.startswith("darwin"):
-            platform = "MAC"
-        elif sys.platform.startswith("win") or sys.platform.startswith("cygwin"):
-            platform = "WINDOWS"
-        else:
-            platform = "LINUX"
-        DesiredCapabilities = {
-            "platform": platform,
-            "browserName": "MicrosoftEdge",
-            "ms:edgeOptions": {
-                "extensions": [],
-                "args": ["--ignore-ssl-errors=yes", "--ignore-certificate-errors"],
-            },
-            "ms:edgeChromium": True,
-        }
-        if headless_run:
-            DesiredCapabilities["ms:edgeOptions"]["args"].append("--headless")
-            DesiredCapabilities["ms:edgeOptions"]["args"].append(
-                "--window-size=1280,768"
-            )
-        return DesiredCapabilities
 
     def login_to_splunk(self, *cred):
         try:
