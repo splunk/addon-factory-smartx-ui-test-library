@@ -54,6 +54,7 @@ class LogSource(Enum):
     SECURITY = "security"
     INTERVENTION = "intervention"
     JAVASCRIPT = "javascript"
+    OTHER = "other"
 
 
 class LogEntry(NamedTuple):
