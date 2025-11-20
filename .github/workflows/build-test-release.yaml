@@ -24,22 +24,22 @@ jobs:
     outputs:
       matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: matrix
-        uses: splunk/addonfactory-test-matrix-action@v3.0.6
+        uses: splunk/addonfactory-test-matrix-action@v3.1.2
 
   fossa-scan:
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
           fossa analyze --debug
           fossa report attribution --format text > /tmp/THIRDPARTY
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: THIRDPARTY
           path: /tmp/THIRDPARTY
@@ -51,17 +51,17 @@ jobs:
   compliance-copyrights:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: apache/skywalking-eyes@v0.5.0
+      - uses: actions/checkout@v6
+      - uses: apache/skywalking-eyes@v0.8.0
 
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
-      - uses: pre-commit/action@v3.0.0
+          python-version: "3.14"
+      - uses: pre-commit/action@v3.0.1
 
   semgrep:
     uses: splunk/sast-scanning/.github/workflows/sast-scan.yml@main
@@ -69,16 +69,16 @@ jobs:
       SEMGREP_KEY: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
 
   run-unit-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - id: cache-poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry
           key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
@@ -90,7 +90,7 @@ jobs:
 
   build:
     name: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       # marking fossa-scan as optional due to pre-existing failures
       # - fossa-scan
@@ -98,15 +98,15 @@ jobs:
       - pre-commit
       - run-unit-tests
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - id: cache-poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry
           key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
@@ -121,7 +121,7 @@ jobs:
             --config=tests/testdata/Splunk_TA_UCCExample/globalConfig.json \
             --ta-version=0.0.1
         if: always()
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: output
           path: output/*
@@ -131,7 +131,7 @@ jobs:
     needs:
       - meta
       - build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: |
       !contains(github.event.issue.labels.*.name, 'skip-ui-tests')
     permissions:
@@ -154,17 +154,17 @@ jobs:
           "test_splunk_ta_example_addon_alert_actions"
         ]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v6
         with:
           name: output
           path: output/
       - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - id: cache-poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry
           key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
@@ -183,12 +183,12 @@ jobs:
           ./run_splunk.sh ${{ matrix.splunk.version }}
           until curl -Lsk "https://localhost:8088/services/collector/health" &>/dev/null ; do echo -n "Waiting for HEC-" && sleep 5 ; done
       - run: poetry run pytest tests/ui -k "${{ matrix.test_suite }}" --headless --junitxml=test-results/junit.xml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: test-results-${{ matrix.splunk.version }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
           path: test-results/*
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         if: always()
         with:
           name: test-report-${{ matrix.splunk.version }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
@@ -201,13 +201,13 @@ jobs:
       - build
       - run-ui-tests
       - run-unit-tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: false
           persist-credentials: false
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
