@@ -36,7 +36,7 @@ classifiers = [
 packages = [
         {include = "pytest_splunk_addon_ui_smartx/**/*.py"},
 ]
-version = "5.4.1"
+version = "5.3.5"
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -47,7 +47,7 @@ webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
 lxml = "^5.1.0"
-pytest-splunk-addon = "^6.0.0"
+pytest-splunk-addon = "^5.0.0"
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
