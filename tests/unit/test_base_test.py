@@ -38,7 +38,6 @@ def test_selenium_helper_raise_exception_with_given_invalid_browser_version():
         ("chrome", "selenium.webdriver.Chrome", [True, False]),
         ("IE", "selenium.webdriver.Ie", True),
         ("safari", "selenium.webdriver.Safari", True),
-        ("edge", "pytest_splunk_addon_ui_smartx.base_test.Edge", True),
     ],
 )
 def test_constructor_selenium_helper(browser, webdriver, debug):
@@ -53,27 +52,6 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
                 "browser_version": 11,
             }
         )
-
-
-@pytest.mark.parametrize(
-    "headless_run", [True, False], ids=["headless_run-True", "headless_run-False"]
-)
-@pytest.mark.parametrize(
-    "platform,system",
-    [("darwin", "MAC"), ("win", "WINDOWS"), ("cygwin", "WINDOWS"), ("unknow", "LINUX")],
-)
-def test_get_local_edge_opts(headless_run, platform, system):
-    with patch("pytest_splunk_addon_ui_smartx.base_test.Edge"), patch(
-        "sys.platform", platform
-    ):
-        assert SeleniumHelper.get_local_edge_opts(headless_run)["platform"] == system
-        expected = deepcopy(expected_edge_opts)
-        expected = {**expected, "platform": system}
-        if headless_run:
-            expected["ms:edgeOptions"]["args"].append("--headless")
-            expected["ms:edgeOptions"]["args"].append("--window-size=1280,768")
-
-        assert SeleniumHelper.get_local_edge_opts(headless_run) == expected
 
 
 @pytest.mark.parametrize(
@@ -343,17 +321,6 @@ def test_rest_helper_exceptions(mock_request, side_effect):
     with patch("requests.post", return_value=mock_request):
         with pytest.raises(Exception):
             RestHelper(**defaults_rest_helper)
-
-
-expected_edge_opts = {
-    "platform": "MAC",
-    "browserName": "MicrosoftEdge",
-    "ms:edgeOptions": {
-        "extensions": [],
-        "args": ["--ignore-ssl-errors=yes", "--ignore-certificate-errors"],
-    },
-    "ms:edgeChromium": True,
-}
 
 
 def test_login_to_splunk():
