@@ -49,7 +49,7 @@ cssselect = "*"
 lxml = "^5.1.0"
 
 [tool.poetry.plugins]
-pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin", "ucc-smartx-splunk" = "pytest_splunk_addon_ui_smartx.splunk" }
+pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=5.4, <7.3"

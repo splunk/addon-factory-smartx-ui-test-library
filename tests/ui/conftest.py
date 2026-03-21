@@ -2,6 +2,8 @@ import pytest
 
 from .Example_UccLib.account import AccountPage
 
+pytest_plugins = ["pytest_splunk_addon_ui_smartx.splunk"]
+
 
 @pytest.fixture
 def add_account(ucc_smartx_rest_helper):
