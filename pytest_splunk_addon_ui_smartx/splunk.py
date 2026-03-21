@@ -23,7 +23,6 @@ import pytest
 import requests
 import re
 import configparser
-from filelock import FileLock
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -584,6 +583,8 @@ def splunk_docker(
 
     LOGGER.info("Starting docker services")
     if worker_id:
+        from filelock import FileLock
+
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
         fn = root_tmp_dir / "pytest_docker"
