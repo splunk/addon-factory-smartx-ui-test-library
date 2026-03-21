@@ -22,10 +22,6 @@ import pytest
 
 from .base_test import RestHelper, SeleniumHelper
 
-# Load the companion pytest plugin that registers the --splunk-* CLI options
-# and Splunk fixtures used by the UI suites.
-pytest_plugins = ["pytest_splunk_addon_ui_smartx.splunk"]
-
 LOGGER = logging.getLogger("pytest-ucc-smartx")
 PNG_PATH = "assets"
 
