@@ -199,11 +199,13 @@ class SingleSelect(BaseControl):
             if self.root.get_attribute(
                 "data-test-loading"
             ) == "false" and self.root.get_attribute("data-test-value"):
-                nested_span_element = self.root.find_element(
-                    By.CSS_SELECTOR, "span > span"
+                # react-ui v5 renders selected label text in [data-test="label"] child span
+                # rather than as an HTML label= attribute on the root element
+                label_elements = self.root.find_elements(
+                    By.CSS_SELECTOR, '[data-test="label"]'
                 )
-                if nested_span_element:
-                    return nested_span_element.text
+                if label_elements:
+                    return label_elements[0].text
                 return self.root.get_attribute("label")
             else:
                 return False
