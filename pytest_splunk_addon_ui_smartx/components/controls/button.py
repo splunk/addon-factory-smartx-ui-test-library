@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 
 from .base_control import BaseControl
@@ -33,9 +34,13 @@ class Button(BaseControl):
 
     def click(self):
         """
-        Click on the button
+        Click on the button. Falls back to JavaScript click if the element is intercepted
+        (e.g. CollapsiblePanel toggle buttons in @splunk/react-ui v5).
         """
-        self.container.click()
+        try:
+            self.container.click()
+        except ElementClickInterceptedException:
+            self.browser.execute_script("arguments[0].click()", self.container)
 
     def wait_to_be_clickable(self):
         super().wait_to_be_clickable("container")
