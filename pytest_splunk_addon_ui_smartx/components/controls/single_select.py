@@ -321,13 +321,26 @@ class SingleSelect(BaseControl):
 
     def wait_for_values(self):
         """
-        Wait for dynamic values to load in SingleSelect
+        Wait for dynamic values to load in SingleSelect.
+
+        For non-searchable SingleSelects (disableSearch=true), waits only for the
+        loading state to complete without opening the dropdown, to avoid side effects
+        of get_single_value() which can select the first option when no value is set.
+
+        For searchable SingleSelects, opens the dropdown to verify values are present.
         """
+        if not self.searchable:
 
-        def _wait_for_values(driver):
-            return self.get_single_value()
+            def _wait_for_loaded(driver):
+                return self.root.get_attribute("data-test-loading") == "false"
 
-        self.wait_for(_wait_for_values, msg="No values found in SingleSelect")
+            self.wait_for(_wait_for_loaded, msg="SingleSelect is still loading")
+        else:
+
+            def _wait_for_values(driver):
+                return self.get_single_value()
+
+            self.wait_for(_wait_for_values, msg="No values found in SingleSelect")
 
     def wait_for_search_list(self):
         """
