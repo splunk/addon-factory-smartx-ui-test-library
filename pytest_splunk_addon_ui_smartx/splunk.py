@@ -25,6 +25,7 @@ import re
 import configparser
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
+RESPONSIVE_CHECK_REQUEST_TIMEOUT = 10  # seconds per HTTP fallback request
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 PYTEST_XDIST_TESTRUNUID = ""
@@ -945,6 +946,7 @@ def is_responsive_uf(uf):
                 f'https://{uf["uf_host"]}:{uf["uf_port"]}/services/server/info',
                 auth=(uf["uf_username"], uf["uf_password"]),
                 verify=False,
+                timeout=RESPONSIVE_CHECK_REQUEST_TIMEOUT,
             )
             response.raise_for_status()
         LOGGER.info("Connected to Universal Forwarder instance.")
@@ -986,6 +988,7 @@ def is_responsive_splunk(splunk):
                 f'https://{splunk["host"]}:{splunk["port"]}/services/server/info',
                 auth=(splunk["username"], splunk["password"]),
                 verify=False,
+                timeout=RESPONSIVE_CHECK_REQUEST_TIMEOUT,
             )
             response.raise_for_status()
 
