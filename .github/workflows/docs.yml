@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: 3.8
       - run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+          curl -sSL https://install.python-poetry.org | python3 - --version 2.1.2
           pip install mkdocs mkdocs-material mkdocstrings-python
       - name: Deploy to GitHub Pages
         if: github.ref_name == 'main'
