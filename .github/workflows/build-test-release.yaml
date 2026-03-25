@@ -85,7 +85,6 @@ jobs:
           restore-keys: |
             poetry-${{ runner.os }}-
       - run: poetry install
-        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
       - run: poetry run pytest -v tests/unit
 
   build:
@@ -113,7 +112,6 @@ jobs:
           restore-keys: |
             poetry-${{ runner.os }}-
       - run: poetry install
-        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
       - run: poetry build
       - run: |
           poetry run ucc-gen build \
@@ -171,7 +169,6 @@ jobs:
           restore-keys: |
             poetry-${{ runner.os }}-
       - run: poetry install
-        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
       - name: Link chromedriver and geckodriver
         # Use installed chromedriver https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
         run: |

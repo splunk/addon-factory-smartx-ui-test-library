@@ -22,22 +22,52 @@ import json
 import pytest
 import requests
 import re
-import splunklib.client as client
-from splunksplwrapper.manager.jobs import Jobs
-from splunksplwrapper.splunk.cloud import CloudSplunk
-from splunksplwrapper.SearchUtil import SearchUtil
-from .event_ingestors import IngestorHelper
-from .docker_class import Services
-from .CIM_Models.datamodel_definition import datamodels
 import configparser
-from filelock import FileLock
-
-from pytest_splunk_addon import utils
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
+RESPONSIVE_CHECK_REQUEST_TIMEOUT = 10  # seconds per HTTP fallback request
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 PYTEST_XDIST_TESTRUNUID = ""
+
+
+def _check_first_worker():
+    worker = os.environ.get("PYTEST_XDIST_WORKER")
+    return not worker or worker == "gw0"
+
+
+def _get_client_module():
+    try:
+        import splunklib.client as client
+    except ImportError:
+        client = None
+    return client
+
+
+def _get_search_util_dependencies():
+    from splunksplwrapper.manager.jobs import Jobs
+    from splunksplwrapper.splunk.cloud import CloudSplunk
+    from splunksplwrapper.SearchUtil import SearchUtil
+
+    return CloudSplunk, Jobs, SearchUtil
+
+
+def _get_ingestor_helper():
+    from .event_ingestors import IngestorHelper
+
+    return IngestorHelper
+
+
+def _get_services_class():
+    from .docker_class import Services
+
+    return Services
+
+
+def _get_datamodels():
+    from .CIM_Models.datamodel_definition import datamodels
+
+    return datamodels
 
 
 def pytest_addoption(parser):
@@ -372,6 +402,7 @@ def splunk_search_util(splunk, request):
         splunksplwrapper.SearchUtil.SearchUtil: The SearchUtil object
     """
     LOGGER.info("Initializing SearchUtil for the Splunk instance.")
+    CloudSplunk, Jobs, SearchUtil = _get_search_util_dependencies()
     cloud_splunk = CloudSplunk(
         splunkd_host=splunk["host"],
         splunkd_port=splunk["port"],
@@ -553,6 +584,8 @@ def splunk_docker(
 
     LOGGER.info("Starting docker services")
     if worker_id:
+        from filelock import FileLock
+
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
         fn = root_tmp_dir / "pytest_docker"
@@ -721,7 +754,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
     if request.config.getoption("ingest_events").lower() in ["n", "no", "false", "f"]:
         return
     global PYTEST_XDIST_TESTRUNUID
-    if utils.check_first_worker():
+    if _check_first_worker():
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
         ingest_meta_data = {
@@ -737,6 +770,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
         try:
+            IngestorHelper = _get_ingestor_helper()
             IngestorHelper.ingest_events(
                 ingest_meta_data,
                 addon_path,
@@ -769,7 +803,7 @@ def splunk_events_cleanup(request, splunk_search_util):
 
     """
     if request.config.getoption("splunk_cleanup"):
-        if utils.check_first_worker():
+        if _check_first_worker():
             LOGGER.info("Running the old events cleanup")
             splunk_search_util.deleteEventsFromIndex()
     else:
@@ -784,7 +818,7 @@ def file_system_prerequisite():
     """
     UF_FILE_MONTOR_DIR = "uf_files"
     monitor_dir = os.path.join(os.getcwd(), UF_FILE_MONTOR_DIR)
-    if utils.check_first_worker():
+    if _check_first_worker():
         if os.path.exists(monitor_dir):
             shutil.rmtree(monitor_dir, ignore_errors=True)
         os.mkdir(monitor_dir)
@@ -805,6 +839,7 @@ def splunk_dm_recommended_fields():
 
         if model_key not in recommended_fields:
             LOGGER.info(f"Fetching {model_key} definition")
+            datamodels = _get_datamodels()
             datamodel_per_cim = datamodels.get(cim_version) or datamodels["latest"]
             datamodel = datamodel_per_cim.get(model, {})
             if datamodel == {}:
@@ -876,6 +911,7 @@ def docker_services(
     The services will be stopped after all tests are run.
     """
     keep_alive = request.config.getoption("--keepalive", False)
+    Services = _get_services_class()
     services = Services(docker_compose_files, docker_ip, docker_services_project_name)
     yield services
     if not keep_alive:
@@ -897,12 +933,22 @@ def is_responsive_uf(uf):
             "Trying to connect Universal Forwarder instance...  splunk=%s",
             json.dumps(uf),
         )
-        client.connect(
-            username=uf["uf_username"],
-            password=uf["uf_password"],
-            host=uf["uf_host"],
-            port=uf["uf_port"],
-        )
+        client = _get_client_module()
+        if client:
+            client.connect(
+                username=uf["uf_username"],
+                password=uf["uf_password"],
+                host=uf["uf_host"],
+                port=uf["uf_port"],
+            )
+        else:
+            response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
+                f'https://{uf["uf_host"]}:{uf["uf_port"]}/services/server/info',
+                auth=(uf["uf_username"], uf["uf_password"]),
+                verify=False,
+                timeout=RESPONSIVE_CHECK_REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
         LOGGER.info("Connected to Universal Forwarder instance.")
 
         return True
@@ -929,12 +975,22 @@ def is_responsive_splunk(splunk):
             "Trying to connect Splunk instance...  splunk=%s",
             json.dumps(splunk),
         )
-        client.connect(
-            username=splunk["username"],
-            password=splunk["password"],
-            host=splunk["host"],
-            port=splunk["port"],
-        )
+        client = _get_client_module()
+        if client:
+            client.connect(
+                username=splunk["username"],
+                password=splunk["password"],
+                host=splunk["host"],
+                port=splunk["port"],
+            )
+        else:
+            response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
+                f'https://{splunk["host"]}:{splunk["port"]}/services/server/info',
+                auth=(splunk["username"], splunk["password"]),
+                verify=False,
+                timeout=RESPONSIVE_CHECK_REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
 
         LOGGER.info("Connected to Splunk instance.")
         return True
