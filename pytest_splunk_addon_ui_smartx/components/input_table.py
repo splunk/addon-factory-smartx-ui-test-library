@@ -55,6 +55,20 @@ class InputTable(Table):
         )
         self.container = container
 
+    def _get_status_button(self, name):
+        """Find the status toggle button for the given input row."""
+        _row = self._get_row(name)
+        return _row.find_element(
+            *list(self.elements["status_toggle"]._asdict().values())
+        )
+
+    def _is_input_enabled(self, name):
+        """Return True if the input is currently enabled (data-selected == 'true')."""
+        status_button = self._get_status_button(name)
+        return (
+            status_button.get_attribute("data-selected") or ""
+        ).lower().strip() == "true"
+
     def input_status_toggle(self, name, enable):
         """
         This function sets the table row status as either enabled or disabled. If it is already enabled then it reuturns an exception
@@ -62,26 +76,22 @@ class InputTable(Table):
             :param enable: Bool Whether or not we want the table field to be set to enable or disable
             :return: Bool whether or not enabling or disabling the field was successful, If the field was already in the state we wanted it in, then it will return an exception
         """
-        _row = self._get_row(name)
-        status_button = _row.find_element(
-            *list(self.elements["status_toggle"]._asdict().values())
-        )
-        input_enabled = (
-            True
-            if status_button.get_attribute("data-selected").lower().strip() == "true"
-            else False
-        )
+        input_enabled = self._is_input_enabled(name)
         if enable:
             if input_enabled:
                 raise Exception("The input is already enabled")
             else:
-                status_button.click()
-                self.wait_until("switch_button_status")
+                self._get_status_button(name).click()
+                # Wait for data-selected to reflect the new enabled state.
+                # In UCC 6 (react-ui v5) the old [data-disabled="true"] spinner element
+                # is not rendered; instead we poll data-selected directly.
+                self.wait.until(lambda _: self._is_input_enabled(name))
                 return True
         else:
             if not input_enabled:
                 raise Exception("The input is already disabled")
             else:
-                status_button.click()
-                self.wait_until("switch_button_status")
+                self._get_status_button(name).click()
+                # Wait for data-selected to reflect the new disabled state.
+                self.wait.until(lambda _: not self._is_input_enabled(name))
                 return True
