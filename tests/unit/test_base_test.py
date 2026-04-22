@@ -44,6 +44,9 @@ def test_selenium_helper_raise_exception_with_given_invalid_browser_version():
 def test_constructor_selenium_helper(browser, webdriver, debug):
     with patch(webdriver if debug else "selenium.webdriver.Remote"), patch(
         "os.environ.get", lambda x: x
+    ), patch.object(
+        pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper,
+        "login_to_splunk",
     ):
         pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper(
             **{
@@ -92,7 +95,7 @@ def test_get_local_chrome_opts(headless_run):
 def test_capabilities_for_firefox_local():
     with patch("selenium.webdriver.Firefox") as webdriver_, patch(
         "os.environ.get", lambda x: x
-    ):
+    ), patch.object(SeleniumHelper, "login_to_splunk"):
         selenium_helper = pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper
         SeleniumHelper.get_local_firefox_opts = MagicMock(return_value=f"firefox_opts")
         selenium_helper(
@@ -108,7 +111,7 @@ def test_capabilities_for_firefox_local():
 def test_capabilities_for_chrome_local():
     with patch("selenium.webdriver.Chrome") as webdriver_, patch(
         "os.environ.get", lambda x: x
-    ):
+    ), patch.object(SeleniumHelper, "login_to_splunk"):
         selenium_helper = pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper
         selenium_helper.get_local_chrome_opts = MagicMock(return_value=f"chrome_opts")
         selenium_helper(
@@ -127,7 +130,7 @@ def test_capabilities_for_chrome_local():
 def test_capabilities_for_ie_local():
     with patch("selenium.webdriver.Ie") as webdriver_, patch(
         "os.environ.get", lambda x: x
-    ):
+    ), patch.object(SeleniumHelper, "login_to_splunk"):
         selenium_helper = pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper
         selenium_helper.get_local_ie_opts = MagicMock(return_value=f"ie_opts")
         selenium_helper(

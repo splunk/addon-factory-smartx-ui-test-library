@@ -37,7 +37,6 @@ class Login(BaseComponent):
         self.elements = {
             "username": Selector(by=By.ID, select="username"),
             "password": Selector(by=By.ID, select="password"),
-            "homepage": Selector(select='a[data-action="home"]'),
         }
 
     def login(self, username, password):
@@ -49,4 +48,7 @@ class Login(BaseComponent):
         self.username.send_keys(username)
         self.password.send_keys(password)
         self.password.send_keys("\ue007")
-        self.wait_for("homepage", "Could not log in to the Splunk instance.")
+        self.wait_for(
+            lambda driver: "en-GB/app/launcher/home" in driver.current_url,
+            "Could not log in to the Splunk instance.",
+        )
