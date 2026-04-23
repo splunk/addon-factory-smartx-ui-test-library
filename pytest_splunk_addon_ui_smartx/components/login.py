@@ -37,7 +37,7 @@ class Login(BaseComponent):
         self.elements = {
             "username": Selector(by=By.ID, select="username"),
             "password": Selector(by=By.ID, select="password"),
-            "homepage": Selector(select='a[data-action="home"]'),
+            "homepage": Selector(select='[data-test="header"], a[data-action="home"]'),
         }
 
     def login(self, username, password):
