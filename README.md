@@ -10,3 +10,4 @@ This framework is wrapper on selenium to write UI test cases for Splunk Add-ons.
 ## Usage
 
 For full usage instructions, please visit the [documentation](https://splunk.github.io/addon-factory-smartx-ui-test-library).
+test
