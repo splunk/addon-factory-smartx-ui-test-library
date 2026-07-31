@@ -46,7 +46,6 @@ selenium = "*"
 webdriver-manager = "*"
 msedge-selenium-tools = "*"
 cssselect = "*"
-lxml = "^5.1.0"
 filelock = "*"
 
 [tool.poetry.plugins]
