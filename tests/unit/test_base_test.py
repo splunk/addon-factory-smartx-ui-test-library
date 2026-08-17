@@ -1,4 +1,3 @@
-from copy import deepcopy
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -38,7 +37,7 @@ def test_selenium_helper_raise_exception_with_given_invalid_browser_version():
         ("chrome", "selenium.webdriver.Chrome", [True, False]),
         ("IE", "selenium.webdriver.Ie", True),
         ("safari", "selenium.webdriver.Safari", True),
-        ("edge", "pytest_splunk_addon_ui_smartx.base_test.Edge", True),
+        ("edge", "selenium.webdriver.Edge", True),
     ],
 )
 def test_constructor_selenium_helper(browser, webdriver, debug):
@@ -63,17 +62,15 @@ def test_constructor_selenium_helper(browser, webdriver, debug):
     [("darwin", "MAC"), ("win", "WINDOWS"), ("cygwin", "WINDOWS"), ("unknow", "LINUX")],
 )
 def test_get_local_edge_opts(headless_run, platform, system):
-    with patch("pytest_splunk_addon_ui_smartx.base_test.Edge"), patch(
-        "sys.platform", platform
-    ):
-        assert SeleniumHelper.get_local_edge_opts(headless_run)["platform"] == system
-        expected = deepcopy(expected_edge_opts)
-        expected = {**expected, "platform": system}
+    with patch("sys.platform", platform):
+        local_edge_opts = SeleniumHelper.get_local_edge_opts(headless_run)
+        assert isinstance(local_edge_opts, selenium.webdriver.edge.options.Options)
+        assert local_edge_opts.capabilities["platformName"] == system
+        assert "--ignore-ssl-errors=yes" in local_edge_opts.arguments
+        assert "--ignore-certificate-errors" in local_edge_opts.arguments
         if headless_run:
-            expected["ms:edgeOptions"]["args"].append("--headless")
-            expected["ms:edgeOptions"]["args"].append("--window-size=1280,768")
-
-        assert SeleniumHelper.get_local_edge_opts(headless_run) == expected
+            assert "--headless" in local_edge_opts.arguments
+            assert "--window-size=1280,768" in local_edge_opts.arguments
 
 
 @pytest.mark.parametrize(
@@ -101,7 +98,7 @@ def test_capabilities_for_firefox_local():
                 "browser": "firefox",
             }
         )
-        webdriver_.assert_called_with(firefox_options="firefox_opts")
+        webdriver_.assert_called_with(options="firefox_opts")
         selenium_helper.get_local_firefox_opts.assert_called_with(False)
 
 
@@ -117,27 +114,37 @@ def test_capabilities_for_chrome_local():
                 "browser": "chrome",
             }
         )
-        webdriver_.assert_called_with(
-            chrome_options="chrome_opts",
-            service_args=["--verbose"],
-        )
+        webdriver_.assert_called_with(options="chrome_opts")
         selenium_helper.get_local_chrome_opts.assert_called_with(False)
 
 
 def test_capabilities_for_ie_local():
     with patch("selenium.webdriver.Ie") as webdriver_, patch(
         "os.environ.get", lambda x: x
-    ):
+    ), patch.object(
+        pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper,
+        "get_local_ie_opts",
+        return_value="ie_opts",
+    ) as get_local_ie_opts:
         selenium_helper = pytest_splunk_addon_ui_smartx.base_test.SeleniumHelper
-        selenium_helper.get_local_ie_opts = MagicMock(return_value=f"ie_opts")
         selenium_helper(
             **{
                 **default_args_for_selenium_helper,
                 "browser": "IE",
             }
         )
-        webdriver_.assert_called_with(capabilities="ie_opts")
-        selenium_helper.get_local_ie_opts.assert_called_once()
+        webdriver_.assert_called_with(options="ie_opts")
+        get_local_ie_opts.assert_called_once()
+
+
+def test_get_local_ie_opts():
+    local_ie_opts = SeleniumHelper.get_local_ie_opts()
+
+    assert isinstance(local_ie_opts, selenium.webdriver.ie.options.Options)
+    assert local_ie_opts.ignore_zoom_level is True
+    assert local_ie_opts.ensure_clean_session is True
+    assert local_ie_opts.require_window_focus is True
+    assert local_ie_opts.native_events is False
 
 
 @pytest.fixture()
@@ -343,17 +350,6 @@ def test_rest_helper_exceptions(mock_request, side_effect):
     with patch("requests.post", return_value=mock_request):
         with pytest.raises(Exception):
             RestHelper(**defaults_rest_helper)
-
-
-expected_edge_opts = {
-    "platform": "MAC",
-    "browserName": "MicrosoftEdge",
-    "ms:edgeOptions": {
-        "extensions": [],
-        "args": ["--ignore-ssl-errors=yes", "--ignore-certificate-errors"],
-    },
-    "ms:edgeChromium": True,
-}
 
 
 def test_login_to_splunk():
