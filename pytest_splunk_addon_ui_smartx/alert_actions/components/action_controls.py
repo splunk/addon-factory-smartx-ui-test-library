@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-from lxml.cssselect import CSSSelector
+from cssselect import HTMLTranslator
 from selenium.webdriver.common.by import By
 
 from .alert_base_component import Selector
@@ -29,7 +29,7 @@ class ActionControls(AlertBaseControl):
         :param mapping= If the table headers are different from it's html-label, provide the mapping as dictionary. For ex, {"Status": "disabled"}
         """
         super().__init__(browser, container)
-        select_xpath = CSSSelector(container.select).path
+        select_xpath = HTMLTranslator().css_to_xpath(container.select)
         self.elements.update(
             {
                 "help_text": Selector(
