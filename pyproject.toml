@@ -33,7 +33,7 @@ classifiers = [
 packages = [
         {include = "pytest_splunk_addon_ui_smartx/**/*.py"},
 ]
-version = "6.1.0"
+version = "7.0.0"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
