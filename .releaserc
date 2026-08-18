@@ -27,9 +27,9 @@
         {
           "parserOpts": {
             "headerPattern": "^(\\w*)(?:\\(([^)]*)\\))?(!)?: (.*)$",
-            "headerCorrespondence": ["type", "scope", "breaking", "subject"]
+            "headerCorrespondence": ["type", "scope", "breakingMarker", "subject"]
           },
-          "releaseRules": [{ "breaking": "!", "release": "major" }]
+          "releaseRules": [{ "breakingMarker": "!", "release": "major" }]
         },
       ],
       [
@@ -72,7 +72,7 @@
         {
           "parserOpts": {
             "headerPattern": "^(\\w*)(?:\\(([^)]*)\\))?(!)?: (.*)$",
-            "headerCorrespondence": ["type", "scope", "breaking", "subject"]
+            "headerCorrespondence": ["type", "scope", "breakingMarker", "subject"]
           }
         },
       ],
