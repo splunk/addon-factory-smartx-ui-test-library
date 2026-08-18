@@ -69,12 +69,17 @@ jobs:
       SEMGREP_KEY: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
 
   run-unit-tests:
+    name: test-unit Python ${{ matrix.python-version }}
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
       - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - id: cache-poetry
@@ -183,12 +188,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-${{ matrix.splunk.version }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
+          name: test-results-${{ matrix.splunk.version }}_python-${{ env.PYTHON_VERSION }}_${{ matrix.browser }}_${{ matrix.test_suite }}
           path: test-results/*
       - uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: test-report-${{ matrix.splunk.version }}_${{ matrix.python-version }}_${{ matrix.browser }}_${{ matrix.test_suite }}
+          name: test-report-${{ matrix.splunk.version }}_python-${{ env.PYTHON_VERSION }}_${{ matrix.browser }}_${{ matrix.test_suite }}
           path: "test-results/*.xml"
           reporter: java-junit
 

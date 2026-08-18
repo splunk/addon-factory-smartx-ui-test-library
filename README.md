@@ -1,7 +1,7 @@
 # addon-factory-smartx-ui-test-library
 
 ![PyPI](https://img.shields.io/pypi/v/pytest-splunk-addon-ui-smartx)
-![Python](https://img.shields.io/pypi/pyversions/pytest-splunk-addon-ui-smartx.svg)
+![Python 3.10–3.13](https://img.shields.io/badge/python-3.10--3.13-blue.svg)
 
 ## What is SmartX UI Test Framework
 

@@ -30,7 +30,7 @@ The general file structure of SmartX UI Test Framework is as follows:
 
 ## Support
 
-- **Python**: 3.7
+- **Python**: 3.10 through 3.13
 - **Platforms**: Linux, Windows, and MacOS
 
 ## Features
