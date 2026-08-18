@@ -23,9 +23,6 @@ classifiers = [
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -39,14 +36,16 @@ packages = [
 version = "6.0.2"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 pytest-html = "*"
-urllib3 = "^1.21.1"
-selenium = "*"
+urllib3 = ">=2.6.3,<3"
+selenium = ">=4.14.0,<5"
 webdriver-manager = "*"
-msedge-selenium-tools = "*"
 cssselect = "*"
-filelock = "*"
+filelock = ">=3.20.1,<4"
+requests = ">=2.32.0,<3"
+python-dotenv = ">=1.2.2,<2"
+idna = ">=3.15,<4"
 
 [tool.poetry.plugins]
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }

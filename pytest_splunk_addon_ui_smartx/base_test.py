@@ -19,10 +19,8 @@ import os
 import sys
 
 import requests
-from msedge.selenium_tools import Edge
 from selenium import webdriver
 from selenium.common.exceptions import ElementNotInteractableException, TimeoutException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .pages.login import LoginPage
@@ -61,7 +59,7 @@ class SeleniumHelper:
             if browser == "firefox":
                 if debug:
                     self.browser = webdriver.Firefox(
-                        firefox_options=SeleniumHelper.get_local_firefox_opts(headless)
+                        options=SeleniumHelper.get_local_firefox_opts(headless)
                     )
                 elif selenium_host:
                     self.browser = webdriver.Remote(
@@ -79,8 +77,7 @@ class SeleniumHelper:
             elif browser == "chrome":
                 if debug:
                     self.browser = webdriver.Chrome(
-                        chrome_options=SeleniumHelper.get_local_chrome_opts(headless),
-                        service_args=["--verbose"],
+                        options=SeleniumHelper.get_local_chrome_opts(headless),
                     )
                 elif selenium_host:
                     self.browser = webdriver.Remote(
@@ -96,12 +93,8 @@ class SeleniumHelper:
                     )
             elif browser == "edge":
                 if debug:
-                    self.browser = Edge(
-                        executable_path="msedgedriver",
-                        desired_capabilities=SeleniumHelper.get_local_edge_opts(
-                            headless
-                        ),
-                        service_args=["--verbose"],
+                    self.browser = webdriver.Edge(
+                        options=SeleniumHelper.get_local_edge_opts(headless),
                     )
                 else:
                     raise Exception(
@@ -110,7 +103,7 @@ class SeleniumHelper:
             elif browser == "IE":
                 if debug:
                     self.browser = webdriver.Ie(
-                        capabilities=SeleniumHelper.get_local_ie_opts()
+                        options=SeleniumHelper.get_local_ie_opts()
                     )
                 else:
                     raise Exception(f"IE tests are available only with --local option")
@@ -140,13 +133,12 @@ class SeleniumHelper:
 
     @staticmethod
     def get_local_ie_opts():
-        capabilities = DesiredCapabilities.INTERNETEXPLORER
-        capabilities["se:ieOptions"] = {}
-        capabilities["ignoreZoomSetting"] = True
-        capabilities["se:ieOptions"]["ie.ensureCleanSession"] = True
-        capabilities["requireWindowFocus"] = True
-        capabilities["nativeEvent"] = False
-        return capabilities
+        ie_opts = webdriver.IeOptions()
+        ie_opts.ignore_zoom_level = True
+        ie_opts.ensure_clean_session = True
+        ie_opts.require_window_focus = True
+        ie_opts.native_events = False
+        return ie_opts
 
     @staticmethod
     def get_local_chrome_opts(headless_run):
@@ -181,21 +173,14 @@ class SeleniumHelper:
             platform = "WINDOWS"
         else:
             platform = "LINUX"
-        DesiredCapabilities = {
-            "platform": platform,
-            "browserName": "MicrosoftEdge",
-            "ms:edgeOptions": {
-                "extensions": [],
-                "args": ["--ignore-ssl-errors=yes", "--ignore-certificate-errors"],
-            },
-            "ms:edgeChromium": True,
-        }
+        edge_opts = webdriver.EdgeOptions()
+        edge_opts.set_capability("platformName", platform)
+        edge_opts.add_argument("--ignore-ssl-errors=yes")
+        edge_opts.add_argument("--ignore-certificate-errors")
         if headless_run:
-            DesiredCapabilities["ms:edgeOptions"]["args"].append("--headless")
-            DesiredCapabilities["ms:edgeOptions"]["args"].append(
-                "--window-size=1280,768"
-            )
-        return DesiredCapabilities
+            edge_opts.add_argument("--headless")
+            edge_opts.add_argument("--window-size=1280,768")
+        return edge_opts
 
     def login_to_splunk(self, *cred):
         try:
