@@ -271,8 +271,8 @@ class Table(BaseComponent):
                         table[row_name][each_col] += " | Delete"
                     continue
                 if each_col == "status":
-                    table[row_name][each_col] = each_row.find_element_by_css_selector(
-                        '[data-test="status"]'
+                    table[row_name][each_col] = each_row.find_element(
+                        By.CSS_SELECTOR, '[data-test="status"]'
                     ).text
                     continue
                 if each_col:
@@ -290,7 +290,7 @@ class Table(BaseComponent):
         """
         _row = self._get_row(name)
         if column.lower() == "status":
-            return _row.find_element_by_css_selector('[data-test="status"]').text
+            return _row.find_element(By.CSS_SELECTOR, '[data-test="status"]').text
         return self._get_column_value(_row, column)
 
     def get_column_values(self, column):
