@@ -22,7 +22,16 @@
     ],
   plugins:
     [
-      "@semantic-release/commit-analyzer",
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "parserOpts": {
+            "headerPattern": "^(\\w*)(?:\\(([^)]*)\\))?(!)?: (.*)$",
+            "headerCorrespondence": ["type", "scope", "breakingMarker", "subject"]
+          },
+          "releaseRules": [{ "breakingMarker": "!", "release": "major" }]
+        },
+      ],
       [
         "semantic-release-replace-plugin",
         {
@@ -58,7 +67,15 @@
           ]
         }
       ],
-      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "parserOpts": {
+            "headerPattern": "^(\\w*)(?:\\(([^)]*)\\))?(!)?: (.*)$",
+            "headerCorrespondence": ["type", "scope", "breakingMarker", "subject"]
+          }
+        },
+      ],
       [
         "@semantic-release/exec",
         {
