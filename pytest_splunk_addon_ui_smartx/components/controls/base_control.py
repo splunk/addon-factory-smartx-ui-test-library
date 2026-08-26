@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 
 from ..base_component import BaseComponent, Selector
 
@@ -49,12 +49,42 @@ class BaseControl(BaseComponent):
             }
         )
         self.elements.update({"tooltip_text": Selector(select='[data-test="popover"]')})
+        self.elements.update({"legacy_tooltip_text": Selector(select=".tooltip-inner")})
+        self.elements.update(
+            {
+                "accessible_tooltip_text": Selector(
+                    select=container.select
+                    + ' [data-test="tooltip"] [data-test="screen-reader-content"]'
+                )
+            }
+        )
         self.browser = browser
 
     def get_tooltip_text(self):
         self.hover_over_element("tooltip_icon")
-        self.wait_for("tooltip_text")
-        return " ".join(self.tooltip_text.text.split())
+        tooltip_variants = (
+            ("tooltip_text", False),
+            ("legacy_tooltip_text", False),
+            ("accessible_tooltip_text", True),
+        )
+        last_timeout = None
+
+        for key, use_inner_text in tooltip_variants:
+            try:
+                tooltip = self.wait_for(key, timeout=5)
+            except TimeoutException as error:
+                last_timeout = error
+                continue
+
+            if use_inner_text:
+                text = self.get_clear_text(tooltip)
+            else:
+                text = " ".join(tooltip.text.split())
+
+            if text:
+                return text
+
+        raise last_timeout or TimeoutException("Tooltip content is empty")
 
     def get_help_text(self):
         return self.get_clear_text(self.help_text)
