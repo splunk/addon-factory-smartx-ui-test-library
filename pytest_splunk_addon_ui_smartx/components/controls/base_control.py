@@ -48,9 +48,7 @@ class BaseControl(BaseComponent):
                 )
             }
         )
-        self.elements.update(
-            {"tooltip_text": Selector(select='[data-test="popover"]')}
-        )
+        self.elements.update({"tooltip_text": Selector(select='[data-test="popover"]')})
         self.browser = browser
 
     def get_tooltip_text(self):
