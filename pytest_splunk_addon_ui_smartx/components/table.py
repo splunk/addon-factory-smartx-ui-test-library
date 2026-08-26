@@ -283,7 +283,7 @@ class Table(BaseComponent):
 
     def get_table_row(self, name):
         """Return one row from a single atomic DOM snapshot."""
-        snapshot_row = """
+        snapshot_row = r"""
             const row = arguments[0];
             const expectedName = arguments[1];
             const mapping = arguments[2];
