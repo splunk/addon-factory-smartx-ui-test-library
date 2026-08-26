@@ -49,14 +49,14 @@ class BaseControl(BaseComponent):
             }
         )
         self.elements.update(
-            {"tooltip_text": Selector(select='[data-test="screen-reader-content"]')}
+            {"tooltip_text": Selector(select='[data-test="popover"]')}
         )
         self.browser = browser
 
     def get_tooltip_text(self):
         self.hover_over_element("tooltip_icon")
         self.wait_for("tooltip_text")
-        return self.get_clear_text(self.tooltip_text)
+        return " ".join(self.tooltip_text.text.split())
 
     def get_help_text(self):
         return self.get_clear_text(self.help_text)
