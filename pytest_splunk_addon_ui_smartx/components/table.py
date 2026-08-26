@@ -281,6 +281,65 @@ class Table(BaseComponent):
                     )
         return table
 
+    def get_table_row(self, name):
+        """Return one row from a single atomic DOM snapshot."""
+        snapshot_row = """
+            const row = arguments[0];
+            const expectedName = arguments[1];
+            const mapping = arguments[2];
+            const clean = value => (value || "").replace(/\s+/g, " ").trim();
+            const cells = Array.from(row.querySelectorAll('[data-test="cell"]'));
+            const nameCell = cells.find(
+                cell => cell.getAttribute("data-column") === "name"
+            );
+            if (!nameCell || clean(nameCell.innerText) !== expectedName) {
+                return null;
+            }
+
+            const table = row.closest("table");
+            const result = {};
+            for (const header of table.querySelectorAll('th[data-test="head-cell"]')) {
+                const key = clean(header.innerText).toLowerCase();
+                if (!key) {
+                    continue;
+                }
+                if (key === "actions") {
+                    const actions = [
+                        [".editBtn", "Edit"],
+                        [".cloneBtn", "Clone"],
+                        [".searchBtn", "Search"],
+                        [".deleteBtn", "Delete"],
+                    ];
+                    result[key] = actions
+                        .filter(([selector]) => row.querySelector(selector))
+                        .map(([, label]) => label)
+                        .join(" | ");
+                    continue;
+                }
+                if (key === "status") {
+                    result[key] = clean(
+                        row.querySelector('[data-test="status"]')?.innerText
+                    );
+                    continue;
+                }
+
+                const normalizedKey = key.replace(/\s+/g, "_");
+                const dataColumn = mapping[normalizedKey] || normalizedKey;
+                const cell = cells.find(
+                    candidate => candidate.getAttribute("data-column") === dataColumn
+                );
+                result[key] = clean(cell?.innerText);
+            }
+            return result;
+        """
+        for row in self._get_rows():
+            result = self.browser.execute_script(
+                snapshot_row, row, name, self.header_mapping
+            )
+            if result is not None:
+                return result
+        return None
+
     def get_cell_value(self, name, column):
         """
         Get a specific cell value.
