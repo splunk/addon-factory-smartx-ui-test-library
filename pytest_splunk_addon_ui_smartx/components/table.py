@@ -332,13 +332,27 @@ class Table(BaseComponent):
             }
             return result;
         """
-        for row in self._get_rows():
-            result = self.browser.execute_script(
-                snapshot_row, row, name, self.header_mapping
+
+        def _get_current_snapshot(_driver):
+            try:
+                for row in self._get_rows():
+                    result = self.browser.execute_script(
+                        snapshot_row, row, name, self.header_mapping
+                    )
+                    if result is not None:
+                        return result
+            except exceptions.StaleElementReferenceException:
+                return False
+            return False
+
+        try:
+            return self.wait_for(
+                _get_current_snapshot,
+                msg="{} row not found in table".format(name),
+                timeout=self.wait_for_seconds,
             )
-            if result is not None:
-                return result
-        return None
+        except exceptions.TimeoutException:
+            return None
 
     def get_cell_value(self, name, column):
         """
@@ -521,11 +535,24 @@ class Table(BaseComponent):
         :param name: row name
             :return: element Gets the row specified within the table, or raises a warning if not found
         """
-        for each_row in self._get_rows():
-            if self._get_column_value(each_row, "name") == name:
-                return each_row
-        else:
-            raise ValueError("{} row not found in table".format(name))
+
+        def _get_current_row(_driver):
+            try:
+                for each_row in self._get_rows():
+                    if self._get_column_value(each_row, "name") == name:
+                        return each_row
+            except exceptions.StaleElementReferenceException:
+                return False
+            return False
+
+        try:
+            return self.wait_for(
+                _get_current_row,
+                msg="{} row not found in table".format(name),
+                timeout=self.wait_for_seconds,
+            )
+        except exceptions.TimeoutException as error:
+            raise ValueError("{} row not found in table".format(name)) from error
 
     def get_action_values(self, name):
         """
