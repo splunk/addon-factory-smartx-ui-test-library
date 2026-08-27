@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from selenium.common.exceptions import TimeoutException
+from urllib.parse import urlsplit
+
 from selenium.webdriver.common.by import By
 
 from .base_component import BaseComponent, Selector
@@ -40,6 +41,19 @@ class Login(BaseComponent):
             "homepage": Selector(select='[data-test="header"], a[data-action="home"]'),
         }
 
+    @staticmethod
+    def is_authenticated(browser):
+        """Return whether either a legacy or current Splunk shell is loaded."""
+        if browser.find_elements(
+            By.CSS_SELECTOR, '[data-test="header"], a[data-action="home"]'
+        ):
+            return True
+
+        current_path = urlsplit(browser.current_url).path.rstrip("/")
+        return current_path.endswith(
+            "/app/launcher/home"
+        ) and not browser.find_elements(By.CSS_SELECTOR, "form.loginForm")
+
     def login(self, username, password):
         """
         Login into the Splunk instance
@@ -49,4 +63,4 @@ class Login(BaseComponent):
         self.username.send_keys(username)
         self.password.send_keys(password)
         self.password.send_keys("\ue007")
-        self.wait_for("homepage", "Could not log in to the Splunk instance.")
+        self.wait_for(self.is_authenticated, "Could not log in to the Splunk instance.")
