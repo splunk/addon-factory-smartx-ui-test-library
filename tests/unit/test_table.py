@@ -32,10 +32,38 @@ def test_get_table_row_returns_atomic_visible_row_snapshot():
 
     assert table.get_table_row("test_kinesis_clone") == expected
     browser.execute_script.assert_called_once()
-    assert browser.execute_script.call_args.args[1:] == (
+    assert browser.execute_script.call_args[0][1:] == (
         row,
         "test_kinesis_clone",
         {"input_name": "name", "status": "disabled"},
+    )
+
+
+def test_get_table_row_supports_positional_header_mapping():
+    expected = {"input type": "Amazon SQS"}
+    browser = MagicMock()
+    browser.execute_script.return_value = expected
+    row = MagicMock()
+    table = Table(
+        browser,
+        Selector(select='[data-test="table"]'),
+        mapping={"input_type": 3},
+    )
+    table.get_elements = MagicMock(return_value=[row])
+
+    assert table.get_table_row("test_sqs_input") == expected
+    (
+        snapshot_script,
+        snapshot_row,
+        row_name,
+        mapping,
+    ) = browser.execute_script.call_args[0]
+    assert "Number.isInteger(dataColumn)" in snapshot_script
+    assert "row.querySelector(`td:nth-child(${dataColumn})`)" in snapshot_script
+    assert (snapshot_row, row_name, mapping) == (
+        row,
+        "test_sqs_input",
+        {"input_type": 3},
     )
 
 

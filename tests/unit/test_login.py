@@ -54,8 +54,7 @@ def test_login_waits_for_any_supported_authenticated_shell():
 
     login.login("admin", "password")
 
-    condition = login.wait_for.call_args.args[0]
+    wait_for_args = login.wait_for.call_args[0]
+    condition = wait_for_args[0]
     assert condition(_browser_at("https://splunk.example/en-US/app/launcher/home"))
-    assert (
-        login.wait_for.call_args.args[1] == "Could not log in to the Splunk instance."
-    )
+    assert wait_for_args[1] == "Could not log in to the Splunk instance."
