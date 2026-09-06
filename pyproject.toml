@@ -36,7 +36,7 @@ packages = [
 version = "7.0.0"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.14"
+python = ">=3.14,<3.15"
 pytest-html = "*"
 urllib3 = ">=2.6.3,<3"
 selenium = ">=4.14.0,<5"
@@ -51,9 +51,9 @@ idna = ">=3.15,<4"
 pytest11 = { "ucc-smartx" = "pytest_splunk_addon_ui_smartx.plugin" }
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=5.4, <7.3"
-splunk-add-on-ucc-framework = "5.48.0"
-pytest-rerunfailures = "^12.0"
+pytest = ">=9.1, <10"
+splunk-add-on-ucc-framework = "6.6.0"
+pytest-rerunfailures = "^16.0.0"
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
