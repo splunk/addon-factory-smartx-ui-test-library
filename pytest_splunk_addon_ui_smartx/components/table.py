@@ -325,9 +325,11 @@ class Table(BaseComponent):
 
                 const normalizedKey = key.replace(/\s+/g, "_");
                 const dataColumn = mapping[normalizedKey] || normalizedKey;
-                const cell = cells.find(
-                    candidate => candidate.getAttribute("data-column") === dataColumn
-                );
+                const cell = Number.isInteger(dataColumn)
+                    ? row.querySelector(`td:nth-child(${dataColumn})`)
+                    : cells.find(
+                        candidate => candidate.getAttribute("data-column") === dataColumn
+                    );
                 result[key] = clean(cell?.innerText);
             }
             return result;
