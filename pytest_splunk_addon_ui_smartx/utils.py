@@ -14,8 +14,12 @@
 # limitations under the License.
 #
 
+import time
 from typing import List, NamedTuple, Optional
 from enum import Enum, auto
+
+
+RETRY_BACKOFF_SECONDS = 0.5
 
 
 def backend_retry(retry_count):
@@ -25,12 +29,13 @@ def backend_retry(retry_count):
         def retry_method(*args, **kwargs):
             last_exc = Exception()
 
-            # Try 3 times
-            for _ in range(retry_count):
+            for attempt in range(retry_count):
                 try:
                     return method(*args, **kwargs)
                 except Exception as e:
                     last_exc = e
+                    if attempt < retry_count - 1:
+                        time.sleep(RETRY_BACKOFF_SECONDS * (2**attempt))
             else:
                 if last_exc:
                     raise last_exc
