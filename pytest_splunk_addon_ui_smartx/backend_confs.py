@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -20,6 +21,10 @@ import urllib.request
 import requests
 
 from .utils import backend_retry
+
+
+POST_MAX_ATTEMPTS = 3
+POST_RETRY_BACKOFF_SECONDS = 0.5
 
 
 class BackendConf:
@@ -50,7 +55,7 @@ class BackendConf:
         )
         return res.json()
 
-    def rest_call_post(self, url, kwargs):
+    def rest_call_post(self, url, kwargs, retry_stanza_name=None):
         """
         rest call to the splunk rest-endpoint
             :param url: url to call
@@ -58,14 +63,46 @@ class BackendConf:
 
             :param kwargs: body of request method
             :returns: json result of the request
+
+            :param retry_stanza_name: stanza to check before retrying a transient
+            response. POST is retried only when the stanza is confirmed absent.
         """
-        res = requests.post(
-            url, kwargs, auth=(self.username, self.password), verify=False
-        )
+        for attempt in range(POST_MAX_ATTEMPTS):
+            res = requests.post(
+                url, kwargs, auth=(self.username, self.password), verify=False
+            )
+            if res.status_code in (200, 201):
+                return res.json()
+
+            if (
+                retry_stanza_name
+                and res.status_code in (502, 503, 504)
+                and attempt < POST_MAX_ATTEMPTS - 1
+                and self._stanza_is_absent(retry_stanza_name)
+            ):
+                time.sleep(POST_RETRY_BACKOFF_SECONDS * (2**attempt))
+                continue
+            break
+
         assert (
             res.status_code == 200 or res.status_code == 201
         ), "url={}, status_code={}, error_msg={}".format(url, res.status_code, res.text)
-        return res.json()
+
+    def _stanza_is_absent(self, stanza_name):
+        """Return whether a stanza is confirmed absent after a failed POST."""
+        stanza_url = "{}/{}?count=0&output_mode=json".format(
+            self.url, urllib.parse.quote_plus(stanza_name)
+        )
+        try:
+            res = requests.get(
+                stanza_url,
+                auth=(self.username, self.password),
+                verify=False,
+                timeout=10,
+            )
+        except requests.exceptions.RequestException:
+            return False
+        return res.status_code == 404
 
     def rest_call_delete(self, url):
         """
@@ -141,7 +178,7 @@ class ListBackendConf(BackendConf):
             :returns: json result of the request
         """
         kwargs["output_mode"] = "json"
-        return self.rest_call_post(url, kwargs)
+        return self.rest_call_post(url, kwargs, retry_stanza_name=kwargs.get("name"))
 
     def delete_all_stanzas(self, query=None):
         """
